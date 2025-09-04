@@ -1,0 +1,95 @@
+<div class="dialog-content-wrapper user-form min-w-[640px] max-w-[800px] ">
+    <!-- Dialog Title -->
+    <mat-toolbar matDialogTitle class="m-0 p-0 px-4">
+      <mat-toolbar-row class="flex justify-between items-center">
+        <span class="text-[20px] font-semibold text-primary ">Assign Course to {{_data?.action?.userName}}</span>
+        <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog">
+          <mat-icon class="text-white">close</mat-icon>
+        </button>
+      </mat-toolbar-row>
+    </mat-toolbar>
+  
+    <!-- Dialog Content -->
+    <div mat-dialog-content class="p-6 m-0 border-t-2" unisunPerfectScrollbar>
+      <form name="registerForm" [formGroup]="registerForm" novalidate>
+        <div fxLayout="column" fxLayoutGap="16px">
+          <!-- Course Selection -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Course</mat-label>
+            <mat-select formControlName="course" [(ngModel)]="userModel.courseIds" placeholder="Select a course" required>
+              <mat-option *ngFor="let c of courses" [value]="c.guid">{{c.title}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="registerForm.get('course')?.hasError('required')">
+              Course selection is required.
+            </mat-error>
+          </mat-form-field>
+  
+          <!-- Subscription Start Date -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Subscription Start Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="startDate"
+              formControlName="startDate"
+              [(ngModel)]="userModel.startDate"
+              placeholder="MM/DD/YYYY"
+              required
+            >
+            <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+            <mat-datepicker #startDate></mat-datepicker>
+            <mat-error *ngIf="registerForm.get('startDate')?.hasError('required')">
+              Start date is required.
+            </mat-error>
+          </mat-form-field>
+  
+          <!-- Subscription End Date -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Subscription End Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="endDate"
+              formControlName="endDate"
+              [(ngModel)]="userModel.endDate"
+              placeholder="MM/DD/YYYY"
+              [min]="userModel.startDate"
+              required
+            >
+            <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+            <mat-datepicker #endDate></mat-datepicker>
+            <mat-error *ngIf="registerForm.get('endDate')?.hasError('required')">
+              End date is required.
+            </mat-error>
+            <mat-error *ngIf="registerForm.get('endDate')?.hasError('matDatepickerMin')">
+              End date must be after the start date.
+            </mat-error>
+          </mat-form-field>
+  
+          <!-- Is Active Toggle -->
+          <div class="flex items-center">
+            <mat-slide-toggle
+              formControlName="isActive"
+              [(ngModel)]="userModel.isActive"
+              color="primary"
+            >
+              Active Subscription
+            </mat-slide-toggle>
+          </div>
+  
+        </div>
+      </form>
+    </div>
+  
+    <!-- Dialog Actions -->
+    <div mat-dialog-actions class="m-0 px-6 py-4" fxLayout="row" fxLayoutAlign="space-between center">
+      <button mat-button (click)="matDialogRef.close()" aria-label="Cancel">CANCEL</button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="assignCourse(userModel)"
+        [disabled]="registerForm.invalid"
+        aria-label="Save"
+      >
+        SAVE
+      </button>
+    </div>
+  </div>

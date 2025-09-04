@@ -1,0 +1,24 @@
+:host{
+    display: block;
+}
+::ng-deep .assigned-students-list thead tr{
+    background: #f9fafb !important;
+}
+::ng-deep .assigned-students-list th.mat-mdc-header-cell, td {
+    border: 0px solid !important;
+}
+::ng-deep .assigned-students-list tr {
+    border: 1px solid #e5e5e5 !important;
+}
+::ng-deep .assigned-students-list .active {
+    background: #dbfce7;
+    color: #016630;
+    width: min-content;
+    padding: 0 15px;
+}
+::ng-deep .assigned-students-list .inactive {
+    background: #ffe2e2;
+    color: #9f0712;
+    width: min-content;
+    padding: 0 15px;
+}

@@ -1,0 +1,178 @@
+<!-- <div class="page-layout simple right-sidebar inner-scroll courseForm">
+
+    <div class="center">
+
+        <div class="header mat-accent-bg p-6 flex items-center justify-between gap-4">
+
+            <h2 class="m-0 text-primary text-xl font-medium">Course Detail's</h2>
+            <div class="m-0 " fxLayout="row" fxLayoutAlign="space-between right">
+
+                <button *ngIf="action !=='edit'" mat-raised-button (click)="saveOrUpdate(['new',course])" class="save-button mat-primary-bg" [disabled]="courseForm.invalid" aria-label="SAVE">
+                    SAVE
+                </button>
+
+                <button *ngIf="action ==='edit'" mat-raised-button (click)="saveOrUpdate(['update',course])" class="save-button mat-primary-bg" [disabled]="courseForm.invalid" aria-label="SAVE">
+                    SAVE
+                </button>
+
+            </div>
+
+        </div>
+        <div class="content mat-white-bg p-6">
+            <form name="courseForm" [formGroup]="courseForm">
+                <mat-tab-group mat-align-tabs="basic-info">
+
+                    <mat-tab label="Basic Info" class="content">
+                        <ng-template mat-tab-label>
+                            <mat-icon class="text-black">thumb_up</mat-icon>&nbsp; Basic Info
+                        </ng-template>
+                        <div class="p-6 mat-white-bg basic-info">
+                            <div>
+
+                                <mat-form-field class="w-full" floatLabel="always" fxFlex>
+                                    <mat-label>Title</mat-label>
+                                    <input matInput name="Title" required formControlName="Title" [(ngModel)]="course.title" placeholder="Title">
+                                </mat-form-field>
+                            </div>
+                            <div>
+
+                                <mat-form-field class="w-full" floatLabel="always" fxFlex>
+                                    <mat-label>Sub Title</mat-label>
+                                    <input matInput name="SubTitle" required formControlName="SubTitle" [(ngModel)]="course.subTitle" placeholder="Sub Title">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="mt-2">
+
+                                <mat-form-field class="w-full" floatLabel="always" fxFlex>
+                                    <mat-label>Description</mat-label>
+                                    <input matInput name="Description" required formControlName="Description" [(ngModel)]="course.description" placeholder="Description">
+                                </mat-form-field>
+                            </div>
+                            <div class="mt-2">                                
+                                <mat-slide-toggle class="p-4" formControlName="IsActive" [(ngModel)]="course.isActive">
+                                    Is Active
+                                </mat-slide-toggle>    
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Mentor" class="content" *ngIf="CourseID!=null">
+                        <ng-template mat-tab-label>
+                            <mat-icon class="text-black">accessibility</mat-icon>&nbsp; Mentor
+                        </ng-template>
+                        <div class="p-6 mat-white-bg">
+                            <div fxLayout="column" fxLayoutAlign="center" *ngIf="CourseID">
+                                <app-course-mentor-list [courseId]="CourseID" [course]="course"></app-course-mentor-list>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Mentee" class="content" *ngIf="CourseID!=null">
+                        <ng-template mat-tab-label>
+                            <mat-icon class="text-black">accessibility</mat-icon>&nbsp; Mentee
+                        </ng-template>
+                        <div class="p-6 mat-white-bg">
+                            <div fxLayout="column" fxLayoutAlign="center" *ngIf="CourseID">
+                                <app-course-mentee-list [courseId]="CourseID" [course]="course"></app-course-mentee-list>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+
+<ngx-spinner bdColor="rgba(51,51,51)" size="medium" color="#fff" type="ball-scale-multiple">
+    <p style="font-size: 20px; color: white">DownLoading Answersheet Please Wait...</p>
+</ngx-spinner> -->
+<div class="course-form-page h-full flex flex-col bg-gray-50">
+
+  <!-- HEADER -->
+  <header class="bg-primary text-white px-6 py-4 flex justify-between items-center shadow-md sticky top-0 z-10">
+    <h2 class="text-2xl font-semibold">Course Details</h2>
+    <div class="flex gap-3">
+      <button *ngIf="action !=='edit'" 
+              mat-raised-button 
+              color="accent"
+              (click)="saveOrUpdate(['new',course])"
+              [disabled]="courseForm.invalid">
+        Save
+      </button>
+
+      <button *ngIf="action ==='edit'" 
+              mat-raised-button 
+              color="accent"
+              (click)="saveOrUpdate(['update',course])"
+              [disabled]="courseForm.invalid">
+        Update
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="flex-1 overflow-y-auto p-6">
+    <form [formGroup]="courseForm" class="space-y-6">
+
+      <mat-tab-group class="bg-white rounded-xl shadow-md">
+        
+        <!-- Basic Info -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>info</mat-icon>&nbsp; Basic Info
+          </ng-template>
+
+          <div class="p-6 space-y-4">
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>Title</mat-label>
+              <input matInput formControlName="Title" [(ngModel)]="course.title" placeholder="Enter course title" required>
+            </mat-form-field>
+
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>Sub Title</mat-label>
+              <input matInput formControlName="SubTitle" [(ngModel)]="course.subTitle" placeholder="Enter course subtitle" required>
+            </mat-form-field>
+
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>Description</mat-label>
+              <textarea matInput rows="3" formControlName="Description" [(ngModel)]="course.description" placeholder="Enter description"></textarea>
+            </mat-form-field>
+
+            <mat-slide-toggle formControlName="IsActive" [(ngModel)]="course.isActive">
+              Active
+            </mat-slide-toggle>
+          </div>
+        </mat-tab>
+
+        <!-- Mentor Tab -->
+        <mat-tab *ngIf="CourseID">
+          <ng-template mat-tab-label>
+            <mat-icon>supervisor_account</mat-icon>&nbsp; Mentor
+          </ng-template>
+          <div class="p-6">
+            <app-course-mentor-list [courseId]="CourseID" [course]="course"></app-course-mentor-list>
+          </div>
+        </mat-tab>
+
+        <!-- Mentee Tab -->
+        <mat-tab *ngIf="CourseID">
+          <ng-template mat-tab-label>
+            <mat-icon>groups</mat-icon>&nbsp; Mentee
+          </ng-template>
+          <div class="p-6">
+            <app-course-mentee-list [courseId]="CourseID" [course]="course"></app-course-mentee-list>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </form>
+  </main>
+
+</div>
+
+<!-- Spinner -->
+<ngx-spinner bdColor="rgba(51,51,51)" size="medium" color="#fff" type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Downloading Answersheet... Please wait</p>
+</ngx-spinner>

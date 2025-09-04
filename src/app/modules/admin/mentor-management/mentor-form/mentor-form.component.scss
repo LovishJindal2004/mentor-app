@@ -1,0 +1,85 @@
+
+::ng-deep .delete-dialog .mat-mdc-dialog-surface.mdc-dialog__surface {
+    padding: 24px !important;
+}
+::ng-deep .user-form-dialog .mat-mdc-dialog-container{
+    max-height: 80vh;
+}
+::ng-deep .mentor-form .mat-mdc-tab-body-content {
+    padding: 15px 0 !important;
+}
+::ng-deep .mat-mdc-slide-toggle .mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle::after {
+    background: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+}
+
+::ng-deep .user-form .mdc-switch__icons {
+    display: none;
+}
+
+::ng-deep .mat-mdc-dialog-surface.mdc-dialog__surface {
+    padding: 0px !important;
+}
+
+::ng-deep .user-form.mentor-form .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--filled {
+    border-color: #e5e7eb !important;
+    // border: 0 !important;
+}
+
+//chips start
+:host ::ng-deep mat-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+    width: fit-content;
+    border-radius: 70px;
+    padding: 2px 10px 2px 10px;
+    background: #fff;
+    color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+    float: left;
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
+::ng-deep .role_dropdown .mdc-evolution-chip__text-label.mat-mdc-chip-action-label {
+    display: flex;
+    align-items: center;
+    color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+
+}
+
+::ng-deep .role_dropdown .mdc-evolution-chip__action.mat-mdc-chip-action.mdc-evolution-chip__action--primary.mdc-evolution-chip__action--presentational {
+    padding: 0px !important;
+}
+
+::ng-deep .role_dropdown .mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
+    background-color: #fff !important;
+}
+::ng-deep .mentor-form .mat-mdc-tab-group .mat-mdc-tab-header .mat-mdc-tab-label-container {
+    margin: 0 !important;
+}
+::ng-deep .mentor-form .mat-mdc-tab.mdc-tab{
+    width: 50% !important;
+}
+::ng-deep .mentor-form .mat-mdc-tab-labels{
+    background: #ececf0 !important;
+    padding: 5px;    
+    border-radius: 40px;
+}
+::ng-deep .mentor-form .mdc-tab.mat-mdc-tab.mat-focus-indicator{
+    height: 30px;
+}
+::ng-deep .mentor-form .mdc-tab.mat-mdc-tab.mat-focus-indicator.mdc-tab--active.ng-star-inserted.mdc-tab-indicator--active {
+    background: white;
+    border-radius: 50px;
+    height: 30px;
+}
+::ng-deep .mentor-form span.mdc-tab-indicator {
+    display: none;
+}
+::ng-deep .mentor-form .mat-mdc-icon-button .mat-mdc-button-touch-target {    
+    left: 41%;
+}
+::ng-deep .add-expertise-areas .mat-mdc-form-field-subscript-wrapper{
+    display: none !important;
+}

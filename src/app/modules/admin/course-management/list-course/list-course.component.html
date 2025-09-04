@@ -1,0 +1,99 @@
+<div class="p-6">
+    <div class="flex justify-between my-3">
+        <div>
+            <h2 class="text-black font-semibold text-3xl">Course Management</h2>
+            <h3 class="font-light">Manage and organize your courses</h3>
+        </div>
+        <button mat-raised-button class="rounded bg-primary text-white gap-2 text-sm px-2 flex" id="add-course-button" (click)="newCourse()"
+            aria-label="add course">
+            <mat-icon>add_circle</mat-icon> Add Course
+        </button>
+    </div>
+    <div class="py-3 flex justify-between items-center">
+        <div class="course-search">
+            <mat-form-field class="example-full-width min-w-[300px]">
+                <mat-icon class="text-base">search</mat-icon>
+                <input class="border-0 text-base" 
+                [formControl]="searchControl" matInput placeholder="Search" value="">
+              </mat-form-field>
+        </div>
+        <h3 class="font-light text-sm">{{dataSource.paginationData.count}} of {{dataSource.paginationData.count}} mentors </h3>
+    </div>
+    <div class="course-list">
+    <mat-table  #table [dataSource]="dataSource.data" (matSortChange)="onSortData($event)" matSort
+        matSortActive="Name" matSortDirection="asc">
+
+        <!-- Title Column -->
+        <ng-container matColumnDef="Title">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="min-w-[350px]">Title</mat-header-cell>
+            <mat-cell *matCellDef="let row" class="min-w-[350px]">
+                <p class="text-truncate font-weight-300">{{row.title}}</p>
+            </mat-cell>
+        </ng-container>
+        <!-- SubTitle Column -->
+        <ng-container matColumnDef="SubTitle">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Sub Title</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <p class="text-truncate font-weight-300">{{row.subTitle}}</p>
+            </mat-cell>
+        </ng-container>
+        <!-- RewardsPoint Column -->
+        <!-- <ng-container matColumnDef="RewardsPoint">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Rewards</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <p class="text-truncate font-weight-300">{{row.RewardsPoint}}</p>
+        </mat-cell>
+    </ng-container> -->
+        <!-- StartDate Column -->
+        <!-- <ng-container matColumnDef="StartDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Start</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <p class="text-truncate font-weight-300">{{(row.StartDate) |  date: 'dd/MM/yyyy' }}</p>
+        </mat-cell>
+    </ng-container> -->
+        <!-- EndDate Column -->
+        <!-- <ng-container matColumnDef="EndDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>End</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <p class="text-truncate font-weight-300">{{(row.EndDate) | date: 'dd/MM/yyyy' }}</p>
+        </mat-cell>
+    </ng-container> -->
+        <!-- IsActive Column -->
+        <ng-container matColumnDef="IsActive">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <!-- <p class="text-truncate font-weight-300">{{row.IsActive}}</p> -->
+                <!-- <mat-checkbox class="example-margin text-primary" [checked]="row.isActive" color="primary"
+                    [disabled]="true"></mat-checkbox> -->
+                    <div [ngClass]="{ 'active': row.isActive,'inactive': !row.isActive }">{{row.isActive ? 'active':'inactive'}} </div>
+            </mat-cell>
+        </ng-container>
+        <!-- Buttons Column -->
+        <ng-container matColumnDef="buttons">
+            <mat-header-cell *matHeaderCellDef class="cell-center">Action</mat-header-cell>
+            <mat-cell *matCellDef="let row" class="cell-center">
+                <button matButton [matMenuTriggerFor]="menu"><mat-icon>more_horiz</mat-icon></button>                
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="editCourse(row)"><mat-icon >manage_accounts</mat-icon>Edit</button>
+                    <button mat-menu-item *ngIf="row.isActive" (click)="inactiveUser(row)"><mat-icon>person_off</mat-icon>Mark as Inactive</button>
+                    <button mat-menu-item *ngIf="!row.isActive" (click)="activeUser(row)"><mat-icon>how_to_reg</mat-icon>Mark as Active</button>
+                    <button mat-menu-item *ngIf="!row.isDeleted" (click)="deleteCourse(row)"><mat-icon>person_remove</mat-icon>Delete</button>
+                    <!-- <button mat-menu-item *ngIf="row.isDeleted" (click)="UndeleteUser(row)"><mat-icon>restore_from_trash</mat-icon>Restore Deleted User</button> -->
+
+                </mat-menu>
+                <!-- <button aria-label="remove" (click)="deleteCourse(row)">
+                    <mat-icon class="text-primary">delete</mat-icon>
+                </button> -->
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="course">
+        </mat-row>
+    </mat-table>
+    <mat-paginator class="bg-transparent" [length]="dataSource.paginationData? dataSource.paginationData.count:0"
+        [pageSize]="10" (page)="getNext($event)"
+        [pageSizeOptions]="_sitePreference.PAGE.GridRowViewPageSizeOptions"></mat-paginator>
+    </div>
+
+</div>

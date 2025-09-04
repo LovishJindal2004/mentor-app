@@ -1,0 +1,366 @@
+<div class="w-full sign-up">
+    <div class="flex flex-wrap w-full justify-between header sign_up p-2 items-center">
+        <img [src]="'data:image/png;base64,'+LogoUrl" class="w-16" routerLink="/">
+        <h4 class="text-primary flex items-center text-xl font-normal"></h4>
+    </div>
+    <div class="content">
+        <!--Login with Email-->
+        <div *ngIf="currentStep === 'emailLogin'">
+            <h2 class="text-primary text-center pt-10 text-2xl font-medium" data-step="1">LOGIN</h2>
+            <form [formGroup]="signInForm" class="login-form mt-4">
+                <ng-template>Fill out your name</ng-template>
+                <mat-form-field class="w-full">
+                    <input matInput type="email" class=" w-full h-4 h-7" placeholder="Email Address" formControlName="email" required>
+                </mat-form-field>
+                <control-messages class="exam-error" [control]="signInForm.controls.email" fieldName="Email" [showSubmitError]="IssignInEmailHasError"></control-messages>
+                <div class="bg-[#FFE9E7] text-[#EA4435] flex w-fit mx-auto rounded-full gap-2 py-2 px-6 items-center" *ngIf="signInErrorMessage">
+                    <mat-icon class="text-[#EA4435]">error</mat-icon>
+                    <h3 class="font-normal">{{signInErrorMessage}}</h3>
+                </div>
+                <button mat-raised-button class="mt-4 w-full bg-primary rounded text-xl font-normal text-[#fff] cursor-pointer" [disabled]="signInForm.disabled" (click)="signIn('email')">Login to
+          ADrPLEXUS</button>
+                <h3 class="text-[#6E6E6E] text-center py-3 font-medium cursor-pointer" (click)="signUPWithEmail()">Create a New account
+                </h3>
+                <button mat-raised-button class="w-full rounded text-xl font-normal text-primary mobile-numberbtn" (click)="signInWithPhone()">Sign in with
+          Phone Number</button>
+                <button mat-raised-button class="w-full rounded mt-5 text-xl font-normal text-primary mobile-numberbtn" (click)="signInWithEmailPasseword()">Sign in with 
+         Email Password</button>
+                <!-- <button mat-raised-button class="w-full rounded mt-5 text-xl font-normal text-primary mobile-numberbtn" (click)="signInWithEmailPassewordAndPhone()">Sign in with
+         Email and Phone</button> -->
+                <!-- <h4 class="text-[#6E6E6E] text-center pt-4 font-medium">By signing up you agree to our</h4>
+          <h5 class="text-primary text-center pt-2 font-medium underline">Privacy Policy and Terms</h5>           -->
+            </form>
+        </div>
+        <!--Login with Phone-->
+        <div *ngIf="currentStep === 'loginPhone'">
+            <h2 class="text-primary text-center pt-10 text-2xl font-medium">LOGIN</h2>
+            <form [formGroup]="LoginWithphone" class="login-form mt-4">
+                <h3 class="text-[#6E6E6E] mb-2 font-medium">Phone Number</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <!-- <mat-form-field class="w-full">
+                        <mat-select formControlName="CountryCode">
+                            <mat-option value="+91">+91</mat-option>
+                        </mat-select>
+                    </mat-form-field> -->
+                    <mat-form-field class="w-full">
+                        <mat-select formControlName="CountryCode">
+                            <mat-option *ngFor="let code of countryCode" [value]="code.countryCode">{{code.countryCode}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field class="w-full col-span-2">
+                        <input matInput type="number" class=" w-full h-4 h-7" placeholder="Phone Number" required formControlName="PhoneNumber" onKeyPress="if(this.value.length==10) return false;">
+                    </mat-form-field>
+
+                </div>
+                <control-messages class="exam-error" [control]="LoginWithphone.controls.PhoneNumber" fieldName="Phone Number" [showSubmitError]="IssignInPhoneHasError"></control-messages>
+                <div class="bg-[#FFE9E7] text-[#EA4435] flex w-fit mx-auto rounded-full gap-2 py-2 px-6 items-center" *ngIf="signInErrorMessage">
+                    <mat-icon class="text-[#EA4435]">error</mat-icon>
+                    <h3 class="font-normal">{{signInErrorMessage}}</h3>
+                </div>
+                <button mat-raised-button class="mt-4 w-full bg-primary rounded text-xl font-normal cursor-pointer text-[#fff]" [disabled]="LoginWithphone.disabled" (click)="signIn('phone')">Login to
+          ADrPLEXUS</button>
+                <h3 class="text-[#6E6E6E] text-center py-3 font-medium cursor-pointer" (click)="singUpWithPhone()">Create a New account
+                </h3>
+                <button mat-raised-button class="w-full rounded text-xl font-normal text-primary mobile-numberbtn" (click)="signInWithEmail()">Sign in with
+          Email Address</button>
+
+                <!-- <h4 class="text-[#6E6E6E] text-center pt-4 font-medium">By signing up you agree to our</h4>
+          <h5 class="text-primary text-center pt-2 font-medium underline">Privacy Policy and Terms</h5>           -->
+            </form>
+        </div>
+        <!--Sign up with phone-->
+        <div *ngIf="currentStep === 'signupPhone'">
+            <div label="Fill out your address">
+                <h2 class="text-primary text-center pt-10 text-2xl font-medium">SIGN UP</h2>
+                <h3 class="text-[#BBBBBB] font-medium text-center">Synapse with us for success</h3>
+                <h4 class="pt-4 text-[#6E6E6E] text-center font-medium">Please enter your phone number below to account register
+                </h4>
+                <form [formGroup]="signupwithphone" class="login-form mt-4">
+                    <h3 class="text-[#6E6E6E] mb-2 font-medium">Phone Number</h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <!-- <mat-form-field class="w-full">
+                            <mat-select formControlName="CountryCode">
+                                <mat-option [value]="91">+91</mat-option>
+                            </mat-select>
+                        </mat-form-field> -->
+                        <mat-form-field class="w-full">
+                            <mat-select formControlName="CountryCode">
+                                <mat-option *ngFor="let code of countryCode" [value]="code.countryCode">{{code.countryCode}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="w-full col-span-2">
+                            <input matInput type="number" class=" w-full h-4 h-7" placeholder="Phone Number" required formControlName="PhoneNumber" onKeyPress="if(this.value.length==10) return false;">
+                        </mat-form-field>
+                    </div>
+                    <control-messages class="exam-error" [control]="signupwithphone.controls.PhoneNumber" fieldName="Phone Number" [showSubmitError]="IssignUpPhoneHasError"></control-messages>
+                    <div class="bg-[#FFE9E7] text-[#EA4435] flex w-fit mx-auto rounded-full gap-2 py-2 px-6 items-center" *ngIf="signInErrorMessage">
+                        <mat-icon class="text-[#EA4435]">error</mat-icon>
+                        <h3 class="font-normal">{{signInErrorMessage}}</h3>
+                    </div>
+                    <button mat-raised-button class="mt-4 w-full bg-primary rounded-lg text-xl font-normal text-[#fff]" (click)="Signup('Phone')">Sign up to
+            ADrPLEXUS</button>
+                    <h3 class="text-[#6E6E6E] text-center py-3 font-medium cursor-pointer" (click)="signInWithPhone()">Already have an account?</h3>
+                    <button mat-raised-button class="w-full border-primary border rounded-lg text-xl font-normal text-primary mobile-numberbtn" (click)="signUPWithEmail()">Sign up
+            with email</button>
+                    <h4 class="text-primary text-center pt-4 font-medium text-xl underline cursor-pointer" (click)="signInWithPhone()">Login to ADrPLEXUS
+                    </h4>
+                    <!-- <h5 class="text-[#6E6E6E] text-center pt-4 font-medium">By signing up you agree to our</h5>
+          <h6 class="text-primary text-center pt-2 font-medium underline">Privacy Policy and Terms</h6>           -->
+                </form>
+            </div>
+        </div>
+        <div *ngIf="currentStep === 'emailSignup'">
+            <div label="Fill out your address">
+                <h2 class="text-primary text-center pt-10 text-2xl font-medium" data-step="2">SIGN UP</h2>
+                <h3 class="text-[#BBBBBB] font-medium text-center">Synapse with us for success</h3>
+                <h4 class="pt-4 text-[#6E6E6E] text-center font-medium">Please enter your name , email address and phone number below to account register
+                </h4>
+                <form [formGroup]="signUpForm" class="login-form mt-4">
+
+                    <!-- Name -->
+                    <mat-form-field class="w-full mb-4">
+                        <input matInput type="text" class=" w-full h-4 h-7" placeholder="Name" formControlName="name" required>
+                    </mat-form-field>
+                    <control-messages class="exam-error" [control]="signUpForm.controls.name" fieldName="Name" [showSubmitError]="IssignUpEmailHasError"></control-messages>
+                    <!-- Name ends -->
+
+                    <!-- phone Number -->
+                    <!-- <h3 class="text-[#6E6E6E] mb-2 font-medium">Phone Number</h3> -->
+                    <div class="grid grid-cols-3 gap-4">
+                        <mat-form-field class="w-full">
+                            <mat-select formControlName="CountryCode">
+                                <mat-option *ngFor="let code of countryCode" [value]="code.countryCode">{{code.countryCode}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="w-full col-span-2">
+                            <input matInput type="text" class=" w-full h-4 h-7" placeholder="Phone Number" required formControlName="PhoneNumber" onKeyPress="if(this.value.length==10) return false;">
+                        </mat-form-field>
+
+                    </div>
+
+                    <control-messages class="exam-error" [control]="signUpForm.controls.PhoneNumber" fieldName="Phone Number" [showSubmitError]="IssignInPhoneHasError"></control-messages>
+                    <!-- <div class="bg-[#FFE9E7] text-[#EA4435] flex w-fit mx-auto rounded-full gap-2 py-2 px-6  items-center" *ngIf="signInErrorMessage">
+                        <mat-icon class="text-[#EA4435]">error</mat-icon>
+                        <h3 class="font-normal">{{signInErrorMessage}}</h3>
+                    </div> -->
+                    <!-- Ends -->
+
+                    <!-- EMAIL -->
+                    <mat-form-field class="w-full mt-4">
+                        <input matInput type="email" class=" w-full h-4 h-7" placeholder="Email Address" formControlName="email" required>
+                    </mat-form-field>
+                    <control-messages class="exam-error" [control]="signUpForm.controls.email" fieldName="Email" [showSubmitError]="IssignUpEmailHasError"></control-messages>
+                    <div class="bg-[#FFE9E7] text-[#EA4435] flex w-fit mx-auto rounded-full gap-2 py-2 px-6 items-center" *ngIf="signInErrorMessage">
+                        <mat-icon class="text-[#EA4435]">error</mat-icon>
+                        <h3 class="font-normal">{{signInErrorMessage}}</h3>
+                    </div>
+                    <!-- END -->
+
+                    <!-- (click)="Signup('email')" -->
+                    <button mat-raised-button class="mt-4 w-full bg-primary rounded-lg text-xl font-normal text-[#fff]" (click)="Signup()">Sign up to
+            ADrPLEXUS</button>
+
+                    <h3 class="text-[#6E6E6E] text-center py-3 font-medium cursor-pointer" (click)="signInWithEmail()">Already have an account? </h3>
+
+
+                    <!-- <h4 class="text-primary text-center pt-4 font-medium text-xl underline cursor-pointer" (click)="signInWithEmail()">Login to ADrPLEXUS
+                    </h4> -->
+                    <!-- <h5 class="text-[#6E6E6E] text-center pt-4 font-medium">By signing up you agree to our</h5> -->
+                    <!-- <h6 class="text-primary text-center pt-2 font-medium underline cursor-pointer">Privacy Policy and Terms</h6> -->
+                </form>
+            </div>
+        </div>
+        <div *ngIf="currentStep === 'otp'">
+            <h2 class="text-primary text-center pt-10 text-2xl font-medium">{{OtpFormTitle}}</h2>
+            <h3 class="text-[#BBBBBB] font-medium text-center">Synapse with us for success</h3>
+            <h4 class="pt-4 text-[#6E6E6E] text-center font-medium">Enter verification OTP<br>We sent you a verification code via SMS.</h4>
+            <h5 class="pt-4 text-[#6E6E6E] text-center font-normal">OTP Sent to</h5>
+            <div class="flex gap-4 px-6 text-center items-center justify-center mt-2">
+                <h2 class="text-[#6E6E6E] text-2xl">{{OTPLoginType}}</h2>
+                <h3 class="underline text-primary font-normal cursor-pointer" (click)="OnChange()">Change</h3>
+            </div>
+            <form [formGroup]="OtpForm" class="login-form mt-4">
+                <div class="grid grid-cols-4 gap-4 px-10 otp-fields">
+                    <mat-form-field class="w-full text-3xl">
+                        <input #otp1 matInput formControlName="Otp1" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChange(otp1, otp2)" (keydown)="onKeyDown($event, otp1)" (paste)="onPaste($event)">
+                    </mat-form-field>
+                    <mat-form-field class="w-full text-3xl">
+                        <input #otp2 matInput formControlName="Otp2" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChange(otp2, otp3)" (keydown)="onKeyDown($event, otp2, otp1)" (paste)="onPaste($event)">
+                    </mat-form-field>
+                    <mat-form-field class="w-full text-3xl">
+                        <input #otp3 matInput formControlName="Otp3" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChange(otp3, otp4)" (keydown)="onKeyDown($event, otp3, otp2)" (paste)="onPaste($event)">
+                    </mat-form-field>
+                    <mat-form-field class="w-full text-3xl">
+                        <input #otp4 matInput formControlName="Otp4" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChange(otp4)" (keydown)="onKeyDown($event, otp4, otp3)" (paste)="onPaste($event)">
+                    </mat-form-field>
+                </div>
+                <control-messages class="exam-error text-center" [control]="OtpForm" fieldName="Otp" [showSubmitError]="IsOtpFormHasError"></control-messages>
+                <div class="bg-[#FFE9E7] text-[#EA4435] flex w-fit mx-auto rounded-full gap-2 py-2 px-6 items-center" *ngIf="OtpErrorMessage">
+                    <mat-icon class="text-[#EA4435]">error</mat-icon>
+                    <h3 class="font-normal">{{OtpErrorMessage}}</h3>
+                </div>
+                <button mat-raised-button class="mt-4 w-full bg-primary rounded-lg text-xl font-normal text-[#fff]" (click)="onSubmitOTP()">Submit</button>
+                <!-- <div class="w-40 mx-auto mt-4">
+      <h3 class="text-[#6E6E6E] text-center py-3 font-medium">Did not receive OTP?</h3>
+      <h4></h4>
+    </div> -->
+                <div class="flex gap-2  mx-auto mt-2">
+                    <h3 class="text-primary underline mx-auto cursor-pointer" (click)="resendOTP()">Resend OTP</h3>
+                    <!-- <h4 class="text-primary">or</h4>            
+      <h5 class="text-primary underline">Get OTP on call</h5> -->
+                </div>
+            </form>
+        </div>
+        <!-- login with email & password -->
+        <div *ngIf="currentStep === 'signInWithEmailPasseword'">
+            <h2 class="text-primary text-center pt-10 text-2xl font-medium" data-step="1">LOGIN</h2>
+            <form [formGroup]="signInWithEmailPassword" class="login-form mt-4">
+                <ng-template>Fill out your name</ng-template>
+                <mat-form-field class="w-full">
+                    <input matInput type="email" class=" w-full h-4 h-7" placeholder="Email Address" formControlName="email" required>
+                </mat-form-field>
+                <control-messages class="exam-error" [control]="signInWithEmailPassword.controls.email" fieldName="Email" [showSubmitError]="IssignUppasswordHasError"></control-messages>
+                <mat-form-field class="w-full mt-2">
+                    <input matInput type="Password" class=" w-full h-4 h-7" placeholder="Enter Password" formControlName="Password" required #passwordField>
+                    <button mat-icon-button type="button" (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'" matSuffix>
+              <mat-icon
+                  class="icon-size-5"
+                  *ngIf="passwordField.type === 'password'"
+                  [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+              <mat-icon
+                  class="icon-size-5"
+                  *ngIf="passwordField.type === 'text'"
+                  [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+          </button>
+                </mat-form-field>
+                <control-messages class="exam-error" [control]="signInWithEmailPassword.controls.Password" fieldName="Password" [showSubmitError]="IssignUppasswordHasError"></control-messages>
+
+                <div class="bg-[#FFE9E7] text-[#EA4435] flex w-fit mx-auto rounded-full gap-2 py-2 px-6 items-center" *ngIf="signInErrorMessage">
+                    <mat-icon class="text-[#EA4435]">error</mat-icon>
+                    <h3 class="font-normal">{{signInErrorMessage}}</h3>
+                </div>
+                <button mat-raised-button class="mt-4 w-full bg-primary rounded text-xl font-normal text-[#fff] cursor-pointer" [disabled]="signInWithEmailPassword.disabled" (click)="signinWithEmailPassword()">Login to
+          ADrPLEXUS</button>
+                <h3 class="text-[#6E6E6E] text-center py-3 font-medium cursor-pointer" (click)="signUPWithEmail()">Create a New account
+                </h3>
+                <button mat-raised-button class="w-full rounded text-xl font-normal text-primary mobile-numberbtn" (click)="signInWithPhone()">Sign in with
+          Phone Number</button>
+                <!-- <h4 class="text-[#6E6E6E] text-center pt-4 font-medium">By signing up you agree to our</h4>
+          <h5 class="text-primary text-center pt-2 font-medium underline">Privacy Policy and Terms</h5>           -->
+            </form>
+        </div>
+
+        <!-- otpa for email and phone both by harsh-->
+        <div *ngIf="currentStep === 'otpForloginWithPhoneAndEmail'">
+            <h2 class="text-primary text-center pt-10 text-2xl font-medium">{{OtpFormTitle}}</h2>
+            <h3 class="text-[#BBBBBB] font-medium text-center">Synapse with us for success</h3>
+            <h4 class="pt-4 text-[#6E6E6E] text-center font-medium">Enter verification OTP<br>We sent you a verification code via SMS.</h4>
+            <h5 class="pt-4 text-[#6E6E6E] text-center font-normal">OTP Sent to</h5>
+
+            <!-- FOR MOBILE -->
+            <form [formGroup]="OtpFormForloginWithPhoneAndEmail" class="login-form mt-4">
+
+                <div *ngIf="isIndianNumber" formGroupName="phoneOtpGroup">
+                    <!-- <h5 class="pt-4 text-[#6E6E6E] text-center font-extrabold pb-5 text-xl">OTP For Mobile Verification</h5> -->
+
+                    <div class="flex gap-4  text-center items-center justify-center mb-4">
+                        <h6 class="text-[#6E6E6E] text-2xl">{{OTPLoginPhoneType}}</h6>
+                        <h3 class="underline text-primary font-normal cursor-pointer" (click)="OnChange()">Change</h3>
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 px-10 otp-fields">
+
+                        <mat-form-field class="w-full text-3xl">
+                            <input #otp9 matInput formControlName="Otp9" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChangeForMobileAndEmail(otp9, otp10)" (keydown)="onKeyDownForMobileAndEmail($event, otp9)"
+                                (paste)="onPasteForMobileAndEmail($event)">
+                        </mat-form-field>
+                        <mat-form-field class="w-full text-3xl">
+                            <input #otp10 matInput formControlName="Otp10" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChangeForMobileAndEmail(otp10, otp11)" (keydown)="onKeyDownForMobileAndEmail($event, otp10, otp9)"
+                                (paste)="onPasteForMobileAndEmail($event)">
+                        </mat-form-field>
+                        <mat-form-field class="w-full text-3xl">
+                            <input #otp11 matInput formControlName="Otp11" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChangeForMobileAndEmail(otp11, otp12)" (keydown)="onKeyDownForMobileAndEmail($event, otp11, otp10)"
+                                (paste)="onPasteForMobileAndEmail($event)">
+                        </mat-form-field>
+                        <mat-form-field class="w-full text-3xl">
+                            <input #otp12 matInput formControlName="Otp12" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChangeForMobileAndEmail(otp12)" (keydown)="onKeyDownForMobileAndEmail($event, otp12, otp11)"
+                                (paste)="onPasteForMobileAndEmail($event)">
+                        </mat-form-field>
+                    </div>
+                    <control-messages class="exam-error text-center" [control]="OtpFormForloginWithPhoneAndEmail.get('phoneOtpGroup')" fieldName="Otp" [showSubmitError]="IsOtpFormHasError"></control-messages>
+                    <!-- <div class="bg-[#FFE9E7] text-[#EA4435] flex w-fit mx-auto rounded-full gap-2 py-2 px-6 items-center" *ngIf="OtpErrorMessage">
+                        <mat-icon class="text-[#EA4435]">error</mat-icon>
+                        <h3 class="font-normal">{{OtpErrorMessage}}</h3>
+                    </div> -->
+                </div>
+
+                <!-- </form> -->
+                <!-- FOR MOBILE ENDS -->
+                <div class="flex gap-4 px-6 text-center items-center justify-center mt-2">
+                    <h2 class="text-[#6E6E6E] text-2xl">{{OTPLoginType}}</h2>
+                    <h3 class="underline text-primary font-normal cursor-pointer" (click)="OnChange()">Change</h3>
+                </div>
+                <!-- FOR Email -->
+                <!-- <form [formGroup]="OtpFormForloginWithEmail" class="login-form mt-4"> -->
+                <!-- <h5 class="pt-4 text-[#6E6E6E] text-center font-extrabold pb-5 text-xl">OTP For Email Verification</h5> -->
+                <div formGroupName="emailOtpGroup">
+                    <div class="grid grid-cols-4 gap-4 px-10 otp-fields mt-4">
+                        <mat-form-field class="w-full text-3xl">
+                            <input #otp5 matInput formControlName="Otp5" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChangeForMobileAndEmail(otp5, otp6)" (keydown)="onKeyDownForMobileAndEmail($event, otp5)"
+                                (paste)="onPasteForMobileAndEmail($event)">
+                        </mat-form-field>
+                        <mat-form-field class="w-full text-3xl">
+                            <input #otp6 matInput formControlName="Otp6" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChangeForMobileAndEmail(otp6, otp7)" (keydown)="onKeyDownForMobileAndEmail($event, otp6, otp5)"
+                                (paste)="onPasteForMobileAndEmail($event)">
+                        </mat-form-field>
+                        <mat-form-field class="w-full text-3xl">
+                            <input #otp7 matInput formControlName="Otp7" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChangeForMobileAndEmail(otp7, otp8)" (keydown)="onKeyDownForMobileAndEmail($event, otp7, otp6)"
+                                (paste)="onPasteForMobileAndEmail($event)">
+                        </mat-form-field>
+                        <mat-form-field class="w-full text-3xl">
+                            <input #otp8 matInput formControlName="Otp8" onKeyPress="if(this.value.length==1) return false;" type="number" class="text-center w-full h-4 h-7" required (input)="onInputChangeForMobileAndEmail(otp8)" (keydown)="onKeyDownForMobileAndEmail($event, otp8, otp7)"
+                                (paste)="onPasteForMobileAndEmail($event)">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <control-messages class="exam-error text-center" [control]="OtpFormForloginWithPhoneAndEmail.get('emailOtpGroup')" fieldName="Otp" [showSubmitError]="IsOtpFormHasError"></control-messages>
+                <div class="bg-[#FFE9E7] text-[#EA4435] flex w-fit mx-auto rounded-full gap-2 py-2 px-6 items-center" *ngIf="OtpErrorMessage">
+                    <mat-icon class="text-[#EA4435]">error</mat-icon>
+                    <h3 class="font-normal">{{OtpErrorMessage}}</h3>
+                </div>
+                <button mat-raised-button class="mt-4 w-full bg-primary rounded-lg text-xl font-normal text-[#fff]" (click)="onVerifyOtp()">Verify</button>
+
+                <div class="flex gap-2  mx-auto mt-2">
+                    <h3 class="text-primary underline mx-auto cursor-pointer" (click)="resendOTPForBothVerification()">Resend OTP</h3>
+
+                </div>
+            </form>
+
+        </div>
+        <!-- otpa for emal and phone both Ends-->
+
+        <!--Otp screen -->
+
+        <!-- <div>
+        <h2 class="text-primary text-center pt-10 text-2xl font-medium w-80 mx-auto">SUCCESSFULLY VERIFIED YOUR ACCOUNT SAFELY</h2>
+        <img class="w-40 pt-10 pb-10 mx-auto" src="../../../../assets/images/images/suceesful.svg">
+        <form  class="login-form mt-4">
+          <button mat-raised-button
+            class="register-btn w-full border-primary border rounded-lg bg-primary text-xl font-normal text-[#fff] mobile-numberbtn" (click)="gotoRegistration()">
+            Continue to Register
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+            <button mat-raised-button
+            class="mt-2 w-full text-white rounded-lg text-xl font-normal upgrade-plan mobile-numberbtn">
+            <mat-icon>star</mat-icon>
+            Upgrade your premium plan</button>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Next</button>
+          </div>
+        </form>
+      </div> -->
+
+    </div>
+
+
+</div>

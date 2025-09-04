@@ -1,0 +1,175 @@
+:host {
+    width: 100%;
+}
+
+.header.sign_up {
+    position: fixed;
+    top: 0;
+    box-shadow: 0px 3px 6px #00000029;
+    background: white;
+    z-index: 1;
+    height: 80px;
+}
+
+.content,
+.profile {
+    margin-top: 80px;
+    height: 100%;
+    background-color: white;
+}
+
+.hide-stepper .mat-mdc-horizontal-stepper-header-container {
+    display: none !important;
+}
+
+.login-form {
+    width: 400px;
+    margin: 0 auto;
+}
+
+.sign-up .mat-mdc-form-field .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+    border-color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+    box-shadow: 0px 0px 10px rgba(var(--fuse-primary-rgb), .3) !important;
+    border-radius: 8px;
+    height: 60px;
+}
+
+.content .mat-mdc-raised-button {
+    min-height: 60px;
+    max-height: 60px;
+}
+
+.mobile-numberbtn {
+    border: 1px solid rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+    box-shadow: none !important;
+    border-radius: 8px;
+}
+
+.mat-mdc-raised-button .mat-mdc-button-focus-overlay {
+    background-color: rgba(var(--fuse-primary-rgb), .2) !important;
+    ;
+}
+
+.otp-fields input::-webkit-outer-spin-button,
+.otp-fields input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.upgrade-plan {
+    background: transparent linear-gradient(169deg, #F915AD 0%, #F97F15 100%) 0% 0% no-repeat padding-box;
+    border: none;
+    color: #fff;
+}
+
+.register-btn span.mat-mdc-button-wrapper {
+    display: flex !important;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.upgrade-plan span.mat-mdc-button-wrapper {
+    margin-right: auto;
+    gap: 10px;
+}
+
+.course-plan {
+    border-color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+    box-shadow: 0px 0px 10px rgba(var(--fuse-primary-rgb), .3) !important;
+}
+
+.free-trail {
+    background: transparent linear-gradient(174deg, #28C397 0%, #139FA3 100%) 0% 0% no-repeat padding-box;
+    border-radius: 8px !important;
+    min-height: 48px;
+    color: white !important;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.premium-plan {
+    background: transparent linear-gradient(174deg, #F915AD 0%, #F97F15 100%) 0% 0% no-repeat padding-box;
+    border-radius: 8px !important;
+    min-height: 48px;
+    color: white !important;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.image-upload::file-selector-button {
+    border: 1px solid rgba(var(--fuse-primary-rgb), var(--tw-text-opacity));
+    background: rgba(var(--fuse-primary-rgb), .1);
+    color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity));
+    width: 137px;
+    height: 40px;
+    border-radius: 4px;
+}
+
+.profile-image {
+    background: rgba(var(--fuse-primary-rgb), 0.5) !important;
+    border: 1px solid rgba(var(--fuse-primary-rgb), 0.5) !important;
+    width: 110px;
+    height: 110px;
+}
+
+@media only screen and (max-device-width: 767px) {
+    .login-form {
+        max-width: 400px !important;
+        padding: 0 10px;
+        width: auto !important;
+    }
+}
+
+// .mat-mdc-step-icon-content{
+//     display: none;
+// }
+// .mat-mdc-step-icon.mat-mdc-step-icon-state-number{
+//     background-color: #cacaca !important;
+//     width: 10px;
+//     height: 10px;
+//     margin: 0 auto;
+// }
+// mat-mdc-step-header.mat-mdc-step-header {
+//     width: 20px;
+//     height: 20px;
+//     padding: 0 10px;
+// }
+// .mat-mdc-step-header .mat-mdc-step-header-ripple{
+//     display: none;
+// }
+// .mat-mdc-stepper-horizontal-line {
+//     display: none;
+// }
+// mat-mdc-step-header.mat-mdc-step-header:hover,
+// body.light .mat-mdc-step-header.cdk-program-focused,
+// body.light .mat-mdc-step-header:hover:not([aria-disabled]) {
+//     background: none !important;
+// }
+// .mat-mdc-step-icon.mat-mdc-step-icon-state-number.mat-mdc-step-icon-selected {
+//     border: 5px solid rgba(var(--fuse-primary-rgb), .3) !important;
+//     color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+//     width: 20px;
+//     height: 20px;
+//     margin-right: 0 auto !important;
+// }
+// body.light .mat-mdc-step-header .mat-mdc-step-icon-state-edit {
+//     width: 10px;
+//     height: 10px;
+//     background-color: #cacaca !important;
+//     margin: 0 auto !important;
+// }
+// .mat-mdc-step-icon.mat-mdc-step-icon-state-number.mat-mdc-step-icon-selected:after {
+//     content: '';
+//     position: absolute;
+//     width: 10px;
+//     height: 10px;
+//     background: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+//     border-radius: 50px;
+// }
+// .mat-mdc-step-label.mat-mdc-step-label-active{
+//     display: none;
+// }
+// .profile .mat-mdc-select-value {
+//     color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+//     font-size: 16px;
+// }

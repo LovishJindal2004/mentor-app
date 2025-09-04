@@ -1,0 +1,201 @@
+:host {
+    display: block;
+}
+
+::ng-deep .mat-form-field {
+    width: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
+::ng-deep .exam-search {
+    width: 300px !important;
+}
+
+.div-exam {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    align-items: center;
+    border: 1px solid rgba(var(--fuse-primary-rgb), var(--tw-text-opacity));
+    padding: 20px 10px;
+    border-radius: 5px;
+    width: 100%;
+    min-width: 400px;
+    max-width: 400px;
+    position: relative;
+    padding-left: 20px;
+    box-shadow: 0px 0px 10px rgba(var(--fuse-primary-rgb), .3);
+}
+
+.div-exam:after {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    background: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity));
+    width: 10px;
+    height: 100%;
+    border-radius: 4px 0 0px 4px;
+}
+
+.subject {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+    padding-top: 20px !important;
+}
+
+.topic {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    margin: 10px 0;
+}
+
+.div-exam h4 {
+    width: 240px;
+}
+
+.div-exam h5 {
+    cursor: pointer;
+}
+
+//new
+::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--filled {
+    border-color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+}
+
+::ng-deep .mat-mdc-slide-toggle .mdc-switch.mdc-switch--selected:enabled .mdc-switch__handle::after {
+    background: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+}
+
+.courseForm mat-form-field.mat-mdc-form-field {
+    width: 100%;
+}
+
+::ng-deep .courseForm .mdc-switch__icons {
+    display: none;
+}
+
+button.save-button {
+    background: #28C397 !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    color: white !important;
+}
+
+::ng-deep .delete-choice .mat-mdc-dialog-surface.mdc-dialog__surface {
+    padding: 24px !important;
+    min-width: 0 !important;
+    max-width: 278px !important;
+}
+
+.addExam {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    background: #28C397 !important;
+    color: white !important;
+    width: auto !important;
+    // padding: 7px 20px 7px 10px;
+    gap: 8px;
+    margin-left: auto;
+    margin-right: 20px !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    // padding: 8px 41px !important;
+}
+
+::ng-deep .exam-list mat-header-cell.mat-mdc-header-cell {
+    background: #f1f5f9 !important;
+    color: #505050 !important;
+    font-size: 14px;
+    font-weight: 800;
+    border-bottom: 3px solid rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+}
+
+::ng-deep .exam-list mat-cell.mat-mdc-cell p {
+    color: #3C3C3C !important;
+    font-size: 14px !important;
+    font-weight: 600;
+}
+
+// to color the iocns when user click on it
+::ng-deep .mat-mdc-tab.mdc-tab--active .mat-icon.mat-icon {
+    color: var(--mat-tab-header-active-label-text-color) !important;
+}
+
+// chips
+::ng-deep .mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
+    background-color: #fff !important;
+}
+
+::ng-deep span.mdc-evolution-chip__text-label.mat-mdc-chip-action-label {
+    color: rgba(var(--fuse-primary-rgb), var(--tw-bg-opacity)) !important;
+}
+
+::ng-deep .mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) .mdc-evolution-chip__text-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.integration_chips .mat-icon.mat-icon {
+    color: rgba(var(--fuse-primary-rgb), var(--tw-bg-opacity)) !important;
+}
+
+::ng-deep .integration_chips span.mdc-evolution-chip__text-label.mat-mdc-chip-action-label button {
+    display: flex;
+    align-items: center;
+}
+
+::ng-deep .integration_chips .mat-mdc-standard-chip .mat-mdc-chip-graphic {
+    display: none;
+}
+
+::ng-deep .integration_chips .mat-mdc-standard-chip.mdc-evolution-chip--with-primary-graphic .mdc-evolution-chip__action--primary {
+    padding-left: 12px;
+}
+
+
+/*pdf Apply page break after each question, starting from the second question */
+
+.question-container:not(:first-child) {
+    page-break-before: always;
+}
+
+.quiz-container {
+    page-break-inside: avoid;
+}
+
+tr.highlighted-row {
+    background: #008000;
+    color: white;
+}
+
+// pdf ends
+// .courseForm {
+//     .content {
+//         overflow: hidden;
+//         .sidebar {
+//             &:not(.locked-open) {
+//                 background: white;
+//             }
+//         }
+//         .content-wrapper {
+//             max-height: 85vh;
+//             display: flex;
+//             flex-direction: column;
+//         }
+//     }
+//     .mat-tab-body-content {
+//         .custom {
+//             padding-left: 150px;
+//             padding-right: 150px;
+//             padding-top: 15px;
+//         }
+//     }
+// }

@@ -1,0 +1,36 @@
+:host{
+    display: block;
+}
+.active-row{
+    background-color: #fff6e4 !important;
+}
+::ng-deep .student-search .mat-mdc-form-field.mat-form-field-appearance-fill .mat-mdc-text-field-wrapper {
+    border: 0 !important;
+}
+::ng-deep .student-search .mat-mdc-form-field.mat-form-field-appearance-fill .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+    background: #e6e6f1 !important
+}
+::ng-deep .student-search .mat-mdc-form-field.mat-form-field-appearance-fill .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix{    
+    min-height: 40px;
+}
+::ng-deep .student-list thead tr{
+    background: #f9fafb !important;
+}
+::ng-deep .student-list th.mat-mdc-header-cell, td {
+    border: 0px solid !important;
+}
+::ng-deep .student-list tr {
+    border: 1px solid #e5e5e5 !important;
+}
+::ng-deep .student-list .active {
+    background: #dbfce7;
+    color: #016630;
+    width: min-content;
+    padding: 0 15px;
+}
+::ng-deep .student-list .inactive {
+    background: #ffe2e2;
+    color: #9f0712;
+    width: min-content;
+    padding: 0 15px;
+}

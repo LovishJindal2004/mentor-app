@@ -1,0 +1,292 @@
+<div class="dialog-content-wrapper mentor-form user-form min-w-[500px] p-6">
+    <!-- <mat-toolbar matDialogTitle class="bg-primary m-0 p-0 flex-row">
+        <mat-toolbar-row class="flex justify-between">
+            <span class="text-[20px] font-semibold text-white">{{dialogTitle}}</span>
+            <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog">
+                <mat-icon class="text-white">close</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar> -->
+    <div>        
+        <h2 class="text-black font-semibold text-xl">{{dialogTitle}}</h2>
+        <h3 class="font-light font-sm">Fill in the details to add a new mentor to the system.
+        </h3>
+    </div>
+
+    <div mat-dialog-content class=" m-0 mt-5" unisunPerfectScrollbar>
+
+        <form name="registerForm" [formGroup]="registerForm" novalidate>
+            <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+                <mat-tab label="Personal Information">
+                    <div class="flex justify-between gap-2 mb-2">
+                        <mat-form-field class="w-full" appearance="outline">
+                            <mat-label>First Name</mat-label>
+                            <input matInput placeholder="First Name" formControlName="firstName"
+                                [(ngModel)]="userModel.firstName" required>
+                            <mat-error>
+                                First Name is required
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="w-full" appearance="outline">
+                            <mat-label>Last Name</mat-label>
+                            <input matInput placeholder="last Name" formControlName="lastName"
+                                [(ngModel)]="userModel.lastName" required>
+                            <mat-error>
+                                last Name is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex justify-between gap-2 mb-2">
+                        <mat-form-field class="w-full" appearance="outline">
+                            <mat-label>UserName</mat-label>
+                            <input matInput placeholder="Name" formControlName="name" [(ngModel)]="userModel.userName"
+                                required>
+                            <mat-error>
+                                UserName is required
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="w-full" appearance="outline">
+                            <mat-label>Email</mat-label>
+                            <input matInput placeholder="Email" formControlName="email" [(ngModel)]="userModel.email"
+                                required>
+                            <mat-error *ngIf="registerForm.get('email').hasError('required')">
+                                Email is required
+                            </mat-error>
+                            <mat-error *ngIf="registerForm.get('email').hasError('email')">
+                                Please enter a valid email address
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex justify-between gap-2 mb-2">
+
+                        <mat-form-field class="block w-full pt-1" appearance="outline">
+                            <mat-label>Country</mat-label>
+                            <mat-select placeholder="Country" formControlName="country" required
+                                (selectionChange)="onChangeCountry($event)" [(ngModel)]="userModel.countryId">
+                                <mat-option *ngFor="let c of countryList" [value]="c.id">{{c.name}}</mat-option>
+                            </mat-select>
+                            <mat-error>
+                                Country is required
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="block w-full pt-1" appearance="outline">
+                            <mat-label>State</mat-label>
+                            <mat-select placeholder="State" formControlName="state" required
+                                (selectionChange)="onChangeState($event) " [(ngModel)]="userModel.stateId">
+                                <mat-option *ngFor="let c of stateList" [value]="c.id">{{c.name}}</mat-option>
+                            </mat-select>
+                            <mat-error>
+                                State is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="flex justify-between gap-2 mb-2">
+                        <mat-form-field class="block pt-1 w-full" appearance="outline">
+                            <mat-label>Institute</mat-label>
+                            <mat-select placeholder="Institute " formControlName="institute"
+                                [(ngModel)]="userModel.collegeID ">
+                                <mat-option *ngFor="let c of instituteList" [value]="c.id">{{c.name}}</mat-option>
+                            </mat-select>
+                            <mat-error>
+                                Institute is required
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="block pt-1 w-full" appearance="outline">
+                            <mat-label>Date of birth</mat-label>
+                            <input matInput [matDatepicker]="dateOfBirth" placeholder="Date of birth"
+                                formControlName="dateOfBirth" [(ngModel)]="userModel.birthDate">
+                            <mat-datepicker-toggle matSuffix [for]="dateOfBirth"></mat-datepicker-toggle>
+                            <mat-datepicker #dateOfBirth></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div class="flex justify-between gap-2 mb-2">
+                    
+                            <mat-form-field class="w-full block pt-1" appearance="outline">
+                                <mat-label>Bio</mat-label>
+                                <input matInput type="text" placeholder="Bio" formControlName="bio" [(ngModel)]="userModel.bio">
+                            </mat-form-field>
+                        
+                        <mat-form-field class="w-full block pt-1" appearance="outline">
+                            <mat-label>Mobile no</mat-label>
+                            <input matInput type="text" placeholder="Mobile no" formControlName="mobile" required
+                                [(ngModel)]="userModel.phoneNumber">
+                            <mat-error>
+                                Mobile number is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="row " fxLayoutAlign="start start ">
+                        <mat-form-field class="block pt-1 " appearance="outline">
+                            <mat-label>Password</mat-label>
+                            <input matInput type="password" placeholder="Password" [(ngModel)]="userModel.password"
+                                formControlName="password">
+                            <mat-error>
+                                Password is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="row " *ngIf="action === 'edit'" fxLayoutAlign="start start ">
+                        <mat-form-field class="block pt-1 " appearance="outline">
+                            <mat-label>Course</mat-label>
+                            <mat-select multiple placeholder="Select Course" formControlName="course"
+                                [(ngModel)]="userModel.courseIds">
+                                <mat-option *ngFor="let c of courses" [value]="c.guid">{{c.title}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+        
+                    <div class="py-2 border-t-2 border-b-2" *ngIf="action === 'edit'">
+                        <h2 class="text-light pb-2 font-semibold">Status Settings</h2>
+                        <div fxLayout="row " fxLayoutAlign="start start ">
+                            <div class="flex justify-between items-center">
+                                <h2>IsActive</h2>
+                                <mat-slide-toggle class="p-4 " formControlName="IsActive" [checked]="userModel.isActive"
+                                    [(ngModel)]="userModel.isActive">
+                                    
+                                </mat-slide-toggle>
+
+                            </div>
+                        </div>
+            
+                        <div fxLayout="row " fxLayoutAlign="start start ">
+                            <div class="flex justify-between items-center">
+                                <h2>IsDeleted</h2>
+                                <mat-slide-toggle class="p-4 " formControlName="isDeleted" [checked]="userModel.isDeleted"
+                                    [(ngModel)]="userModel.isDeleted">                                    
+                                </mat-slide-toggle>
+
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Experience">
+                    <div >
+
+                        <mat-form-field class="w-full block pt-1" appearance="outline">
+                            <mat-label>Experience Years</mat-label>
+                            <input matInput type="text" placeholder="Experience Years" formControlName="experienceYears"
+                                [(ngModel)]="userModel.experienceYears">
+                        </mat-form-field>
+                    </div>
+                    <div class="mb-4">
+                        <label class="font-semibold">Certificates</label>
+
+                        <div formArrayName="certifications">
+                            <div *ngFor="let cert of certifications.controls; let i = index"
+                                class="flex items-center gap-2 mb-2 mt-2">
+                                <mat-form-field class="w-full" appearance="outline">
+                                    <mat-label>Certificate {{ i + 1 }}</mat-label>
+                                    <input matInput [formControlName]="i" placeholder="Enter certificate name">
+                                </mat-form-field>
+                                <button mat-icon-button color="warn" (click)="removeCertificate(i)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button mat-stroked-button class="mt-2" color="primary" type="button" (click)="addCertificate()">
+                            <mat-icon>add</mat-icon> Add Certificate
+                        </button>
+                    </div>
+                    <div class="mb-4">
+                        <label class="font-semibold">Expertise Areas</label>
+                        
+                        <div class="flex items-center gap-2 mt-2 mb-3 add-expertise-areas">
+                            <mat-form-field class="flex-1" appearance="outline">
+                                <mat-label>Add Expertise Area</mat-label>
+                                <input matInput #expertiseInput placeholder="Enter expertise area" 
+                                    (keyup.enter)="addExpertiseFromInput(expertiseInput.value); expertiseInput.value=''">
+                            </mat-form-field>
+                            <button mat-raised-button color="primary" type="button" 
+                                (click)="addExpertiseFromInput(expertiseInput.value); expertiseInput.value=''">
+                                Add
+                            </button>
+                        </div>
+
+                        <!-- Expertise Area Chips Display -->
+                        <div class="flex flex-wrap gap-2" *ngIf="expertiseChips.length > 0">
+                            <mat-chip-set>
+                                <mat-chip *ngFor="let area of expertiseChips; let i = index" 
+                                    [removable]="true" (removed)="removeExpertiseChip(i)">
+                                    {{area}}
+                                    <mat-icon matChipRemove>cancel</mat-icon>
+                                </mat-chip>
+                            </mat-chip-set>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+
+
+
+            <!-- <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field class="block pt-1">
+                    <mat-label>Reg No</mat-label>
+                    <input matInput type="text" placeholder="Reg No" formControlName="RegNo" [(ngModel)]="userModel.UniqueID">
+                </mat-form-field>
+            </div> -->
+
+            <!-- Tenant -->
+            <!-- <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field class="block pt-1" >
+                    <mat-label>Tenant</mat-label>
+                    <mat-select placeholder="Tenant" required formControlName="Tenant" [(ngModel)]="userModel.tenantId"  >
+                        <mat-option *ngFor=" let u of TenantData" [value]="u.id">{{u.name}}</mat-option>
+                    </mat-select>
+                    <mat-error>
+                        Tenant is required
+                    </mat-error>
+                </mat-form-field>
+            </div> -->
+
+            <!-- Tenant ends -->
+
+
+            <!-- <div fxLayout="row " fxLayoutAlign="start start">
+                <mat-form-field class="block pt-1 ">
+                    <mat-label>Role</mat-label>
+                    <mat-select placeholder="Role " required formControlName="role" [(ngModel)]="userModel.RoleID ">
+                        <mat-option *ngFor="let u of roleOptions" [value]="u.id ">{{u.name}}</mat-option>
+                    </mat-select>
+                    <mat-error>
+                        Role is required
+                    </mat-error>
+                </mat-form-field>
+            </div> -->
+            <div class="role_dropdown">
+                <!-- <div>
+        <mat-form-field class="block pt-1">
+            <mat-label>Role</mat-label>
+            <mat-select multiple formControlName="role" placeholder="Select role" (selectionChange)="onRoleSelect($event)" [compareWith]="compareRoles">
+                <mat-option *ngFor="let role of roleOptions" [value]="role">{{ role.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div> -->
+
+                <!-- <mat-chip-listbox   #chipList>
+        <mat-chip-option *ngFor="let role of selectedRoles; let i = index" [selectable]="true" [removable]="true" (removed)="removeRole(i)">
+            {{ role.name }}
+            <button mat-icon-button  (click)="removeRole(i)">
+                <mat-icon color="primary">cancel</mat-icon>
+            </button>
+        </mat-chip-option>
+      </mat-chip-listbox> -->
+            </div>
+
+            
+        </form>
+
+    </div>
+
+    <div mat-dialog-actions class="m-0 px-6 py-2 " fxLayout="row " fxLayoutAlign="space-between center ">
+
+        <button mat-raised-button (click)="save(userModel)" class="save-button mat-accent-bg "
+            [disabled]="registerForm.invalid " aria-label="SAVE ">
+            SAVE
+        </button>
+
+    </div>
+</div>

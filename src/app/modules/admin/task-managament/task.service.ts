@@ -1,0 +1,68 @@
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { environment } from "environment/environment";
+import { BehaviorSubject } from "rxjs";
+
+@Injectable({
+    providedIn: 'root'
+})
+
+export class TaskService {
+    
+    onStudentManagementChanged: BehaviorSubject<any>;
+    openSnackBar(message: string, action: string) {
+        this._matSnockbar.open(message, action, {
+            duration: 2000,
+        });
+    }
+    constructor(
+        private _https: HttpClient,
+        private _matSnockbar: MatSnackBar
+    ) {
+        this.onStudentManagementChanged = new BehaviorSubject([]);
+     }
+
+    getQBankSubjects() {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.apiURL}/qbank/subjects`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    getQBankExams(subject) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.apiURL}/qbank/topics/${subject}`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    getTestExamTypes() {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.apiURL}/test/categories`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    getVideoSubjects() {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.apiURL}/video/subjects`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    getVideoTopics(subjectId) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.apiURL}/video/topics?SubjectId=${subjectId}`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    getVideos(topicid) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.apiURL}/video/topic-video?topicId=${topicid}`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+}

@@ -1,0 +1,12 @@
+<h1 matDialogTitle class="delete-heading text-xl font-semibold">Confirm</h1>
+<div mat-dialog-content class="delete-heading mt-3">{{confirmMessage}}</div>
+<div mat-dialog-actions class="pt-6">
+    <button mat-raised-button class="mat-accent mr-2" (click)="matDialogRef.close(true)">Confirm</button>
+    <button mat-button (click)="matDialogRef.close(false)">Cancel</button>
+</div>
+<style>
+    .delete-heading.mdc-dialog__title,
+    .mdc-dialog .mdc-dialog__content.delete-heading {
+        padding: 0 !important;
+    }
+</style>

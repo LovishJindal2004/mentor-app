@@ -1,0 +1,148 @@
+<div class="content mat-white-bg">
+    <div fxLayout="column" fxLayoutAlign="center">
+
+        <!-- <div class="filters flex items-baseline">
+
+            <mat-form-field class="user-search">
+                <input matInput placeholder="User" aria-label="Exam" [matAutocomplete]="auto" width="500px" (keydown)="getUserBySearch()" required [formControl]="userSearch">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="userDisplayFn" id="examsearch" panelWidth="500px" (optionSelected)="selectedUser($event.option.value)">
+                    <mat-option *ngFor="let user of users" [value]="user">
+                        <span>{{user.userName}}</span> |
+                        <small>Email: {{user.email}}</small> |
+                        <small>Tenant Name: {{user.tenantName}}</small>
+                    </mat-option>
+                </mat-autocomplete>
+
+            </mat-form-field>
+            <div class="flex ml-auto gap-5">
+                <button mat-raised-button class="save-button mat-accent-bg" aria-label="ADD" (click)="addUser()">
+                ADD
+            </button>
+                <button class="px-8 export-button" mat-raised-button aria-label="Download" (click)="GetDownloadReport()">
+                <mat-icon class="">cloud_download</mat-icon> Export
+            </button>
+            </div>
+        </div> -->
+
+    </div>
+
+
+
+    <mat-table class="table_question_list  question-list" mat-table [dataSource]="dataSource.data" (matSortChange)="onSortData($event)" matSort matSortActive="Name" matSortDirection="asc">
+
+        <!-- UserName Column -->
+        <ng-container matColumnDef="UserName">
+            <mat-header-cell mat-header-cell *matHeaderCellDef> User Name </mat-header-cell>
+            <mat-cell mat-cell *matCellDef="let row">
+                <p class="truncate font-weight-300">{{row.userName}}</p>
+            </mat-cell>
+        </ng-container>
+        <!-- Email Column -->
+        <ng-container matColumnDef="Email">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <p class="truncate font-weight-300">{{row.email}}</p>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="TenantName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Tenant Name</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <p class="truncate font-weight-300">{{row.tenantName}}</p>
+            </mat-cell>
+        </ng-container>
+        <!-- Mobile Column -->
+        <ng-container matColumnDef="Mobile">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Mobile</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <p class="truncate font-weight-300">{{row.phoneNumber}}</p>
+            </mat-cell>
+        </ng-container>
+        <!-- Buttons Column -->
+        <ng-container matColumnDef="buttons">
+            <mat-header-cell *matHeaderCellDef class="cell-center">Action</mat-header-cell>
+            <mat-cell *matCellDef="let row" class="cell-center">
+                <!-- <button aria-label="edit" (click)="editPopup(row)">
+                <mat-icon color="primary">edit</mat-icon>
+            </button> -->
+                <span mat-menu-item aria-label="remove" (click)="deleteCourseUserPermission(row)">
+                    <mat-icon>delete</mat-icon>
+                </span>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+    </mat-table>
+    <mat-paginator class="flex justify-end" [length]="dataSource.paginationData? dataSource.paginationData.count:0" [pageSize]="10" (page)="getNext($event)" [pageSizeOptions]="_sitePreference.PAGE.GridRowViewPageSizeOptions"></mat-paginator>
+</div>
+
+
+<!-- addUserPopup -->
+<!-- <ng-template #addUsersPopup class="">
+    <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold">Assign Plan</h2>
+        <mat-icon (click)="ClosePopup()">clear</mat-icon>
+    </div>
+
+    <div class="flex items-center justify-between  mt-2">
+  
+        <mat-form-field class="user-search">
+            <input matInput placeholder="User" aria-label="Exam" autocomplete="off" [matAutocomplete]="auto" width="500px" (keydown)="getUserBySearch()" required [formControl]="userSearch" autocomplete="off">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="userDisplayFn" id="examsearch" panelWidth="500px" (optionSelected)="onSelectedUser($event.option.value)">
+                <mat-option *ngFor="let user of users" [value]="user">
+                    <span>{{user.UserName}}</span> |
+                    <small>Email: {{user.Email}}</small> |
+                    <small>Tenant Name: {{user.FirstName}} {{user.LastName}}</small>
+                </mat-option>
+            </mat-autocomplete>
+
+        </mat-form-field>
+   
+
+ 
+        <button mat-raised-button class="save-button mat-accent-bg" aria-label="ADD" (click)="addUser()">
+               Continue
+            </button>
+  
+    </div>
+
+    <div mat-dialog-content class="">
+        <div class="flex items-center">
+            <div class="flex items-center w-full" fxLayout="row" fxLayoutAlign="start start">
+                <mat-label class="m-4 font-bold">Email:-</mat-label>
+                <p class="bg-amber-200">{{selectedUser.Email}}</p>
+            </div>
+            <div class="flex items-center  w-full">
+                <mat-label class="m-4 font-bold">Mobile:-</mat-label>
+                <p class="bg-amber-200">{{selectedUser.Mobile}}</p>
+            </div>
+        </div>
+        <div class="flex items-center">
+            <div class="flex items-center w-full">
+                <mat-label class="m-4 font-bold">User Info:-</mat-label>
+                <p class="bg-amber-200">{{selectedUser.UserID}}</p>
+            </div>
+
+            <div class="flex items-center w-full" fxLayout="row " fxLayoutAlign="start start ">
+                <mat-label class="m-4 font-bold ">UserName:-</mat-label>
+                <p class="bg-amber-200">{{selectedUser.UserName}}</p>
+            </div>
+        </div>
+        <div class="flex items-center" fxLayout="row " fxLayoutAlign="start start ">
+            <mat-label class="m-4 font-bold ">Tenanat:-</mat-label>
+            <p class="bg-amber-200">{{selectedUser.FirstName}}|{{selectedUser.LastName}}</p>
+        </div>
+    </div>
+    <div class="mt-5 flex gap-5">
+        <mat-slide-toggle class="" *ngFor="let t of toggle" [(ngModel)]="t.isChecked" (change)="toggleSlide(t.id)">
+            {{t.Name}}
+        </mat-slide-toggle>
+
+    </div>
+    <button mat-raised-button class="bg-primary text-white mt-5" aria-label="save" (click)="onSave()" [disabled]="onSaveDisabled">
+               save
+            </button>
+
+
+</ng-template> -->
+<!-- addUserPopup Ends-->
