@@ -120,7 +120,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:chart-pie',
         link : '/task/kanban',
-        roles : ['Admin','Mentor']
+        roles : ['Mentee']
     },
     {
         id   : 'task-list',
@@ -128,7 +128,23 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:chart-pie',
         link : '/task/calendar',
-        roles : ['Admin','Mentor']
+        roles : ['Mentee']
+    },
+    {
+        id   : 'task-list',
+        title: 'task-list',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/task/mentor-kanban',
+        roles : ['Mentor']
+    },
+    {
+        id   : 'task-list',
+        title: 'task-list',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/task/mentor-calendar',
+        roles : ['Mentor']
     },
 ];
 export const AdminNavigation: FuseNavigationItem[] = [

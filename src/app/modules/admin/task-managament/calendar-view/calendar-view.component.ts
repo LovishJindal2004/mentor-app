@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { helperService } from 'app/core/auth/helper';
 
 interface CalendarTask {
   id: string;
@@ -50,10 +51,13 @@ export class CalendarViewComponent implements OnDestroy {
   formTitle = '';
   formDuration = 15;
   formTypeId = 'operational';
-
+  _userDetails:any
   private _taskSubscription?: Subscription;
 
-  constructor(private cdr: ChangeDetectorRef, private _taskService: TaskService) {
+  constructor(
+    private cdr: ChangeDetectorRef,
+     private _taskService: TaskService,    
+     private _helperService: helperService,) {
     this.refreshCalendarFromApi();
     
     // Subscribe to task changes (same as Kanban component)
@@ -61,7 +65,8 @@ export class CalendarViewComponent implements OnDestroy {
       if (response && response.data && Array.isArray(response.data)) {
         this.populateWeekFromApiTasks(response.data);
       }
-    });
+    });    
+    this._userDetails = this._helperService.getUserDetail();
   }
 
   ngOnDestroy() {

@@ -15,6 +15,7 @@ import { SettingsComponent } from 'app/layout/common/settings/settings.component
 import { ViewTaskComponent } from '../view-task/view-task.component';
 import { FuseDrawerComponent } from '@fuse/components/drawer';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
+import { helperService } from 'app/core/auth/helper';
 
 export interface Task {
   guid: string;
@@ -61,11 +62,15 @@ export class ListTaskComponent implements OnInit, AfterViewInit {
   selectedTask: any;
   showTaskModal: boolean = false;
   selectedTaskId: any;
+  _userDetails: any;
 
   constructor(
     private _router: Router,
+    private _helperService: helperService,
     private _taskService: TaskService
-  ){}
+  ){
+    this._userDetails = this._helperService.getUserDetail();
+  }
   
   ngOnInit(): void {
     this.loadTasks();

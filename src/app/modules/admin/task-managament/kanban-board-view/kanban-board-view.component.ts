@@ -21,6 +21,7 @@ import { ViewTaskComponent } from '../view-task/view-task.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { RouterModule } from '@angular/router';
+import { helperService } from 'app/core/auth/helper';
 
 type Priority = 'low' | 'medium' | 'high';
 
@@ -116,14 +117,15 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
   // Comments
   newComment: string = '';
   currentTaskComments: Comment[] = [];
-
+  _userDetails: any
   // Subscriptions
   private _taskSubscription: Subscription;
 
   constructor(
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
-    private _taskService: TaskService
+    private _taskService: TaskService,
+    private _helperService: helperService,
   ) {
     this.taskForm = this.fb.group({
       title: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3)]],
@@ -136,6 +138,8 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
       scheduleDate: [{ value: null, disabled: true }],
       type: [{ value: 'operational', disabled: true }, Validators.required]
     });
+    
+    this._userDetails = this._helperService.getUserDetail();
     // Note: Comment section remains enabled
   }
 

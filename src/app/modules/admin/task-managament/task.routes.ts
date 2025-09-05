@@ -3,6 +3,8 @@ import { ListTaskComponent } from './list-task/list-task.component';
 import { AssignTaskComponent } from './assign-task/assign-task.component';
 import { KanbanBoardViewComponent } from './kanban-board-view/kanban-board-view.component';
 import { CalendarViewComponent } from './calendar-view/calendar-view.component';
+import { MentorKanbanViewComponent } from './mentor-kanban-view/mentor-kanban-view.component';
+import { MentorCalendarViewComponent } from './mentor-calendar-view/mentor-calendar-view.component';
 
 export default [
     {
@@ -24,5 +26,13 @@ export default [
     {
         path     : 'calendar',
         component: CalendarViewComponent,
+    },
+    {
+        path     : 'mentor-kanban',
+        component: MentorKanbanViewComponent,
+    },
+    {
+        path     : 'mentor-calendar',
+        component: MentorCalendarViewComponent,
     }
 ] as Routes;

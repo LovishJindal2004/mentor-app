@@ -1,6 +1,6 @@
 <div class="calendar-wrapper">
    <div class="mb-3 flex items-center gap-2 py-4 pt-0 px-2">
-    <button mat-raised-button class="bg-primary rounded-full flex items-center gap-2 text-white p-2 px-4" routerLink="/task/assign"><mat-icon class="text-white">add</mat-icon>Add New</button>
+    <button mat-raised-button *ngIf="_userDetails?.Roles == 'Mentor'" class="bg-primary rounded-full flex items-center gap-2 text-white p-2 px-4" routerLink="/task/assign"><mat-icon class="text-white">add</mat-icon>Add New</button>
     <div>
         <mat-button-toggle-group name="fontStyle" value="Calendar" aria-label="Font Style">
             <mat-button-toggle routerLink="/task/list" value="TableView"><mat-icon>table_chart</mat-icon>Table View</mat-button-toggle>
