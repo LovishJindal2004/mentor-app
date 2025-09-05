@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -11,10 +11,7 @@ import {
   FormControl,
 } from '@angular/forms';
 import {
-  CdkDragDrop,
   DragDropModule,
-  moveItemInArray,
-  transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
 // import {CalendarViewComponent} from '../calendar-view/calendar-view.component';
@@ -62,6 +59,15 @@ interface Comment {
   showMenu: boolean;
 }
 
+interface CalendarTask {
+  id: string;
+  title: string;
+  dayIndex: number;
+  typeId: string;
+  durationMinutes: number;
+}
+
+
 @Component({
   selector: 'app-kanban-board-view',
   imports: [CommonModule, ReactiveFormsModule, FormsModule, DragDropModule, ViewTaskComponent],
@@ -69,14 +75,24 @@ interface Comment {
   styleUrl: './kanban-board-view.component.scss'
 })
 export class KanbanBoardViewComponent implements OnInit, OnDestroy {
+  weekStart = this.getStartOfWeek(new Date());
+  days = this.buildDays(this.weekStart);
   activeTool: 'tasks' | 'calendar' = 'tasks';
   columns: Column[] = [];
-  showTaskModal:boolean = false;
+  showTaskModal: boolean = false;
   taskForm: FormGroup;
   currentColumn: Column | null = null;
   editingTask: Task | null = null;
   selectedStatusId: string | null = null;
   sidenavOpen = true;
+  dayTasks: CalendarTask[][] = Array.from({ length: 7 }).map(() => []);
+  panelOpen = false;
+  panelTaskId: string | null = null;
+
+  pageNumber = 1;
+  pageSize = 5;
+  isLoading = false;
+  hasMore = true;
 
   showEditTypesModal = false;
   taskTypes: TaskType[] = [
@@ -97,24 +113,25 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
   // Comments
   newComment: string = '';
   currentTaskComments: Comment[] = [];
-  
+
   // Subscriptions
   private _taskSubscription: Subscription;
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
     private _taskService: TaskService
   ) {
     this.taskForm = this.fb.group({
-      title: [{value: '', disabled: true}, [Validators.required, Validators.minLength(3)]],
-      description: [{value: '', disabled: true}, [Validators.required, Validators.minLength(10)]],
-      priority: [{value: 'medium', disabled: true}, Validators.required],
-      dueDate: [{value: null, disabled: true}, [Validators.required, this.futureDateValidator()]],
-      assignee: [{value: '', disabled: true}, [Validators.minLength(2), Validators.maxLength(50)]],
-      statusId: [{value: null, disabled: true}],
-      estimatedTimeHours: [{value: 0, disabled: true}, [Validators.min(0)]],
-      scheduleDate: [{value: null, disabled: true}],
-      type: [{value: 'operational', disabled: true}, Validators.required]
+      title: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3)]],
+      description: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(10)]],
+      priority: [{ value: 'medium', disabled: true }, Validators.required],
+      dueDate: [{ value: null, disabled: true }, [Validators.required, this.futureDateValidator()]],
+      assignee: [{ value: '', disabled: true }, [Validators.minLength(2), Validators.maxLength(50)]],
+      statusId: [{ value: null, disabled: true }],
+      estimatedTimeHours: [{ value: 0, disabled: true }, [Validators.min(0)]],
+      scheduleDate: [{ value: null, disabled: true }],
+      type: [{ value: 'operational', disabled: true }, Validators.required]
     });
     // Note: Comment section remains enabled
   }
@@ -124,57 +141,94 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
     this.initializeBoard();
     this.loadTasks();
   }
-  
+
   ngOnDestroy() {
     if (this._taskSubscription) {
       this._taskSubscription.unsubscribe();
     }
   }
-  
-  loadTasks() {
-    // First initialize with localStorage data while API loads
-    // this.loadFromLocalStorage();
-    
-    // Then try to load from API
-    let data = {
-      pageNumber: 1,
-      pageSize: 10,
+
+  private getStartOfWeek(date: Date): Date {
+    const d = new Date(date);
+    const day = (d.getDay() + 6) % 7;
+    d.setDate(d.getDate() - day);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  private buildDays(start: Date) {
+    return Array.from({ length: 7 }).map((_, i) => {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      return d;
+    });
+  }
+  loadTasks(loadMore: boolean = false) {
+    if (this.isLoading || !this.hasMore) return;
+
+    this.isLoading = true;
+
+    const data = {
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize,
       orderBy: "",
       sortOrder: "",
-    }
+    };
+
     this._taskService.getAssignedTaskList(data).then((response: any) => {
       if (response && response.data && Array.isArray(response.data)) {
-        // Map API response to our task format
-        this.processTasksFromApi(response.data);
+        if (response.data.length < this.pageSize) {
+          this.hasMore = false; // no more tasks to load
+        }
+
+        if (loadMore) {
+          // append tasks
+          this.processTasksFromApi(response.data, true);
+        } else {
+          // first load (replace)
+          this.processTasksFromApi(response.data, false);
+        }
+
+        this.pageNumber++; // increment for next call
       }
+      this.isLoading = false;
     }).catch(error => {
       console.error('Error loading tasks:', error);
       this._taskService.openSnackBar('Failed to load tasks from server', 'Close');
-    });
-    
-    // Subscribe to task changes
-    this._taskSubscription = this._taskService.onTasksChanged.subscribe((response: any) => {
-      if (response && response.data && Array.isArray(response.data)) {
-        this.processTasksFromApi(response.data);
-      }
+      this.isLoading = false;
     });
   }
-  showTask(){    
+
+
+  showTask() {
     this.showTaskModal = true;
   }
-  onSidePanelClose(){
+  onSidePanelClose() {
     this.showTaskModal = false;
   }
-  
-  processTasksFromApi(apiTasks: any[]) {
-    // Reset columns with empty task arrays
-    this.columns.forEach(column => column.tasks = []);
-    
-    // Map API tasks to our task format and add to appropriate columns
+
+  openViewTask(taskId: string) {
+    this.panelTaskId = taskId;
+    this.panelOpen = true;
+    document.body.classList.add('modal-open');
+  }
+
+
+  closePanel() {
+    this.panelOpen = false;
+    this.panelTaskId = null;
+    document.body.classList.remove('modal-open');
+    // Optionally re-sync view in case task edited in panel
+  }
+
+  processTasksFromApi(apiTasks: any[], append: boolean = false) {
+    if (!append) {
+      this.columns.forEach(column => column.tasks = []);
+    }
+
     apiTasks.forEach(apiTask => {
-      // Generate a unique ID if none exists
       const taskId = apiTask.guid;
-      
+
       const task: Task = {
         id: taskId,
         title: apiTask.title || 'Untitled Task',
@@ -186,19 +240,25 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
         scheduleDate: null,
         type: this.mapTaskType(apiTask.taskType)
       };
-      
-      // Find the appropriate column based on task status
+
       const status = this.mapStatus(apiTask.status);
       const column = this.columns.find(c => c.id === status) || this.columns[0];
       column.tasks.push(task);
     });
-    
   }
-  
+
+  onScroll(event: any) {
+    const element = event.target;
+    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+      // reached bottom
+      this.loadTasks(true);
+    }
+  }
+
   // Helper methods to map API values to our format
   mapStatus(apiStatus: number): string {
     // Map API status values to column IDs
-    switch(apiStatus) {
+    switch (apiStatus) {
       case 0: return 'new';
       case 1: return 'scheduled';
       case 2: return 'inprogress';
@@ -207,42 +267,42 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
       default: return 'new';
     }
   }
-  
+
   // Reverse mapping to convert from our format to API format
   reverseMapStatus(columnId: string): number {
     // Map column IDs to API status values
-    switch(columnId) {
+    switch (columnId) {
       case 'new': return 0;
       case 'inprogress': return 1;
       case 'completed': return 2;
       default: return 0;
     }
   }
-  
+
   mapPriority(taskType: number): Priority {
     // Map task type to priority (you can adjust this mapping)
-    switch(taskType) {
+    switch (taskType) {
       case 0: return 'low';
       case 1: return 'medium';
       case 2: return 'high';
       default: return 'medium';
     }
   }
-  
+
   mapTaskType(taskType: number): string {
     // Map API task type to our task type IDs
-    switch(taskType) {
+    switch (taskType) {
       case 0: return 'operational';
       case 1: return 'technical';
       case 2: return 'strategic';
       default: return 'operational';
     }
   }
-  
+
   // Reverse mapping to convert from our format to API format
   reverseMapTaskType(typeId: string): number {
     // Map our task type IDs to API task type values
-    switch(typeId) {
+    switch (typeId) {
       case 'operational': return 0;
       case 'technical': return 1;
       case 'strategic': return 2;
@@ -267,7 +327,7 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-  
+
 
     // Add default tasks to the "New task" column
     const newTaskColumn = this.columns.find(c => c.id === 'new');
@@ -344,7 +404,7 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
     // TEMPORARILY DISABLED: Creating new tasks is not allowed
     this._taskService.openSnackBar('Creating new tasks is temporarily disabled', 'Close');
     return;
-    
+
     /* Original functionality (commented out)
     this.currentColumn = null;
     this.editingTask = null;
@@ -369,7 +429,7 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
     this.editingTask = task;
     this.currentColumn = column;
     this.selectedStatusId = column.id;
-    
+
     // Patch values but all fields are disabled except comments
     this.taskForm.patchValue({
       title: task.title,
@@ -382,7 +442,7 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
       scheduleDate: task.scheduleDate ?? null,
       type: task.type ?? 'operational'
     });
-    
+
     // Load comments - this section remains enabled
     this.loadTaskComments();
     this.showTaskModal = true;
@@ -451,7 +511,7 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
     if (event instanceof KeyboardEvent) {
       if (!event.ctrlKey) return; // Only submit on Ctrl+Enter for keyboard events
     }
-    
+
     if (!this.newComment?.trim()) return;
 
     const comment: Comment = {
@@ -529,7 +589,7 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
   get titleControl(): FormControl {
     return this.taskForm.get('title') as FormControl;
   }
-  
+
   get descriptionControl(): FormControl {
     return this.taskForm.get('description') as FormControl;
   }
@@ -537,23 +597,23 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
   get dueDateControl(): FormControl {
     return this.taskForm.get('dueDate') as FormControl;
   }
-  
+
   get assigneeControl(): FormControl {
     return this.taskForm.get('assignee') as FormControl;
   }
-  
+
   get statusIdControl(): FormControl {
     return this.taskForm.get('statusId') as FormControl;
   }
-  
+
   get priorityControl(): FormControl {
     return this.taskForm.get('priority') as FormControl;
   }
-  
+
   get estimatedTimeHoursControl(): FormControl {
     return this.taskForm.get('estimatedTimeHours') as FormControl;
   }
-  
+
   get typeControl(): FormControl {
     return this.taskForm.get('type') as FormControl;
   }

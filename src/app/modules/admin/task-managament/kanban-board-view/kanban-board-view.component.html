@@ -1,43 +1,32 @@
+<!-- kanban-board-view.component.html -->
 <div class="app-container">
-
-  <!-- Main Content -->
   <div class="main-content" [class.content-expanded]="!sidenavOpen">
     <div *ngIf="activeTool==='tasks'" class="kanban-container">
-
-      <div class="board-content" cdkDropListGroup>
-        <div class="board-column" *ngFor="let column of columns" cdkDropList [cdkDropListData]="column.tasks"
-          (cdkDropListDropped)="drop($event)">
+      <div class="board-content">
+        <div class="board-column" *ngFor="let column of columns">
           <div class="column-header">
-            <h2 [contentEditable]="true" (blur)="updateColumnTitle(column, $event)">{{ column.title }}</h2>
-            <button class="delete-column" (click)="deleteColumn(column)">×</button>
+            <h2 [contentEditable]="true"
+              (blur)="updateColumnTitle(column, $event)">{{ column.title }}</h2>
           </div>
 
-          <div class="task-list">
-            <div class="task-card" *ngFor="let task of column.tasks" cdkDrag [ngClass]="'priority-' + task.priority"
-              [style.border-left-color]="getTaskTypeColor(task)" [style.border-left-width.px]="6"
+          <div class="task-list" (scroll)="onScroll($event)">
+            <div class="task-card" (click)="openViewTask(task.id)" *ngFor="let task of column.tasks"
+              [ngClass]="'priority-' + task.priority"
+              [style.border-left-color]="getTaskTypeColor(task)"
+              [style.border-left-width.px]="6"
               [style.border-left-style]="'solid'">
-
-              <!-- <div class="task-type-badge">
-                <span class="type-name" [style.color]="getTaskTypeColor(task)">
-                  {{ getTaskTypeName(task) }}
-                </span>
-              </div> -->
-
               <div class="task-header">
                 <h3>{{ task.title }}</h3>
-                <div class="task-actions">
-                  <button (click)="editTask(task, column)">view</button>
-                </div>
               </div>
               <p>{{ task.description }}</p>
               <div class="task-footer">
-                <span class="due-date">Date: {{ task.dueDate | date:'shortDate' }}</span>
-                <span class="assignee" *ngIf="task.assignee">{{ task.assignee }}</span>
+                <span class="due-date">Date: {{ task.dueDate | date:'shortDate'
+                  }}</span>
               </div>
             </div>
+            <div *ngIf="isLoading" class="loading">Loading...</div>
           </div>
 
-          <!-- <button class="add-task-btn" (click)="openNewTaskModal(column)">+ Add Task</button> -->
         </div>
       </div>
     </div>
@@ -47,8 +36,9 @@
     </div>
   </div>
 
+  <app-view-task
+    [isOpen]="panelOpen"
+    [taskId]="panelTaskId"
+    (close)="closePanel()">
+  </app-view-task>
 </div>
-<app-view-task
-[isOpen]="showTaskModal"
-(close)="onSidePanelClose()">
-</app-view-task>
