@@ -11,6 +11,10 @@ import { TaskService } from '../task.service';
 import { CommonModule, DatePipe } from '@angular/common';import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ViewChild, AfterViewInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
+import { SettingsComponent } from 'app/layout/common/settings/settings.component';
+import { ViewTaskComponent } from '../view-task/view-task.component';
+import { FuseDrawerComponent } from '@fuse/components/drawer';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 
 export interface Task {
   guid: string;
@@ -36,6 +40,9 @@ export interface Task {
     MatButtonToggleModule, 
     MatProgressSpinnerModule, 
     MatPaginatorModule,
+    FuseDrawerComponent,
+    // SettingsComponent,
+    ViewTaskComponent,
     DatePipe
   ],templateUrl: './list-task.component.html',
   styleUrl: './list-task.component.scss'
@@ -50,6 +57,9 @@ export class ListTaskComponent implements OnInit, AfterViewInit {
   completedTasks = new MatTableDataSource<Task>([]);
   @ViewChild('activePaginator') activePaginator!: MatPaginator;
   @ViewChild('completedPaginator') completedPaginator!: MatPaginator;
+  @ViewChild('drawer') drawer!: MatDrawer;
+  selectedTask: any;
+  showTaskModal: boolean = false;
 
   constructor(
     private _router: Router,
@@ -71,6 +81,16 @@ export class ListTaskComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.activeTasks.paginator = this.activePaginator;
     this.completedTasks.paginator = this.completedPaginator;
+  }
+  openDrawer(task: any): void {
+    this.selectedTask = task;
+    this.drawer.open();
+  }
+  showTask(){    
+    this.showTaskModal = true;
+  }
+  onSidePanelClose(){
+    this.showTaskModal = false;
   }
   
   loadTasks(): void {

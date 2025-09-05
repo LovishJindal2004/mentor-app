@@ -20,6 +20,7 @@ import {
 // import {CalendarViewComponent} from '../calendar-view/calendar-view.component';
 import { TaskService } from '../task.service';
 import { Subscription } from 'rxjs';
+import { ViewTaskComponent } from '../view-task/view-task.component';
 
 type Priority = 'low' | 'medium' | 'high';
 
@@ -63,14 +64,14 @@ interface Comment {
 
 @Component({
   selector: 'app-kanban-board-view',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, DragDropModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, DragDropModule, ViewTaskComponent],
   templateUrl: './kanban-board-view.component.html',
   styleUrl: './kanban-board-view.component.scss'
 })
 export class KanbanBoardViewComponent implements OnInit, OnDestroy {
   activeTool: 'tasks' | 'calendar' = 'tasks';
   columns: Column[] = [];
-  showTaskModal = false;
+  showTaskModal:boolean = false;
   taskForm: FormGroup;
   currentColumn: Column | null = null;
   editingTask: Task | null = null;
@@ -135,7 +136,13 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
     // this.loadFromLocalStorage();
     
     // Then try to load from API
-    this._taskService.getAssignedTaskList('').then((response: any) => {
+    let data = {
+      pageNumber: 1,
+      pageSize: 10,
+      orderBy: "",
+      sortOrder: "",
+    }
+    this._taskService.getAssignedTaskList(data).then((response: any) => {
       if (response && response.data && Array.isArray(response.data)) {
         // Map API response to our task format
         this.processTasksFromApi(response.data);
@@ -151,6 +158,12 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
         this.processTasksFromApi(response.data);
       }
     });
+  }
+  showTask(){    
+    this.showTaskModal = true;
+  }
+  onSidePanelClose(){
+    this.showTaskModal = false;
   }
   
   processTasksFromApi(apiTasks: any[]) {
