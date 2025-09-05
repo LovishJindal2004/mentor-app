@@ -50,7 +50,7 @@ export class ListTaskComponent implements OnInit, AfterViewInit {
   completedTasks = new MatTableDataSource<Task>([]);
   @ViewChild('activePaginator') activePaginator!: MatPaginator;
   @ViewChild('completedPaginator') completedPaginator!: MatPaginator;
-  
+
   constructor(
     private _router: Router,
     private _taskService: TaskService

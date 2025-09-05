@@ -2,7 +2,8 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { environment } from "environment/environment";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -116,4 +117,29 @@ export class TaskService {
         });
 
     }
+
+    // createTask(taskData: any) {
+    //     return new Promise((resolve, reject) => {
+    //         this._https.post(`${environment.externalApiURL}/api/task/create-task`, taskData).subscribe((response: any) => {
+    //             resolve(response);
+    //         }, reject);
+    //     });
+    // }
+
+    // deleteTask(taskId: string) {
+    //     return new Promise((resolve, reject) => {
+    //         this._https.post(`${environment.externalApiURL}/api/task/delete-task?taskguid=${taskId}`, {}).subscribe((response: any) => {
+    //             resolve(response);
+    //         }, reject);
+    //     });
+    // }
+
+    
+    // updateTask(taskId: string, taskData: any) {
+    //     return new Promise((resolve, reject) => {
+    //         this._https.put(`${environment.externalApiURL}/api/task/update/${taskId}`, taskData).subscribe((response: any) => {
+    //             resolve(response);
+    //         }, reject);
+    //     });
+    // }
 }
