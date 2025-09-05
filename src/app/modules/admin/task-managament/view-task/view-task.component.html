@@ -6,94 +6,95 @@
         <div class="max-w-6xl mx-auto h-full grid grid-cols-12 gap-6">
 
             <!-- Left: Task details -->
-            <div class="col-span-8 bg-gray-950 rounded-lg shadow-lg p-6">
+            <div class="col-span-7 bg-gray-950 rounded-lg shadow-lg p-6">
 
                 <!-- Workspace & Title -->
-<div class="flex items-start justify-between">
-    <div>
-      <div class="text-sm text-gray-400">Task</div>
-      <h1 class="text-2xl font-semibold mt-2">{{ taskDetails?.title }}</h1>
-      <div class="text-xs text-gray-400">Created on: {{ taskDetails?.date | date:'MMM d, y' }}</div>
-    </div>
-    <div class="flex items-center gap-2">
-      <button class="p-2 rounded-full hover:bg-gray-800" (click)="onClose()">
-        <span class="material-icons text-gray-300">close</span>
-      </button>
-    </div>
-  </div>
-  
-  <div class="border-t border-gray-800 my-4"></div>
-  
-  <!-- Properties grid -->
-  <div class="grid grid-cols-3 gap-6 mt-2">
-    <div>
-      <div class="text-sm text-gray-400">Status</div>
-      <div class="mt-2 font-medium">
-        {{ getStatusLabel(taskDetails?.status) }}
-      </div>
-    </div>
-  
-    <div>
-      <div class="text-sm text-gray-400">Assignees</div>
-      <div class="mt-2 flex items-center gap-2 flex-wrap">
-        <div *ngFor="let person of taskDetails?.assignedTo" class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-full bg-green-600 flex items-center justify-center">
-            {{ person.name[0] | uppercase }}
-          </div>
-          <span>{{ person.name }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="border-t border-gray-800 my-6"></div>
-  
-  <!-- Description -->
-  <div>
-    <h3 class="flex items-center gap-2 text-sm text-gray-400">
-      <span class="material-icons text-base">description</span> Description
-    </h3>
-    <p class="mt-3 text-sm text-gray-300">{{ taskDetails?.description }}</p>
-  </div>
-  
-  <div class="border-t border-gray-800 my-6"></div>
-  
-  <!-- Scheduled work -->
-  <div>
-    <h3 class="flex items-center gap-2 text-sm text-gray-400">
-      <span class="material-icons text-base">calendar_today</span> Assigned Resources
-      <span class="ml-2 bg-gray-800 px-2 py-0.5 rounded-full text-xs">
-        {{ taskDetails?.resources?.length }}
-      </span>
-    </h3>
-  
-    <div class="mt-4 bg-gray-900 rounded-md p-4">
-      <!-- Table Header -->
-      <div class="grid grid-cols-12 gap-4 items-center text-sm text-gray-400">
-        <div class="col-span-3">Type</div>
-        <div class="col-span-3">Subject</div>
-        <div class="col-span-2">Topic</div>
-        <div class="col-span-4">Name</div>
-      </div>
-  
-      <!-- Loop through resources -->
-      <div *ngFor="let res of taskDetails?.resources" class="mt-3 grid grid-cols-12 gap-4 items-center text-sm text-gray-200">
-        <div class="col-span-3">{{ getResourceType(res.type) }}</div>
-        <div class="col-span-3">{{ res.subject }}</div>
-        <div class="col-span-2">{{ res.topic || 'NA' }}</div>
-        <div class="col-span-4 flex items-center gap-3">
-          <div>{{ res.name }}</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
+                <div class="flex items-start justify-between">
+                    <div>
+                        <div class="text-sm text-gray-400">Task</div>
+                        <h1 class="text-2xl font-semibold mt-2">{{ taskDetails?.title }}</h1>
+                        <div class="text-xs text-gray-400">Created on: {{ taskDetails?.date | date:'MMM d, y' }}</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="p-2 rounded-full hover:bg-gray-800" (click)="onClose()">
+                            <span class="material-icons text-gray-300">close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-800 my-4"></div>
+
+                <!-- Properties grid -->
+                <div class="grid grid-cols-3 gap-6 mt-2">
+                    <div>
+                        <div class="text-sm text-gray-400">Status</div>
+                        <div class="mt-2 font-medium">
+                            {{ getStatusLabel(taskDetails?.status) }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-sm text-gray-400">Assignees</div>
+                        <div class="mt-2 flex items-center gap-2 flex-wrap">
+                            <div *ngFor="let person of taskDetails?.assignedTo" class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-full bg-green-600 flex items-center justify-center">
+                                    {{ person.name[0] | uppercase }}
+                                </div>
+                                <span>{{ person.name }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-800 my-6"></div>
+
+                <!-- Description -->
+                <div>
+                    <h3 class="flex items-center gap-2 text-sm text-gray-400">
+                        <span class="material-icons text-base">description</span> Description
+                    </h3>
+                    <p class="mt-3 text-sm text-gray-300">{{ taskDetails?.description }}</p>
+                </div>
+
+                <div class="border-t border-gray-800 my-6"></div>
+
+                <!-- Scheduled work -->
+                <div>
+                    <h3 class="flex items-center gap-2 text-sm text-gray-400">
+                        <span class="material-icons text-base">calendar_today</span> Assigned Resources
+                        <span class="ml-2 bg-gray-800 px-2 py-0.5 rounded-full text-xs">
+                            {{ taskDetails?.resources?.length }}
+                        </span>
+                    </h3>
+
+                    <div class="mt-4 bg-gray-900 rounded-md p-4">
+                        <!-- Table Header -->
+                        <div class="grid grid-cols-12 gap-4 items-center text-sm text-gray-400">
+                            <div class="col-span-2">Type</div>
+                            <div class="col-span-3">Subject</div>
+                            <div class="col-span-3">ExamType</div>
+                            <div class="col-span-4">Name</div>
+                        </div>
+
+                        <!-- Loop through resources -->
+                        <div *ngFor="let res of taskDetails?.resources"
+                            class="mt-3 grid grid-cols-12 gap-4 items-center text-sm text-gray-200">
+                            <div class="col-span-2">{{ getResourceType(res.type) }}</div>
+                            <div class="col-span-3">{{ res.type != '1'? res.subject : 'NA' }}</div>
+                            <div class="col-span-3">{{ res.type == '1'? res.subject : 'NA' }}</div>
+                            <div class="col-span-4 flex items-center gap-3">
+                                <div>{{ res.name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
 
             <!-- Right: Chat panel -->
             <!-- Right: Comment panel -->
-            <div class="col-span-4 bg-gray-950 rounded-lg p-6 flex flex-col">
+            <div class="col-span-5 bg-gray-950 rounded-lg p-6 flex flex-col">
                 <div class="comments-section" *ngIf="showComments">
                     <div class="section-header">
                         <span class="section-icon">💬</span>
@@ -114,35 +115,42 @@
                         </div>
                     </div>
 
-                    <div class="comments-list">
+                    <div class="comments-list overflow-scroll max-h-[70vh]" (scroll)="onCommentsScroll($event)">
                         <div class="comment" *ngFor="let comment of currentTaskComments; trackBy: trackByCommentId">
                             <div class="comment-avatar">
-                                <span class="avatar-text">{{ getCommentUserInitials(comment) }}</span>
+                                <span class="avatar-text">
+                                    {{ (comment.userName ? comment.userName[0] : '?') | uppercase }}
+
+                                </span>
                             </div>
                             <div class="comment-content">
                                 <div class="comment-header">
-                                    <span class="comment-author">{{ comment.author }}</span>
+                                    <span class="comment-author">{{ comment.userName }}</span>
                                     <span class="comment-date">{{ comment.createdAt | date:'MMM d, y \'at\' h:mm a'
                                         }}</span>
                                     <div class="comment-menu" *ngIf="comment.canEdit">
                                         <button class="comment-menu-btn"
                                             (click)="toggleCommentMenu(comment.id)">⋯</button>
                                         <div class="comment-dropdown" *ngIf="comment.showMenu">
-                                            <button (click)="editComment(comment)">Edit</button>
-                                            <button (click)="deleteComment(comment)" class="delete">Delete</button>
+                                            <button *ngIf="comment.userId === currentUserId"
+                                                (click)="editComment(comment)">Edit</button>
+                                            <button *ngIf="comment.userId === currentUserId"
+                                                (click)="deleteComment(comment)">Delete</button>
+
                                         </div>
                                     </div>
                                 </div>
-                                <div class="comment-text" [innerHTML]="comment.text"></div>
+                                <div class="comment-text">{{ comment.content }}</div>
                                 <div class="comment-actions">
-                                    <button class="comment-action" (click)="likeComment(comment)">
+                                    <!-- <button class="comment-action" (click)="likeComment(comment)">
                                         <span [class]="comment.liked ? 'liked' : ''">👍</span>
                                         <span *ngIf="comment.likes > 0">{{ comment.likes }}</span>
-                                    </button>
-                                    <button class="comment-action" (click)="replyToComment(comment)">Reply</button>
+                                    </button> -->
+                                    <!-- <button class="comment-action" (click)="replyToComment(comment)">Reply</button> -->
                                 </div>
                             </div>
                         </div>
+                        <div *ngIf="isLoadingComments" class="text-xs text-gray-500">Loading...</div>
                     </div>
 
                 </div>

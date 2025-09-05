@@ -124,6 +124,21 @@ export class TaskService {
         });
 
     }
+    getComments(data,taskId) {
+        return this._https.post(`${environment.apiURL}/comment/comment-list?taskguid=${taskId}`,{...data}).toPromise();
+      }
+      
+      createComment(data) {
+        return this._https.post(`${environment.apiURL}/comment/create-comment`, { ...data }).toPromise();
+      }
+      
+      updateComment(data) {
+        return this._https.patch(`${environment.apiURL}/comment/update-comment`, { data }).toPromise();
+      }
+      
+      deleteComment(commentId: string) {
+        return this._https.get(`${environment.apiURL}/comment/delete-comment?commentGuid=${commentId}`).toPromise();
+      }
 
     // createTask(taskData: any) {
     //     return new Promise((resolve, reject) => {

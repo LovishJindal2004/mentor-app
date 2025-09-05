@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, S
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { TaskService } from '../task.service';
+import { helperService } from 'app/core/auth/helper';
 
 interface Comment {
   id: string;
@@ -32,6 +33,11 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
   priorityControl = new FormControl({ value: 'medium', disabled: true }, [Validators.required]);
   statusIdControl = new FormControl({ value: null, disabled: true });
   assigneeControl = new FormControl({ value: '', disabled: true });
+  currentTaskComments: any = [];
+  commentsPage = 1;
+  commentsSize = 10;
+  commentsHasMore = true;
+  isLoadingComments:boolean = false;
   // Local data
   columns: Array<{ id: string; title: string }> = [
     { id: 'new', title: 'New task' },
@@ -39,14 +45,17 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
     { id: 'completed', title: 'Completed' },
   ];
 
-  currentTaskComments: Comment[] = [];
   newComment = '';
   icon = '📝';
   title = '';
   showComments = true;
   taskDetails: any;
 
-  constructor(private fb: FormBuilder, private _taskService: TaskService) {
+  constructor(
+    private fb: FormBuilder,
+     private _taskService: TaskService,
+     private _helperService: helperService,
+    ) {
     this.form = this.fb.group({
       title: this.titleControl,
       description: this.descriptionControl,
@@ -82,9 +91,8 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
   }
   private async loadTask(taskId: string) {
     try {
-      const task:any = await this._taskService.getTaskDetails(taskId);
+      const task: any = await this._taskService.getTaskDetails(taskId);
       this.taskDetails = task;
-  
       this.title = task.title ?? 'Untitled Task';
       this.form.patchValue({
         title: task.title ?? '',
@@ -93,11 +101,8 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
         statusId: task.statusId ?? 'new',
         assignee: task.assignee ?? ''
       });
-  
-      // Load comments
-      const key = `task-comments-${taskId}`;
-      const saved = localStorage.getItem(key);
-      this.currentTaskComments = saved ? JSON.parse(saved) : [];
+      // Now load comments only from API
+      this.loadComments(true);  
     } catch (err) {
       console.error("Failed to load task", err);
     }
@@ -126,9 +131,10 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
   getStatusLabel(status: number): string {
     switch (status) {
       case 0: return 'New Task';
-      case 1: return 'In Progress';
-      case 2: return 'On Hold';
+      case 1: return 'Scheduled';
+      case 2: return 'InProgress';
       case 3: return 'Completed';
+      case 4: return 'Request';
       default: return 'Unknown';
     }
   }
@@ -151,33 +157,17 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   getCurrentUserInitials(): string {
-    return 'TW';
-  }
-
-  addComment(event?: Event) {
-    if (event instanceof KeyboardEvent && !event.ctrlKey) return;
-    if (!this.newComment?.trim() || !this.taskId) return;
-
-    const comment: Comment = {
-      id: crypto.randomUUID?.() ?? Date.now().toString(),
-      text: this.newComment.trim(),
-      author: 'Tanish Wahangbam',
-      createdAt: new Date(),
-      canEdit: true,
-      liked: false,
-      likes: 0,
-      showMenu: false
-    };
-    this.currentTaskComments.push(comment);
-    this.newComment = '';
-    localStorage.setItem(`task-comments-${this.taskId}`, JSON.stringify(this.currentTaskComments));
+    const userdetails = this._helperService.getUserDetail();
+    const name = userdetails?.Name[0].toUpperCase();
+    return name;
   }
 
   cancelComment() {
     this.newComment = '';
   }
 
-  trackByCommentId(index: number, c: Comment) { return c.id; }
+  trackByCommentId(index: number, c: any) { return c.guid || c.commentId; }
+
 
   getCommentUserInitials(c: Comment) {
     return c.author.split(' ').map(n => n).join('').toUpperCase().slice(0, 2);
@@ -185,26 +175,73 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
 
   toggleCommentMenu(commentId: string) {
     this.currentTaskComments.forEach(c => c.showMenu = c.id === commentId ? !c.showMenu : false);
-    if (this.taskId) localStorage.setItem(`task-comments-${this.taskId}`, JSON.stringify(this.currentTaskComments));
+    // if (this.taskId) localStorage.setItem(`task-comments-${this.taskId}`, JSON.stringify(this.currentTaskComments));
   }
 
-  deleteComment(comment: Comment) {
-    const idx = this.currentTaskComments.findIndex(c => c.id === comment.id);
-    if (idx > -1) {
-      this.currentTaskComments.splice(idx, 1);
-      if (this.taskId) localStorage.setItem(`task-comments-${this.taskId}`, JSON.stringify(this.currentTaskComments));
-    }
-  }
-
-  likeComment(comment: Comment) {
-    comment.liked = !comment.liked;
-    comment.likes += comment.liked ? 1 : -1;
-    if (this.taskId) localStorage.setItem(`task-comments-${this.taskId}`, JSON.stringify(this.currentTaskComments));
-  }
-
-  editComment(comment: Comment) {
-    comment.showMenu = false;
-  }
 
   replyToComment(comment: Comment) {}
+  loadComments(reset = true) {
+    if(reset){
+      this.currentTaskComments = [];
+      this.commentsPage = 1;
+      this.commentsHasMore = true;
+    }
+    if (!this.taskId || !this.commentsHasMore || this.isLoadingComments) return;
+    this.isLoadingComments = true;
+    let data = { 
+      keyword: '',
+      pageNumber: this.commentsPage,
+      pageSize: this.commentsSize,
+      orderBy: '',
+      sortOrder: ''
+    }
+    this._taskService.getComments(data, this.taskId).then((res: any) => {
+      const data: Comment[] = res.data ?? [];
+      if(data.length < this.commentsSize) this.commentsHasMore = false;
+      this.currentTaskComments = [...this.currentTaskComments, ...data];
+      this.commentsPage++;
+      this.isLoadingComments = false;
+    });
+  }
+  
+  addComment(event?: Event) {
+    if (!this.newComment?.trim() || !this.taskId) return;
+    let data = {
+      commentId: 0,
+      taskGuid: this.taskId,
+      content: this.newComment,
+    }
+    this._taskService.createComment(data).then((comment:any) => {
+      // this.currentTaskComments.unshift(this.newComment); // Add to top (or reload page if needed)
+      this.newComment = '';
+      this.loadComments(true);
+    });
+  }
+  
+  editComment(comment: Comment) {
+    let data = {
+      commentId: 0,
+      taskGuid: this.taskId,
+      guid: '',
+      content: '',
+    }
+    // e.g. open an inline edit UI, then call update API:
+    this._taskService.updateComment(data).then(() => {
+      // Optionally reload or update locally
+    });
+  }
+  
+  deleteComment(comment: Comment) {
+    this._taskService.deleteComment(comment.id).then(() => {
+      this.currentTaskComments = this.currentTaskComments.filter(c => c.id !== comment.id);
+    });
+  }
+  
+  // For infinite scroll
+  onCommentsScroll(event: any) {
+    const elem = event.target;
+    if (elem.scrollHeight - elem.scrollTop <= elem.clientHeight + 80) {
+      this.loadComments(false);
+    }
+  }
 }

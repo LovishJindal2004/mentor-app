@@ -1,4 +1,7 @@
 
+:host{
+  display: block;
+}
 .kanban-container {
   padding: 20px;
   color: #e6e6e6;
@@ -790,7 +793,7 @@ body.modal-open {
   flex: 1;
   display: flex;
   gap: 20px;
-  padding: 20px;
+  // padding: 20px;
   overflow-x: auto;
 }
 

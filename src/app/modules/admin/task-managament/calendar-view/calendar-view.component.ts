@@ -2,6 +2,9 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 interface CalendarTask {
   id: string;
@@ -12,7 +15,7 @@ interface CalendarTask {
 }
 @Component({
   selector: 'app-calendar-view',
-  imports: [CommonModule, DragDropModule, FormsModule],
+  imports: [CommonModule, DragDropModule, FormsModule, RouterModule, MatIconModule, MatButtonToggleModule],
   templateUrl: './calendar-view.component.html',
   styleUrl: './calendar-view.component.scss'
 })

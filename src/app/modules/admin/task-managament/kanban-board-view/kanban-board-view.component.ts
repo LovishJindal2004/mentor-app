@@ -21,6 +21,9 @@ import {
 import { TaskService } from '../task.service';
 import { Subscription } from 'rxjs';
 import { ViewTaskComponent } from '../view-task/view-task.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { RouterModule } from '@angular/router';
 
 type Priority = 'low' | 'medium' | 'high';
 
@@ -64,7 +67,7 @@ interface Comment {
 
 @Component({
   selector: 'app-kanban-board-view',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, DragDropModule, ViewTaskComponent],
+  imports: [CommonModule, ReactiveFormsModule,RouterModule, FormsModule, DragDropModule, ViewTaskComponent, MatIconModule, MatButtonToggleModule],
   templateUrl: './kanban-board-view.component.html',
   styleUrl: './kanban-board-view.component.scss'
 })
