@@ -2,7 +2,8 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { environment } from "environment/environment";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable({
     providedIn: 'root'
@@ -11,6 +12,7 @@ import { BehaviorSubject } from "rxjs";
 export class TaskService {
     
     onStudentManagementChanged: BehaviorSubject<any>;
+    onTasksChanged: BehaviorSubject<any>;
     openSnackBar(message: string, action: string) {
         this._matSnockbar.open(message, action, {
             duration: 2000,
@@ -21,6 +23,7 @@ export class TaskService {
         private _matSnockbar: MatSnackBar
     ) {
         this.onStudentManagementChanged = new BehaviorSubject([]);
+        this.onTasksChanged = new BehaviorSubject([]);
      }
 
     getQBankSubjects() {
@@ -65,4 +68,61 @@ export class TaskService {
             }, reject);
         })
     };
+
+    // Task Management API Methods
+    getAssignedTaskList(params?: any) {
+        // Default pagination and sorting parameters if not provided
+        const defaultParams = {
+            pageNumber: 1,
+            pageSize: 10,
+            orderBy: "",
+            sortOrder: "",
+            advancedSearch: {
+                fields: [],
+                keyword: "",
+                advancedFilter: {
+                    fields: [],
+                    operator: "",
+                    value: ""
+                },
+                filter: ""
+            }
+        };
+        
+        // Merge default parameters with provided parameters
+        const requestParams = { ...defaultParams, ...params };
+        
+        return new Promise((resolve, reject) => {
+            this._https.post(`${environment.externalApiURL}/api/task/list`, requestParams).subscribe((response: any) => {
+                this.onTasksChanged.next(response);
+                resolve(response);
+            }, reject);
+        });
+
+    }
+
+    // createTask(taskData: any) {
+    //     return new Promise((resolve, reject) => {
+    //         this._https.post(`${environment.externalApiURL}/api/task/create-task`, taskData).subscribe((response: any) => {
+    //             resolve(response);
+    //         }, reject);
+    //     });
+    // }
+
+    // deleteTask(taskId: string) {
+    //     return new Promise((resolve, reject) => {
+    //         this._https.post(`${environment.externalApiURL}/api/task/delete-task?taskguid=${taskId}`, {}).subscribe((response: any) => {
+    //             resolve(response);
+    //         }, reject);
+    //     });
+    // }
+
+    
+    // updateTask(taskId: string, taskData: any) {
+    //     return new Promise((resolve, reject) => {
+    //         this._https.put(`${environment.externalApiURL}/api/task/update/${taskId}`, taskData).subscribe((response: any) => {
+    //             resolve(response);
+    //         }, reject);
+    //     });
+    // }
 }

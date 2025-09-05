@@ -1,51 +1,81 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
+import { TaskService } from '../task.service';
+import { DatePipe } from '@angular/common';
 
 export interface Task {
-  id: number;
-  name: string;
-  completed: boolean;
-  createdby:string
-  createdon:string
+  guid: string;
+  title: string;
+  description?: string;
+  status: string;
+  date?: string;
+  CreatedBy?: string;
+  completed?: boolean;
 }
 
 @Component({
   selector: 'app-list-task',
-  imports: [MatTableModule, MatTabsModule, MatExpansionModule, MatButtonModule, MatIconModule, MatButtonToggleModule],
+  imports: [MatTableModule, MatTabsModule, MatExpansionModule, MatButtonModule, MatIconModule, MatButtonToggleModule, MatProgressSpinnerModule, DatePipe],
   templateUrl: './list-task.component.html',
   styleUrl: './list-task.component.scss'
 })
-export class ListTaskComponent {
+export class ListTaskComponent implements OnInit {
   displayedColumns: string[] = ['task','createdby','createdon', 'action'];
+  tasks: Task[] = [];
+  isLoading: boolean = false;
+  
+  activeTasks = new MatTableDataSource<Task>([]);
+  completedTasks = new MatTableDataSource<Task>([]);
+  
   constructor(
-    private _router: Router
+    private _router: Router,
+    private _taskService: TaskService
   ){}
-  tasks: Task[] = [
-    { id: 1, name: 'Finish Angular assignment', completed: false,createdby:'Lovish',createdon:'26 May 2025'  },
-    { id: 2, name: 'Review PR', completed: false,createdby:'Lovish',createdon:'27 May 2025' },
-    { id: 3, name: 'Team meeting', completed: true,createdby:'Lovish',createdon:'28 May 2025' },
-  ];
-
-  activeTasks = new MatTableDataSource<Task>(
-    this.tasks.filter((t) => !t.completed)
-  );
-  completedTasks = new MatTableDataSource<Task>(
-    this.tasks.filter((t) => t.completed)
-  );
+  
+  ngOnInit(): void {
+    this.loadTasks();
+  }
+  
+  loadTasks(): void {
+    this.isLoading = true;
+    
+    this._taskService.getAssignedTaskList()
+      .then((response: any) => {
+        if (response && response.data) {
+          this.tasks = response.data.map(task => ({
+            ...task,
+            completed: task.status === 'Completed'
+          }));
+          this.refreshTables();
+        }
+        this.isLoading = false;
+      })
+      .catch(error => {
+        console.error('Error loading tasks:', error);
+        this.isLoading = false;
+      });
+  }
 
   markCompleted(task: Task) {
     task.completed = true;
+    task.status = 'Completed';
+    // Here you would typically call an API to update the task status
+    // this._taskService.updateTaskStatus(task.id, 'Completed');
     this.refreshTables();
   }
 
   markActive(task: Task) {
     task.completed = false;
+    task.status = 'Active';
+    // Here you would typically call an API to update the task status
+    // this._taskService.updateTaskStatus(task.id, 'Active');
     this.refreshTables();
   }
 

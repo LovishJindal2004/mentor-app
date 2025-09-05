@@ -1,4 +1,7 @@
 <div class="p-4">
+    <div *ngIf="isLoading" class="flex justify-center my-4">
+        <mat-spinner diameter="40"></mat-spinner>
+    </div>
     <div class="mb-3 flex items-center gap-2">
         <button mat-raised-button class="bg-primary rounded-full flex items-center gap-2 text-white" (click)="AssignTask()"><mat-icon>add</mat-icon>Add New</button>
         <div>
@@ -25,17 +28,17 @@
           <!-- Task Column -->
           <ng-container matColumnDef="task">
             <th mat-header-cell *matHeaderCellDef> Task </th>
-            <td mat-cell *matCellDef="let task"> {{ task.name }} </td>
+            <td mat-cell *matCellDef="let task"> {{ task.title }} </td>
           </ng-container>
 
           <ng-container matColumnDef="createdby">
             <th mat-header-cell *matHeaderCellDef> Assigned By </th>
-            <td mat-cell *matCellDef="let task"> {{ task.createdby }} </td>
+            <td mat-cell *matCellDef="let task"> {{ task.createdBy || 'N/A' }} </td>
           </ng-container>
 
           <ng-container matColumnDef="createdon">
-            <th mat-header-cell *matHeaderCellDef> createdon </th>
-            <td mat-cell *matCellDef="let task"> {{ task.createdon }} </td>
+            <th mat-header-cell *matHeaderCellDef> Created On </th>
+            <td mat-cell *matCellDef="let task"> {{ task.date | date:'yyyy-MM-dd' || 'N/A' }} </td>
           </ng-container>
   
           <!-- Action Column -->
@@ -66,17 +69,17 @@
           <!-- Task Column -->
           <ng-container matColumnDef="task">
             <th mat-header-cell *matHeaderCellDef> Task </th>
-            <td mat-cell *matCellDef="let task"> {{ task.name }}  {{ (task?.name) }} </td>
+            <td mat-cell *matCellDef="let task"> {{ task.title }} </td>
           </ng-container>
 
           <ng-container matColumnDef="createdby">
             <th mat-header-cell *matHeaderCellDef> Assigned By </th>
-            <td mat-cell *matCellDef="let task"> {{ task.createdby }} </td>
+            <td mat-cell *matCellDef="let task"> {{ task.createdBy || 'N/A' }} </td>
           </ng-container>
 
           <ng-container matColumnDef="createdon">
-            <th mat-header-cell *matHeaderCellDef> createdon </th>
-            <td mat-cell *matCellDef="let task"> {{ task.createdon }} </td>
+            <th mat-header-cell *matHeaderCellDef> Created On </th>
+            <td mat-cell *matCellDef="let task"> {{ (task.createdOn || task.assignedDate) | date:'yyyy-MM-dd' || 'N/A' }} </td>
           </ng-container>
   
           <!-- Action Column -->
