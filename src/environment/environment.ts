@@ -5,10 +5,10 @@ export const environment = {
     questionMarks: 4,
     apiKey: "0737afb2-6f26-47ad-9f66-11572d806f53",
     // apiURL: "https://api.adrplexus.com/saas-dev/api/v1",  
-    apiURL: "http://192.168.1.4:91/api/v1",  
+    apiURL: "http://192.168.1.3:91/api/v1",  
     dynmoDB:"https://z0p411vwsa.execute-api.ap-south-1.amazonaws.com/dev",
     // externalApiURL: "https://api.adrplexus.com/saas-dev",
-    externalApiURL: "http://192.168.1.4:91",
+    externalApiURL: "http://192.168.1.3:91",
     tenantvalidateURl: "https://api.adrplexus.com/saas-admin-dev",
     OAuthConfiguration: {
       ApiClientID: "a2db852e6f28416f925dddeece5bfa96",

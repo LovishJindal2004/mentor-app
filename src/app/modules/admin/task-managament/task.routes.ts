@@ -10,5 +10,9 @@ export default [
     {
         path     : 'assign',
         component: AssignTaskComponent,
+    },
+    {
+        path     : 'edit/:guid',
+        component: AssignTaskComponent,
     }
 ] as Routes;

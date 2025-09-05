@@ -1,52 +1,121 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import { Router } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router, RouterModule } from '@angular/router';
+import { TaskService } from '../task.service';
+import { CommonModule, DatePipe } from '@angular/common';import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { ViewChild, AfterViewInit } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 
 export interface Task {
-  id: number;
-  name: string;
-  completed: boolean;
-  createdby:string
-  createdon:string
+  guid: string;
+  title: string;
+  description?: string;
+  status: number | string;
+  date?: string;
+  CreatedBy?: string;
+  completed?: boolean;
 }
 
 @Component({
   selector: 'app-list-task',
-  imports: [MatTableModule, MatTabsModule, MatExpansionModule, MatButtonModule, MatIconModule, MatButtonToggleModule],
-  templateUrl: './list-task.component.html',
+  imports: [
+    MatTableModule, 
+    MatTabsModule,
+    MatIconModule, 
+    CommonModule, 
+    RouterModule, 
+    MatExpansionModule, 
+    MatButtonModule, 
+    MatIconModule, 
+    MatButtonToggleModule, 
+    MatProgressSpinnerModule, 
+    MatPaginatorModule,
+    DatePipe
+  ],templateUrl: './list-task.component.html',
   styleUrl: './list-task.component.scss'
 })
-export class ListTaskComponent {
+export class ListTaskComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['task','createdby','createdon', 'action'];
+  tasks: Task[] = [];
+  isLoading: boolean = false;
+  private _unsubscribeAll = new Subject<void>();
+  
+  activeTasks = new MatTableDataSource<Task>([]);
+  completedTasks = new MatTableDataSource<Task>([]);
+  @ViewChild('activePaginator') activePaginator!: MatPaginator;
+  @ViewChild('completedPaginator') completedPaginator!: MatPaginator;
+  
   constructor(
-    private _router: Router
+    private _router: Router,
+    private _taskService: TaskService
   ){}
-  tasks: Task[] = [
-    { id: 1, name: 'Finish Angular assignment', completed: false,createdby:'Lovish',createdon:'26 May 2025'  },
-    { id: 2, name: 'Review PR', completed: false,createdby:'Lovish',createdon:'27 May 2025' },
-    { id: 3, name: 'Team meeting', completed: true,createdby:'Lovish',createdon:'28 May 2025' },
-  ];
-
-  activeTasks = new MatTableDataSource<Task>(
-    this.tasks.filter((t) => !t.completed)
-  );
-  completedTasks = new MatTableDataSource<Task>(
-    this.tasks.filter((t) => t.completed)
-  );
-
-  markCompleted(task: Task) {
-    task.completed = true;
-    this.refreshTables();
+  
+  ngOnInit(): void {
+    this.loadTasks();
+    // this._taskService.onTasksChanged
+    //   .pipe(takeUntil(this._unsubscribeAll))
+    //   .subscribe(() => {
+    //     this.loadTasks();
+    //   });
+  }
+  ngOnDestroy(): void {
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
+  }
+  ngAfterViewInit() {
+    this.activeTasks.paginator = this.activePaginator;
+    this.completedTasks.paginator = this.completedPaginator;
+  }
+  
+  loadTasks(): void {
+    this.isLoading = true;
+    let data = {
+      pageNumber: 1,
+      pageSize: 10,
+      orderBy: "",
+      sortOrder: "",
+    }
+    this._taskService.getAssignedTaskList(data)
+      .then((response: any) => {
+        if (response && response.data) {
+          this.tasks = response.data.map(task => ({
+            ...task,
+            completed: task.status === 3 || task.status === 'Completed'
+          }));
+          this.refreshTables();
+        }
+        this.isLoading = false;
+      })
+      .catch(error => {
+        console.error('Error loading tasks:', error);
+        this.isLoading = false;
+      });
   }
 
-  markActive(task: Task) {
-    task.completed = false;
-    this.refreshTables();
+  markCompleted(taskid) {
+    this._taskService.updateTaskStatus(taskid,3).then(res=>{
+      if(res){
+      this.loadTasks();
+      this.refreshTables();   
+      }
+    });
+    
+  }
+
+  markActive(taskid) {
+    this._taskService.updateTaskStatus(taskid,0).then(res=>{
+      if(res){
+
+        this.loadTasks();
+          this.refreshTables();  
+      }
+    });
   }
 
   private refreshTables() {

@@ -106,6 +106,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link : '/task/assign',
         roles : ['Mentor']
     },
+    {
+        id   : 'task-edit',
+        title: 'task-edit',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/task/edit/:guid',
+        roles : ['Mentor']
+    },
 ];
 export const AdminNavigation: FuseNavigationItem[] = [
     {

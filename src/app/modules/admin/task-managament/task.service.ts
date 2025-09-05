@@ -11,6 +11,7 @@ import { BehaviorSubject } from "rxjs";
 export class TaskService {
     
     onStudentManagementChanged: BehaviorSubject<any>;
+    onTasksChanged: BehaviorSubject<any>;
     openSnackBar(message: string, action: string) {
         this._matSnockbar.open(message, action, {
             duration: 2000,
@@ -21,6 +22,7 @@ export class TaskService {
         private _matSnockbar: MatSnackBar
     ) {
         this.onStudentManagementChanged = new BehaviorSubject([]);
+        this.onTasksChanged = new BehaviorSubject([]);
      }
 
     getQBankSubjects() {
@@ -44,6 +46,13 @@ export class TaskService {
             }, reject);
         })
     };
+    getTestExams(testType,categoryName) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.apiURL}/test/list?testType=${testType}&categoryName=${categoryName}`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
     getVideoSubjects() {
         return new Promise((resolve, reject) => {
             this._https.get(`${environment.apiURL}/video/subjects`).subscribe((response: any) => {
@@ -51,18 +60,60 @@ export class TaskService {
             }, reject);
         })
     };
-    getVideoTopics(subjectId) {
+    // getVideoTopics(subjectId) {
+    //     return new Promise((resolve, reject) => {
+    //         this._https.get(`${environment.apiURL}/video/topics?SubjectId=${subjectId}`).subscribe((response: any) => {
+    //             resolve(response);
+    //         }, reject);
+    //     })
+    // };
+    getVideos(subjectId) {
         return new Promise((resolve, reject) => {
-            this._https.get(`${environment.apiURL}/video/topics?SubjectId=${subjectId}`).subscribe((response: any) => {
+            this._https.get(`${environment.apiURL}/video/topics?subjectId=${subjectId}`).subscribe((response: any) => {
                 resolve(response);
             }, reject);
         })
     };
-    getVideos(topicid) {
+    createTask(data) {
         return new Promise((resolve, reject) => {
-            this._https.get(`${environment.apiURL}/video/topic-video?topicId=${topicid}`).subscribe((response: any) => {
+            this._https.post(`${environment.externalApiURL}/api/task/create-task`,{...data}).subscribe((response: any) => {
                 resolve(response);
             }, reject);
         })
     };
+    updateTask(data) {
+        return new Promise((resolve, reject) => {
+            this._https.post(`${environment.externalApiURL}/api/task/update-task`,{...data}).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    getTask(guid) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.externalApiURL}/api/task/get-task/${guid}`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    updateTaskStatus(taskid, status) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.externalApiURL}/api/task/update-task-staus?tasks=${taskid}&status=${status}`).subscribe((response: any) => {
+                this.onTasksChanged.next(response);
+                resolve(response);
+            }, reject);
+        })
+    };
+    getAssignedTaskList(data) {
+        // Default pagination and sorting parameters if not provided
+        
+        // Merge default parameters with provided parameters
+        
+        return new Promise((resolve, reject) => {
+            this._https.post(`${environment.externalApiURL}/api/task/list`, data).subscribe((response: any) => {
+                this.onTasksChanged.next(response);
+                resolve(response);
+            }, reject);
+        });
+
+    }
 }

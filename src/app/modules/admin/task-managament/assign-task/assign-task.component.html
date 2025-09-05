@@ -1,5 +1,5 @@
 <div class="assign-task">
-    <form [formGroup]="assignTaskForm" (ngSubmit)="assignTask()" class="assign-task-form">
+    <form [formGroup]="assignTaskForm" class="assign-task-form">
         <h2 class="text-2xl text-primary px-4 pt-4">Assign task</h2>
         <div class="border-b-2 border-primary pb-4">
             <div class="">
@@ -47,21 +47,6 @@
                         </mat-error>
                     </mat-form-field>
 
-                    <mat-form-field *ngIf="assignTaskForm.get('module')?.value === 'Video'" class="min-w-50">
-                        <mat-label>Subject</mat-label>
-                        <mat-select multiple placeholder="Select Subject" formControlName="subject">
-                            <mat-option *ngFor="let subject of videoSubjects" (click)="selectVideoSubject(subject)" [value]="subject.id">{{subject.subjectName}}</mat-option>
-                            <!-- <mat-option *ngFor="let subject of videoSubjects"
-                            (click)="selectVideoSubject(subject)"
-                            [value]="subject">
-                  {{subject.subjectName}}
-                </mat-option> -->
-                        </mat-select>
-                        <mat-error
-                            *ngIf="assignTaskForm.get('subject')?.invalid && assignTaskForm.get('subject')?.touched">
-                            Subject is required
-                        </mat-error>
-                    </mat-form-field>
                     <div class="flex gap-2 justify-end items-center">
                         <div class="px-2">
                         <div class="flex flex-col items-center gap-2 mt-2 justify-center">
@@ -85,16 +70,16 @@
         <!-- VIDEO MODULE -->
         <div *ngIf="assignTaskForm.get('module')?.value === 'Video'" class="grid grid-cols-6 h-[85vh]">
             <div class="chapter-selection p-4 border-r-2 border-primary overflow-scroll">
-                <h2 class="text-xl font-semibold pb-2">Topic</h2>
+                <h2 class="text-xl font-semibold pb-2">Subject</h2>
 
-                <!-- Selected topic Display -->
-                <div *ngIf="getSelectedTopics().length > 0" class="selected-items mb-4">
-                    <h4 class="text-sm font-medium mb-2">Selected ({{ getSelectedTopics().length }}):</h4>
+                <!-- Selected Video Subjects Display -->
+                <div *ngIf="getSelectedVideoSubjects().length > 0" class="selected-items mb-4">
+                    <h4 class="text-sm font-medium mb-2">Selected ({{ getSelectedVideoSubjects().length }}):</h4>
                     <div class="selected-chips">
                         <mat-chip-listbox>
-                            <mat-chip-option *ngFor="let topic of getSelectedTopics()"
-                                (removed)="removeTopic(topic)" removable="true" class="selected-chip">
-                                {{ topic.topicName }}
+                            <mat-chip-option *ngFor="let subject of getSelectedVideoSubjects()"
+                                (removed)="removeVideoSubject(subject)" removable="true" class="selected-chip">
+                                {{ subject.subjectName }}
                                 <mat-icon matChipRemove>cancel</mat-icon>
                             </mat-chip-option>
                         </mat-chip-listbox>
@@ -102,30 +87,32 @@
                 </div>
 
                 <div class="flex gap-2 flex-col">
-                    <h2 *ngIf="topics?.length <= 0">No Data Found</h2>
-                    <div *ngFor="let topic of topics" class="list-item" [class.selected]="isTopicSelected(topic)"
-                        [class.multi-selected]="isTopicSelected(topic)" (click)="selectTopic(topic)">
-                        <mat-icon *ngIf="isTopicSelected(topic)" class="selection-icon">check_circle</mat-icon>
-                        <mat-icon *ngIf="!isTopicSelected(topic)" class="selection-icon">radio_button_unchecked</mat-icon>
-                        {{ topic.topicName }}
+                    <h2 *ngIf="videoSubjects?.length <= 0">No Data Found</h2>
+                    <div *ngFor="let subject of videoSubjects" class="list-item"
+                        [class.selected]="isVideoSubjectSelected(subject)"
+                        [class.multi-selected]="isVideoSubjectSelected(subject)" (click)="selectVideoSubject(subject)">
+                        <mat-icon *ngIf="isVideoSubjectSelected(subject)" class="selection-icon">check_circle</mat-icon>
+                        <mat-icon *ngIf="!isVideoSubjectSelected(subject)"
+                            class="selection-icon">radio_button_unchecked</mat-icon>
+                        {{ subject.subjectName }}
                     </div>
                 </div>
-                <div *ngIf="assignTaskForm.get('subject')?.invalid && assignTaskForm.get('subject')?.touched"
+                <div *ngIf="assignTaskForm.get('videoSubjects')?.invalid && assignTaskForm.get('videoSubjects')?.touched"
                     class="text-red-500 mt-2">
-                    At least one topic is required
+                    At least one subject is required
                 </div>
             </div>
 
             <div class="topic-selection p-4 col-span-5 overflow-scroll">
-                <h2 class="font-semibold text-xl">Video</h2>
+                <h2 class="font-semibold text-xl">Videos</h2>
 
                 <!-- Selected Videos Display -->
                 <div *ngIf="getSelectedVideos().length > 0" class="selected-items mb-4">
                     <h4 class="text-sm font-medium mb-2">Selected Videos ({{ getSelectedVideos().length }}):</h4>
                     <div class="selected-chips">
                         <mat-chip-listbox>
-                            <mat-chip-option *ngFor="let video of getSelectedVideos()" (removed)="removeVideo(video)" removable="true"
-                                class="selected-chip">
+                            <mat-chip-option *ngFor="let video of getSelectedVideos()"
+                                (removed)="removeVideo(video)" removable="true" class="selected-chip">
                                 {{ video.title }}
                                 <mat-icon matChipRemove>cancel</mat-icon>
                             </mat-chip-option>
@@ -133,17 +120,24 @@
                     </div>
                 </div>
 
-                    <div class="grid grid-cols-3 gap-4 pt-2">
-                        <h2 *ngIf="videos?.length <= 0">No Data Found</h2>
-                        <div *ngFor="let video of videos" class="list-item" 
-                             [class.selected]="isVideoSelected(video)"
-                             [class.multi-selected]="isVideoSelected(video)" 
-                             (click)="selectVideo(video)">
-                            <mat-icon *ngIf="isVideoSelected(video)" class="selection-icon">check_circle</mat-icon>
-                            <mat-icon *ngIf="!isVideoSelected(video)" class="selection-icon">radio_button_unchecked</mat-icon>
-                            {{ video.title }}
+                <div class="pt-2">
+                    <h2 *ngIf="videosByTopic?.length <= 0">No Data Found</h2>
+                    <div *ngFor="let topic of videosByTopic">
+                        <h2 class="p-2 font-semibold text-base mt-2">{{ topic.topic }}</h2>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div *ngFor="let video of topic?.videos" class="list-item"
+                                [class.selected]="isVideoSelected(video)"
+                                [class.multi-selected]="isVideoSelected(video)"
+                                (click)="selectVideo(video)">
+                                <mat-icon *ngIf="isVideoSelected(video)"
+                                    class="selection-icon">check_circle</mat-icon>
+                                <mat-icon *ngIf="!isVideoSelected(video)"
+                                    class="selection-icon">radio_button_unchecked</mat-icon>
+                                {{ video.title }}<br><span class="text-sm">{{ video.duration || 'Duration not specified' }}</span>
+                            </div>
                         </div>
                     </div>
+                </div>
                 <div *ngIf="assignTaskForm.get('videos')?.invalid && assignTaskForm.get('videos')?.touched"
                     class="text-red-500 mt-2">
                     At least one video is required
@@ -276,7 +270,7 @@
                         <mat-chip-listbox>
                             <mat-chip-option *ngFor="let testExam of getSelectedTestExams()"
                                 (removed)="removeTestExam(testExam)" removable="true" class="selected-chip">
-                                {{ testExam }}
+                                {{ testExam.title }}
                                 <mat-icon matChipRemove>cancel</mat-icon>
                             </mat-chip-option>
                         </mat-chip-listbox>
@@ -284,15 +278,15 @@
                 </div>
 
                 <div class="grid grid-cols-3 gap-4 pt-2">
-                    <h2 *ngIf="testExams?.length <= 0">No Data Found</h2>
-                    <div *ngFor="let testExam of testExams" class="list-item"
-                        [class.selected]="isTestExamSelected(testExam)"
-                        [class.multi-selected]="isTestExamSelected(testExam)" (click)="selecttestExam(testExam)">
-                        <mat-icon *ngIf="isTestExamSelected(testExam)" class="selection-icon">check_circle</mat-icon>
-                        <mat-icon *ngIf="!isTestExamSelected(testExam)"
-                            class="selection-icon">radio_button_unchecked</mat-icon>
-                        {{ testExam }}
-                    </div>
+                    <h2 *ngIf="testExamsByType?.length === 0">No Data Found</h2>
+                        <div *ngFor="let exam of testExamsByType" class="list-item"
+                          [class.selected]="isTestExamSelected(exam)"
+                          [class.multi-selected]="isTestExamSelected(exam)"
+                          (click)="selectTestExam(exam)">
+                          <mat-icon *ngIf="isTestExamSelected(exam)" class="selection-icon">check_circle</mat-icon>
+                          <mat-icon *ngIf="!isTestExamSelected(exam)" class="selection-icon">radio_button_unchecked</mat-icon>
+                          {{ exam.title }}
+                        </div>
                 </div>
                 <div *ngIf="assignTaskForm.get('testExams')?.invalid && assignTaskForm.get('testExams')?.touched"
                     class="text-red-500 mt-2">
