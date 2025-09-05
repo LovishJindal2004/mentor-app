@@ -135,7 +135,7 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
     // this.loadFromLocalStorage();
     
     // Then try to load from API
-    this._taskService.getAssignedTaskList().then((response: any) => {
+    this._taskService.getAssignedTaskList('').then((response: any) => {
       if (response && response.data && Array.isArray(response.data)) {
         // Map API response to our task format
         this.processTasksFromApi(response.data);
