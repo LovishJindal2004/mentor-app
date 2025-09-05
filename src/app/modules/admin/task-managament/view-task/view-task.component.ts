@@ -44,8 +44,9 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
   icon = '📝';
   title = '';
   showComments = true;
+  taskDetails: any;
 
-  constructor(private fb: FormBuilder, private taskService: TaskService) {
+  constructor(private fb: FormBuilder, private _taskService: TaskService) {
     this.form = this.fb.group({
       title: this.titleControl,
       description: this.descriptionControl,
@@ -53,6 +54,10 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
       statusId: this.statusIdControl,
       assignee: this.assigneeControl
     });
+    if(this.taskId){
+    this._taskService.getTaskDetails(this.taskId).then(res=>{
+      this.taskDetails = res;
+    })}
   }
 
   ngOnInit() {
@@ -69,9 +74,32 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
       if (this.isOpen) document.body.classList.add('modal-open');
       else document.body.classList.remove('modal-open');
     }
-    // load task when id changes and panel is open
+  
+    // load task details whenever taskId changes AND panel is open
     if (changes.taskId && this.taskId && this.isOpen) {
-      // this.loadTask(this.taskId);
+      this.loadTask(this.taskId);
+    }
+  }
+  private async loadTask(taskId: string) {
+    try {
+      const task:any = await this._taskService.getTaskDetails(taskId);
+      this.taskDetails = task;
+  
+      this.title = task.title ?? 'Untitled Task';
+      this.form.patchValue({
+        title: task.title ?? '',
+        description: task.description ?? '',
+        priority: task.priority ?? 'medium',
+        statusId: task.statusId ?? 'new',
+        assignee: task.assignee ?? ''
+      });
+  
+      // Load comments
+      const key = `task-comments-${taskId}`;
+      const saved = localStorage.getItem(key);
+      this.currentTaskComments = saved ? JSON.parse(saved) : [];
+    } catch (err) {
+      console.error("Failed to load task", err);
     }
   }
 
@@ -95,7 +123,24 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
   //     // Optionally notify
   //   }
   // }
-
+  getStatusLabel(status: number): string {
+    switch (status) {
+      case 0: return 'New Task';
+      case 1: return 'In Progress';
+      case 2: return 'On Hold';
+      case 3: return 'Completed';
+      default: return 'Unknown';
+    }
+  }
+  
+  getResourceType(type: number): string {
+    switch (type) {
+      case 0: return 'Video';
+      case 1: return 'Test';
+      case 2: return 'QBank';
+      default: return 'Other';
+    }
+  }
   onClose() {
     this.close.emit();
   }

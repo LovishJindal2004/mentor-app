@@ -96,6 +96,13 @@ export class TaskService {
             }, reject);
         })
     };
+    getTaskDetails(guid) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.externalApiURL}/api/task/get-task-details/${guid}`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
     updateTaskStatus(taskid, status) {
         return new Promise((resolve, reject) => {
             this._https.get(`${environment.externalApiURL}/api/task/update-task-staus?tasks=${taskid}&status=${status}`).subscribe((response: any) => {

@@ -60,6 +60,7 @@ export class ListTaskComponent implements OnInit, AfterViewInit {
   @ViewChild('drawer') drawer!: MatDrawer;
   selectedTask: any;
   showTaskModal: boolean = false;
+  selectedTaskId: any;
 
   constructor(
     private _router: Router,
@@ -86,11 +87,13 @@ export class ListTaskComponent implements OnInit, AfterViewInit {
     this.selectedTask = task;
     this.drawer.open();
   }
-  showTask(){    
+  showTask(taskId){    
+    this.selectedTaskId = taskId;
     this.showTaskModal = true;
   }
   onSidePanelClose(){
     this.showTaskModal = false;
+    this.selectedTaskId = null;
   }
   
   loadTasks(): void {

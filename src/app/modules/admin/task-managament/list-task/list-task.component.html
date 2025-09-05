@@ -46,7 +46,7 @@
             <div class="flex items-center gap-2">
             <mat-icon class="cursor-pointer" click="edit(task)" routerLink="/task/edit/{{task.guid}}">edit</mat-icon>
               <!-- <mat-icon (click)="openDrawer(task)">pageview</mat-icon> -->
-              <mat-icon (click)="showTask()">pageview</mat-icon>
+              <mat-icon class="cursor-pointer" (click)="showTask(task.guid)">pageview</mat-icon>
             <!-- </button> -->
             <button mat-raised-button color="border border-primary" (click)="markCompleted(task.guid)">
               Mark Completed
@@ -277,5 +277,6 @@ fixed
 
 <app-view-task
 [isOpen]="showTaskModal"
+[taskId]="selectedTaskId"
 (close)="onSidePanelClose()">
 </app-view-task>
