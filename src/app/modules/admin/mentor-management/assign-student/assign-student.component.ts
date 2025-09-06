@@ -49,7 +49,7 @@ export class AssignStudentComponent implements OnInit, OnDestroy {
           orderBy: '',
           sortOrder: ''
         };
-        this._studentService.getStudentList(req).then((res: any) => {
+        this._studentService.getUnAssignedStudentList(req).then((res: any) => {
           const assignedIds = this.assignedUsers?.map((u: any) => u.id) || [];
 
           this.studentList = (res?.data || []).map((student: any) => ({

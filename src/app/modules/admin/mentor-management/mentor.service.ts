@@ -45,8 +45,22 @@ export class MentorService {
             console.log(response);
           }),
           catchError(error => {
-            this.openSnackBar('Failed to create user', 'Close');
-            console.error(error);
+            let errorData: any = error?.error;
+
+// If it's a string, parse it
+if (typeof errorData === 'string') {
+  try {
+    errorData = JSON.parse(errorData);
+  } catch {
+    errorData = { message: errorData }; // fallback
+  }
+}
+
+const errorMsg = Array.isArray(errorData?.messages)
+  ? errorData.messages.join('\n')
+  : (errorData?.message || 'Failed to create user');
+
+this.openSnackBar(errorMsg, 'Close');
             throw error;
           })
         );

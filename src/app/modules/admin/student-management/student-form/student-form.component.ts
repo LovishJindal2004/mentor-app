@@ -149,25 +149,12 @@ export class StudentFormComponent {
         isActive:true
 
       };
-      this._studentService.createUser(payload).then((data) => {
+      this._studentService.createUser(payload).subscribe((data) => {
         self._studentService.openSnackBar(data, 'Close');
         self._studentService.onStudentManagementChanged.next('');
         self.matDialogRef.close();
 
-      }).catch(err => {
-        console.error('Error creating user:', err);
-        // Check if the error contains the messages array
-        if (err.error && err.error.exception) {
-
-          const errorMessage = err.error.exception
-          self._studentService.openSnackBar(errorMessage, "Close");
-
-
-        } else {
-          // Fallback for other errors
-          self._studentService.openSnackBar("An unexpected error occurred.", "Close");
-        }
-      });
+      })
     }
   }
 }

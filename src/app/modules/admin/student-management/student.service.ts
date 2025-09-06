@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { environment } from "environment/environment";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, catchError, tap } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -32,6 +32,13 @@ export class StudentService {
             }, reject);
         })
     };
+    getUnAssignedStudentList(data) {
+        return new Promise((resolve, reject) => {
+            this._https.post(`${environment.externalApiURL}/api/v1/mentee/unassigned?rolename=Mentee`, {...data}).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
     getUserDetailsbyId(id) {
         return new Promise((resolve, reject) => {
             this._https.get(`${environment.externalApiURL}/api/users/${id}`).subscribe((response: any) => {
@@ -39,20 +46,38 @@ export class StudentService {
             }, reject);
         })
     };
-    createUser(user: any): Promise<any> {
+    createUser(user: any) {
         var self = this;
         // const headers = new HttpHeaders({
         //     'ApiKey': environment.apiKey,
         //     'tenant': user.tenantId
         // });
-        return new Promise((resolve, reject) => {
-
-            this._https.post(`${environment.externalApiURL}/api/users/mentee-register`, { ...user },{ responseType: 'text' })
-                .subscribe((response: any) => {
-                    this.openSnackBar(response + '..', "Close");
-                    resolve(response);
-                }, reject);
-        });
+        return this._https.post(`${environment.externalApiURL}/api/users/mentee-register`, { ...user },{ responseType: 'text' })
+            .pipe(
+                tap((response: any) => {
+                  console.log(response, "response")
+                  this.openSnackBar(response?.message || 'User created successfully', 'Close');
+                  console.log(response);
+                }),
+        catchError(error => {
+            let errorData: any = error?.error;
+    
+            // If it's a string, parse it
+            if (typeof errorData === 'string') {
+              try {
+                errorData = JSON.parse(errorData);
+              } catch {
+                errorData = { message: errorData }; // fallback
+              }
+            }
+    
+            const errorMsg = Array.isArray(errorData?.messages)
+              ? errorData.messages.join('\n')
+              : (errorData?.message || 'Failed to create user');
+    
+            this.openSnackBar(errorMsg, 'Close');
+            throw error;
+          }))
     }
     updateUser(user: any): Promise<any> {
         return new Promise((resolve, reject) => {

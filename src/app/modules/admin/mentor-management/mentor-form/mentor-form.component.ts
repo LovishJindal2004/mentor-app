@@ -54,6 +54,7 @@ export class MentorFormComponent {
       this._mentorService.getUserDetailsbyId(_data?.userId).then((res: any) => {
 
         this.userModel = res;
+        this.userModel.courseIds = this.userModel.courseIds.join() 
 
         this.userModel.collegeID = res.collegeId;
         this.userModel.MedicalCourseYear = res.medicalCourseYear;
@@ -217,7 +218,7 @@ export class MentorFormComponent {
         this.matDialogRef.close();
       })
       let data = {
-        courseIds: payload.courseIds,
+        courseIds: [payload.courseIds],
         userId: payload.id
       }
       this._mentorService.assignedCourse(data).then(res=>{

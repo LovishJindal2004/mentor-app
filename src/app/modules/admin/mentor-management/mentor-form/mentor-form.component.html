@@ -130,7 +130,7 @@
                     <div fxLayout="row " *ngIf="action === 'edit'" fxLayoutAlign="start start ">
                         <mat-form-field class="block pt-1 " appearance="outline">
                             <mat-label>Course</mat-label>
-                            <mat-select multiple placeholder="Select Course" formControlName="course"
+                            <mat-select placeholder="Select Course" formControlName="course"
                                 [(ngModel)]="userModel.courseIds">
                                 <mat-option *ngFor="let c of courses" [value]="c.guid">{{c.title}}
                                 </mat-option>
@@ -167,7 +167,7 @@
 
                         <mat-form-field class="w-full block pt-1" appearance="outline">
                             <mat-label>Experience Years</mat-label>
-                            <input matInput type="text" placeholder="Experience Years" formControlName="experienceYears"
+                            <input matInput type="number" placeholder="Experience Years" formControlName="experienceYears"
                                 [(ngModel)]="userModel.experienceYears">
                         </mat-form-field>
                     </div>
