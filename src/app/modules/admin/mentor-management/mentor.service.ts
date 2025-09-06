@@ -37,34 +37,34 @@ export class MentorService {
             }, reject);
         })
     };
-    createUser(user: any) {
-        return this._https.post(`${environment.externalApiURL}/api/users`, { ...user },{ responseType: 'text' }).pipe(
-          tap((response: any) => {
-            console.log(response,"response")
-            this.openSnackBar(response?.message || 'User created successfully', 'Close');
-            console.log(response);
-          }),
-          catchError(error => {
-            let errorData: any = error?.error;
+  createUser(user: any) {
+    return this._https.post(`${environment.externalApiURL}/api/users`, { ...user }, { responseType: 'text' }).pipe(
+      tap((response: any) => {
+        console.log(response, "response")
+        this.openSnackBar(response?.message || 'User created successfully', 'Close');
+        console.log(response);
+      }),
+      catchError(error => {
+        let errorData: any = error?.error;
 
-// If it's a string, parse it
-if (typeof errorData === 'string') {
-  try {
-    errorData = JSON.parse(errorData);
-  } catch {
-    errorData = { message: errorData }; // fallback
+        // If it's a string, parse it
+        if (typeof errorData === 'string') {
+          try {
+            errorData = JSON.parse(errorData);
+          } catch {
+            errorData = { message: errorData }; // fallback
+          }
+        }
+
+        const errorMsg = Array.isArray(errorData?.messages)
+          ? errorData.messages.join('\n')
+          : (errorData?.message || 'Failed to create user');
+
+        this.openSnackBar(errorMsg, 'Close');
+        throw error;
+      })
+    );
   }
-}
-
-const errorMsg = Array.isArray(errorData?.messages)
-  ? errorData.messages.join('\n')
-  : (errorData?.message || 'Failed to create user');
-
-this.openSnackBar(errorMsg, 'Close');
-            throw error;
-          })
-        );
-      }
     updateUser(user: any): Promise<any> {
         return new Promise((resolve, reject) => {
 
