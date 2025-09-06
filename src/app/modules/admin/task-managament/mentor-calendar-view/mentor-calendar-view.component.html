@@ -1,1 +1,77 @@
-<p>mentor-calendar-view works!</p>
+<div class="calendar-wrapper">
+    <div class="mb-3 flex items-center gap-2 py-4 pt-0 px-2">
+        <button mat-raised-button *ngIf="_userDetails?.Roles == 'Mentor'"
+            class="bg-primary rounded-full flex items-center gap-2 text-white p-2 px-4"
+            routerLink="/task/assign"><mat-icon
+                class="text-white">add</mat-icon>Add New</button>
+        <div>
+            <mat-button-toggle-group name="fontStyle" value="Calendar"
+                aria-label="Font Style">
+                <mat-button-toggle routerLink="/task/list"
+                    value="TableView"><mat-icon>table_chart</mat-icon>Table
+                    View</mat-button-toggle>
+                <mat-button-toggle routerLink="/task/mentor-kanban"
+                    value="KanBan"><mat-icon>view_list</mat-icon>
+                    KanBan Board</mat-button-toggle>
+                <mat-button-toggle routerLink="/task/mentor-calendar"
+                    value="Calendar"><mat-icon>calendar_today</mat-icon>
+                    Calendar</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+    </div>
+    <div class="calendar-toolbar">
+        <div class="left">
+            <button (click)="prevWeek()">‹</button>
+            <button (click)="today()">Today</button>
+            <button (click)="nextWeek()">›</button>
+        </div>
+        <div class="center">
+            <div class="month-label" (click)="toggleDatePicker()"
+                title="Pick a date">
+                {{ days[0] | date:'MMMM y' }}
+            </div>
+            <div class="date-picker" *ngIf="showDatePicker">
+                <div class="dp-header">
+                    <button (click)="prevMonth()" class="dp-btn">‹</button>
+                    <div class="title">{{ monthLabel }}</div>
+                    <button (click)="nextMonth()" class="dp-btn">›</button>
+                </div>
+                <div class="dp-grid">
+                    <div class="dow"
+                        *ngFor="let d of ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']">{{
+                        d }}</div>
+                    <button class="day"
+                        *ngFor="let d of monthGrid"
+                        [class.muted]="!isSameMonth(d)"
+                        [class.today]="isToday(d)"
+                        (click)="selectDate(d)">{{ d.getDate() }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="week-grid">
+        <div class="day-column" *ngFor="let day of days; let i = index">
+            <div class="day-header">
+                <div class="dow">{{ day | date:'EEE' }}</div>
+                <div class="date">{{ day | date:'d' }}</div>
+            </div>
+            <div class="events">
+                <div class="card" (click)="openViewTask(t.id)"
+                    *ngFor="let t of dayTasks[i]; let ti = index; trackBy: trackByTaskId"
+                    [style.border-left-color]="getTypeColor(t.typeId)">
+                    <div class="title-row">
+                        <div class="title">{{ t.title }}</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-view-task
+        [isOpen]="panelOpen"
+        [taskId]="panelTaskId"
+        (close)="closePanel()">
+    </app-view-task>
+</div>

@@ -10,7 +10,7 @@ import { map } from "rxjs/operators";
 })
 
 export class TaskService {
-    
+
     onStudentManagementChanged: BehaviorSubject<any>;
     onTasksChanged: BehaviorSubject<any>;
     openSnackBar(message: string, action: string) {
@@ -24,7 +24,7 @@ export class TaskService {
     ) {
         this.onStudentManagementChanged = new BehaviorSubject([]);
         this.onTasksChanged = new BehaviorSubject([]);
-     }
+    }
 
     getQBankSubjects() {
         return new Promise((resolve, reject) => {
@@ -47,7 +47,7 @@ export class TaskService {
             }, reject);
         })
     };
-    getTestExams(testType,categoryName) {
+    getTestExams(testType, categoryName) {
         return new Promise((resolve, reject) => {
             this._https.get(`${environment.apiURL}/test/list?testType=${testType}&categoryName=${categoryName}`).subscribe((response: any) => {
                 resolve(response);
@@ -77,14 +77,14 @@ export class TaskService {
     };
     createTask(data) {
         return new Promise((resolve, reject) => {
-            this._https.post(`${environment.externalApiURL}/api/task/create-task`,{...data}).subscribe((response: any) => {
+            this._https.post(`${environment.externalApiURL}/api/task/create-task`, { ...data }).subscribe((response: any) => {
                 resolve(response);
             }, reject);
         })
     };
     updateTask(data) {
         return new Promise((resolve, reject) => {
-            this._https.post(`${environment.externalApiURL}/api/task/update-task`,{...data}).subscribe((response: any) => {
+            this._https.post(`${environment.externalApiURL}/api/task/update-task`, { ...data }).subscribe((response: any) => {
                 resolve(response);
             }, reject);
         })
@@ -111,34 +111,53 @@ export class TaskService {
             }, reject);
         })
     };
-    getAssignedTaskList(data) {
-        // Default pagination and sorting parameters if not provided
-        
-        // Merge default parameters with provided parameters
-        
+    // getAssignedTaskList(data) {
+
+    //     return new Promise((resolve, reject) => {
+    //         this._https.post(`${environment.externalApiURL}/api/task/list`, data).subscribe((response: any) => {
+    //             this.onTasksChanged.next(response);
+    //             resolve(response);
+    //         }, reject);
+    //     });
+
+    // }
+
+    getAssignedTaskList(data, status?: number) {
+        const payload = { ...data };
+        if (status !== undefined) {
+            payload.status = status; // Add status filter
+        }
+
         return new Promise((resolve, reject) => {
-            this._https.post(`${environment.externalApiURL}/api/task/list`, data).subscribe((response: any) => {
+            this._https.post(`${environment.externalApiURL}/api/task/list`, payload).subscribe((response: any) => {
                 this.onTasksChanged.next(response);
                 resolve(response);
             }, reject);
         });
-
     }
-    getComments(data,taskId) {
-        return this._https.post(`${environment.apiURL}/comment/comment-list?taskguid=${taskId}`,{...data}).toPromise();
-      }
-      
-      createComment(data) {
+
+    status() {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.apiURL}/common/status`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    getComments(data, taskId) {
+        return this._https.post(`${environment.apiURL}/comment/comment-list?taskguid=${taskId}`, { ...data }).toPromise();
+    }
+
+    createComment(data) {
         return this._https.post(`${environment.apiURL}/comment/create-comment`, { ...data }).toPromise();
-      }
-      
-      updateComment(data) {
+    }
+
+    updateComment(data) {
         return this._https.patch(`${environment.apiURL}/comment/update-comment`, { data }).toPromise();
-      }
-      
-      deleteComment(commentId: string) {
+    }
+
+    deleteComment(commentId: string) {
         return this._https.get(`${environment.apiURL}/comment/delete-comment?commentGuid=${commentId}`).toPromise();
-      }
+    }
 
     // createTask(taskData: any) {
     //     return new Promise((resolve, reject) => {
@@ -148,15 +167,16 @@ export class TaskService {
     //     });
     // }
 
-    // deleteTask(taskId: string) {
-    //     return new Promise((resolve, reject) => {
-    //         this._https.post(`${environment.externalApiURL}/api/task/delete-task?taskguid=${taskId}`, {}).subscribe((response: any) => {
-    //             resolve(response);
-    //         }, reject);
-    //     });
-    // }
 
-    
+    deleteTask(taskId: string) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.externalApiURL}/api/task/delete-task?taskguid=${taskId}`, {}).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        });
+    }
+
+
     // updateTask(taskId: string, taskData: any) {
     //     return new Promise((resolve, reject) => {
     //         this._https.put(`${environment.externalApiURL}/api/task/update/${taskId}`, taskData).subscribe((response: any) => {

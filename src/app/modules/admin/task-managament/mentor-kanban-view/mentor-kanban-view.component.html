@@ -1,1 +1,80 @@
-<p>mentor-kanban-view works!</p>
+<!-- kanban-board-view.component.html -->
+<div class="app-container">
+  <div class="mb-3 flex items-center gap-2 py-4 px-4">
+    <button mat-raised-button *ngIf="_userDetails?.Roles == 'Mentor'"
+      class="bg-primary rounded-full flex items-center gap-2 text-white p-2 px-4"
+      routerLink="/task/assign"><mat-icon class="text-white">add</mat-icon>Add
+      New</button>
+    <div>
+      <mat-button-toggle-group name="fontStyle" value="KanBan"
+        aria-label="Font Style">
+        <mat-button-toggle routerLink="/task/list"
+          value="TableView"><mat-icon>table_chart</mat-icon>Table
+          View</mat-button-toggle>
+        <mat-button-toggle routerLink="/task/mentor-kanban"
+          value="KanBan"><mat-icon>view_list</mat-icon>
+          KanBan Board</mat-button-toggle>
+        <mat-button-toggle routerLink="/task/mentor-calendar"
+          value="Calendar"><mat-icon>calendar_today</mat-icon>
+          Calendar</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+  <!-- Main Content -->
+  <div class="main-content" [class.content-expanded]="!sidenavOpen">
+    <div *ngIf="activeTool==='tasks'" class="kanban-container">
+
+      <div class="board-content" cdkDropListGroup>
+        <div class="board-column" *ngFor="let column of columns" cdkDropList
+          [cdkDropListData]="column.tasks"
+          (cdkDropListDropped)="drop($event)">
+          <div class="column-header">
+            <h2 [contentEditable]="true"
+              (blur)="updateColumnTitle(column, $event)">{{ column.title }}</h2>
+            <!-- <button class="delete-column" (click)="deleteColumn(column)">×</button> -->
+          </div>
+
+          <div class="task-list" (scroll)="onColumnScroll($event, column)">
+            <div class="task-card" (click)="openViewTask(task.id)"
+              *ngFor="let task of column.tasks" cdkDrag
+              [ngClass]="'priority-' + task.priority"
+              [style.border-left-color]="getTaskTypeColor(task)"
+              [style.border-left-width.px]="6"
+              [style.border-left-style]="'solid'">
+
+              <div class="task-type-badge">
+                <span class="type-name" [style.color]="getTaskTypeColor(task)">
+                  {{ getTaskTypeName(task) }}
+                </span>
+              </div>
+
+              <div class="task-header">
+                <h3>{{ task.title }}</h3>
+                <div class="task-actions">
+                  <button (click)="deleteTask(column, task)">×</button>
+                </div>
+              </div>
+              <p>{{ task.description }}</p>
+              <div class="task-footer">
+                <span class="due-date">Due: {{ task.dueDate | date:'shortDate'
+                  }}</span>
+                <span class="assignee" *ngIf="task.assignee">{{ task.assignee
+                  }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTool==='calendar'" class="kanban-container">
+      <app-calendar></app-calendar>
+    </div>
+  </div>
+
+  <app-view-task
+    [isOpen]="panelOpen"
+    [taskId]="panelTaskId"
+    (close)="closePanel()">
+  </app-view-task>
+</div>

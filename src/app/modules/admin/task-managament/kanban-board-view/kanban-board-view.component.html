@@ -1,17 +1,25 @@
 <!-- kanban-board-view.component.html -->
 <div class="app-container">
   <div class="mb-3 flex items-center gap-2 py-4 px-4">
-    <button mat-raised-button *ngIf="_userDetails?.Roles == 'Mentor'" class="bg-primary rounded-full flex items-center gap-2 text-white p-2 px-4" routerLink="/task/assign"><mat-icon class="text-white">add</mat-icon>Add New</button>
+    <button mat-raised-button *ngIf="_userDetails?.Roles == 'Mentor'"
+      class="bg-primary rounded-full flex items-center gap-2 text-white p-2 px-4"
+      routerLink="/task/assign"><mat-icon class="text-white">add</mat-icon>Add
+      New</button>
     <div>
-        <mat-button-toggle-group name="fontStyle" value="KanBan" aria-label="Font Style">
-            <mat-button-toggle routerLink="/task/list" value="TableView"><mat-icon>table_chart</mat-icon>Table View</mat-button-toggle>
-            <mat-button-toggle routerLink="/task/kanban" value="KanBan"><mat-icon>view_list</mat-icon>
-                KanBan Board</mat-button-toggle>
-                <mat-button-toggle routerLink="/task/calendar" value="Calendar"><mat-icon>calendar_today</mat-icon>
-                  Calendar</mat-button-toggle>
-                </mat-button-toggle-group>
+      <mat-button-toggle-group name="fontStyle" value="KanBan"
+        aria-label="Font Style">
+        <mat-button-toggle routerLink="/task/list"
+          value="TableView"><mat-icon>table_chart</mat-icon>Table
+          View</mat-button-toggle>
+        <mat-button-toggle routerLink="/task/kanban"
+          value="KanBan"><mat-icon>view_list</mat-icon>
+          KanBan Board</mat-button-toggle>
+        <mat-button-toggle routerLink="/task/calendar"
+          value="Calendar"><mat-icon>calendar_today</mat-icon>
+          Calendar</mat-button-toggle>
+      </mat-button-toggle-group>
     </div>
-</div>
+  </div>
   <!-- Main Content -->
   <div class="main-content" [class.content-expanded]="!sidenavOpen">
     <div *ngIf="activeTool==='tasks'" class="kanban-container">
@@ -23,7 +31,8 @@
           </div>
 
           <div class="task-list" (scroll)="onScroll($event)">
-            <div class="task-card" (click)="openViewTask(task.id)" *ngFor="let task of column.tasks"
+            <div class="task-card" (click)="openViewTask(task.id)"
+              *ngFor="let task of column.tasks"
               [ngClass]="'priority-' + task.priority"
               [style.border-left-color]="getTaskTypeColor(task)"
               [style.border-left-width.px]="6"
