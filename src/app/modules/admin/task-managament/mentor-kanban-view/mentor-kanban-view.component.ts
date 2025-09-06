@@ -53,6 +53,7 @@ interface Column {
   id: string;
   title: string;
   tasks: Task[];
+  pageNumber?: number; // Add this
 }
 
 interface Comment {
@@ -173,17 +174,18 @@ export class MentorKanbanViewComponent implements OnInit, OnDestroy {
   // New method to load tasks for a specific column
   loadTasksForColumn(column: Column, loadMore: boolean = false) {
   const columnId = column.id;
-
-  // Prevent multiple simultaneous requests for the same column
   if (this.loadingStatuses.has(columnId)) return;
 
-  // Convert column ID to API status number
   const apiStatus = this.reverseMapStatus(columnId);
 
   this.loadingStatuses.add(columnId);
 
+  // Track page number per column
+  if (!column.pageNumber) column.pageNumber = 1;
+  const pageNumber = loadMore ? column.pageNumber + 1 : 1;
+
   const data = {
-    pageNumber: loadMore ? Math.floor(column.tasks.length / this.pageSize) + 1 : 1,
+    pageNumber,
     pageSize: this.pageSize,
     orderBy: "",
     sortOrder: "",
@@ -191,8 +193,12 @@ export class MentorKanbanViewComponent implements OnInit, OnDestroy {
 
   this._taskService.getAssignedTaskList(data, apiStatus).then((response: any) => {
     if (response && response.data && Array.isArray(response.data)) {
-      // Use the specific column method, NOT the general one
-      this.processTasksFromApiForColumn(response.data, column, loadMore);
+      if (response.data.length > 0) {
+        this.processTasksFromApiForColumn(response.data, column, loadMore);
+        column.pageNumber = pageNumber; // Only increment if new tasks returned
+      } else {
+        this.hasMore = false; // No more tasks
+      }
     }
     this.loadingStatuses.delete(columnId);
   }).catch(error => {
@@ -299,7 +305,7 @@ export class MentorKanbanViewComponent implements OnInit, OnDestroy {
   drop(event: CdkDragDrop<Task[]>) {
     if (event.previousContainer === event.container) {
       // moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      console.log(event.previousIndex, event.currentIndex);
+      console.log(event.previousIndex, event.currentIndex + 1);
     } else {
       const task = event.previousContainer.data[event.previousIndex];
       var newStatus :number = 0;

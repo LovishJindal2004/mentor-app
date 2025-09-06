@@ -402,35 +402,6 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  openNewTaskModal(column: Column) {
-    this._taskService.openSnackBar('Creating new tasks is temporarily disabled', 'Close');
-    return;
-  }
-
-  openAddNewModal() {
-    // TEMPORARILY DISABLED: Creating new tasks is not allowed
-    this._taskService.openSnackBar('Creating new tasks is temporarily disabled', 'Close');
-    return;
-
-    /* Original functionality (commented out)
-    this.currentColumn = null;
-    this.editingTask = null;
-    this.selectedStatusId = this.columns[0]?.id ?? null;
-    this.taskForm.reset({
-      title: '',
-      description: '',
-      priority: 'medium',
-      dueDate: null,
-      assignee: '',
-      statusId: this.selectedStatusId,
-      estimatedTimeHours: 0,
-      scheduleDate: null,
-      type: 'operational'
-    });
-    this.showTaskModal = true;
-    document.body.classList.add('modal-open');
-    */
-  }
 
   editTask(task: Task, column: Column) {
     this.editingTask = task;
