@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { TaskService } from '../task.service';
 import { helperService } from 'app/core/auth/helper';
+import { Router, RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 interface Comment {
   id: string;
@@ -16,7 +18,7 @@ interface Comment {
 }
 @Component({
   selector: 'app-view-task',  
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, MatIconModule],
   templateUrl: './view-task.component.html',
   styleUrl: './view-task.component.scss'
 })
@@ -50,10 +52,12 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
   title = '';
   showComments = true;
   taskDetails: any;
+  _userdetails : any
 
   constructor(
     private fb: FormBuilder,
      private _taskService: TaskService,
+     private _router: Router,
      private _helperService: helperService,
     ) {
     this.form = this.fb.group({
@@ -66,7 +70,8 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
     if(this.taskId){
     this._taskService.getTaskDetails(this.taskId).then(res=>{
       this.taskDetails = res;
-    })}
+    })}    
+    this._userdetails = this._helperService.getUserDetail();
   }
 
   ngOnInit() {
@@ -105,6 +110,24 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
       this.loadComments(true);  
     } catch (err) {
       console.error("Failed to load task", err);
+    }
+  }
+  NavigatetoExam(res) {
+    if (this._userdetails.Roles == 'Mentee') {
+      if (res?.type == 1) {
+        if (res?.status == 3) {
+          this._router.navigate([`/exams/game-analytics/${res.guid}/${this.taskDetails.guid}`])
+        } else {
+          this._router.navigate([`/exams/game-view/${res.guid}/${this.taskDetails.guid}`])
+        }
+      }
+      else if (res?.type == 2) {
+        if (res?.status == 3) {
+          this._router.navigate([`/qbank/game-analytics/${res.guid}/${this.taskDetails.guid}`])
+        } else {
+          this._router.navigate([`/qbank/details/${res.guid}/${this.taskDetails.guid}`])
+        }
+      }
     }
   }
 

@@ -1,0 +1,387 @@
+<div class="w-full game-analytics-v2">
+    <div class="desktop flex items-center gap-2 mt-2 mx-5 cursor-pointer" (click)="Gotoback()" *ngIf="!compareWithOthers">
+        <mat-icon class="text-primary">arrow_back</mat-icon>
+        <h2 class="text-primary font-normal text-lg">Results</h2>
+    </div>
+    <div class="desktop flex items-center gap-2 mt-2 mx-5 cursor-pointer" (click)="backToResultScreen()" *ngIf="compareWithOthers">
+        <mat-icon class="text-primary">arrow_back</mat-icon>
+        <h2 class="text-primary font-normal text-lg">Results</h2>
+    </div>
+    <div class="flex items-center justify-center mt-30" *ngIf="!dataLoaded">
+        <img src="my-images/imgLoder.gif" class="w-15">
+    </div>
+    <div class="lg:ml-5 lg:mr-5 pb-4" *ngIf="dataLoaded">
+        <!-- desktop view -->
+        <div class="p-4 bg-white mt-3 border border-primary/30 rounded desktop">
+            <h2 class="text-primary text-xl font-medium">{{examDetails.name}}</h2>
+            <!-- <h3 class="font-medium">Purchase a single-use exam for NEET PG 2023 exams delivered by ADrPLEXUS</h3> -->
+            <div class="flex gap-1 text-sm items-center border-b pb-2">
+                <!-- <mat-icon class="text-base text-primary">star</mat-icon>
+                <h4>4.5</h4> -->
+                <h5 class="">{{examDetails.noOfQuestions}} MCQ'S</h5>
+            </div>
+            <h4 class="text-[#6E6E6E] text-sm font-light pt-2">QBank ID : {{examDetails.guid}}</h4>
+            <!-- <h5 class="text-[#6E6E6E] text-base font-normal pt-1">Exam Taken<br><span class="text-sm"> Monday 11:30 AM -
+                    2:30
+                    PM, 22 Jan 2023</span></h5> -->
+            <div class="grid grid-cols-1 md:grid-cols-2 mt-6 max-w-400 mx-auto">
+                <ng-container>
+                 
+                    <div class="mx-auto">
+                        <div class="w-40 mx-auto image-frame">
+                            <img src="my-images/default-img.png" class="rounded-full" >
+                        </div>
+                        <!-- <h3 class="text-center pt-3" *ngIf="selectedType === 'stateselected' && !practiceMode">Rank : {{examActivity.stateRank}} / {{examActivity.stateNoOfStudents}}</h3>
+                        <h3 class="text-center pt-3" *ngIf="selectedType === 'allIndia' && !practiceMode">Rank : {{examActivity.allIndiaRank}} / {{examActivity.noOfStudents}}</h3>
+                        <h4 class="text-[18px] text-primary font-normal text-center" *ngIf="!practiceMode">Your Percentile {{examActivity.percentage}}%</h4> -->
+                        <!-- <div class="flex states items-center gap-1 mt-4" *ngIf="!practiceMode">
+                            <div class="text-[#505050] font-light cursor-pointer all-india-btn" [class.active]="selectedType === 'allIndia'"(click)="selectAllIndia()">All India</div>
+                              
+                            <div class="text-[#505050] font-light cursor-pointer state-btn" [class.active]="selectedType === 'stateselected'"(click)="selectState()">{{examActivity.stateName}}</div>
+                            
+                           
+                        </div> -->
+                        <!-- <div class="flex states items-center gap-4 mt-4">
+                            <div class="text-[#505050] font-light cursor-pointer all-india-btn" [class.active]="selectedType === 'allIndia'"(click)="selectAllIndia()">All India</div>
+                              
+                            
+                            <div class="dropDown">
+                                <mat-form-field appearance="fill" [class.active]="selectedType === 'select'">
+                                    <mat-select [(ngModel)]="selected" (selectionChange)="handleStateSelection($event)">
+                                              
+                                        <mat-option value="Tamil Nadu">Tamil Nadu</mat-option>
+                                        <mat-option value="Karnataka">Karnataka</mat-option>
+                                        <mat-option value="Kerala">Kerala</mat-option>
+                                        <mat-option value="Andhra Pradesh">Andhra Pradesh</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div> -->
+                        <!-- <div class="flex states items-center gap-4 mt-2">
+                            <div class="text-[#505050] font-light">All India</div>
+                            <div>
+                                <mat-form-field>
+                                    <mat-select matNativeControl required [(value)]="selected">
+                                        <mat-option value="Tamil Nadu">Tamil Nadu</mat-option>
+                                        <mat-option value="saab">Saab</mat-option>
+                                        <mat-option value="mercedes">Mercedes</mat-option>
+                                        <mat-option value="audi">Audi</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div> -->
+                        <h4 class="text-[#6E6E6E] font-light text-sm text-center pt-3">Completed {{examActivity.noOfCorrect + examActivity.noOfInCorrect}}/
+                            {{(examActivity.noOfInCorrect + examActivity.noOfCorrect +examActivity.noOfUnAttempt +examActivity.noNotVisited)}} MCQ'S</h4>
+                    </div>
+                </ng-container>
+                <div class="grid lg:grid-cols-4 sm:grid-cols-3 gap-5 wrap">
+                    <div class="border border-[#28C397] bg-[#EBFFF9] rounded text-center pt-6 pb-4 h-min">
+                        <h2 class="text-[#28C397] text-4xl">{{ examActivity.noOfCorrect }}</h2>
+                        <h3 class="text-xl pt-2">{{ (examActivity.noOfCorrect * 100 / (examActivity.noOfInCorrect + examActivity.noOfCorrect +examActivity.noOfUnAttempt +examActivity.noNotVisited)) | number:
+                            '1.2-2' }} %</h3>
+                        <h4 class="text-lg text-[#28C397] font-normal">Correct</h4>
+                    </div>
+                    <div class="border border-[#F9BC15] bg-[#FFF7E2] rounded text-center pt-6 pb-4 h-min">
+                        <h2 class="text-[#E1A606] text-4xl">{{ (examActivity.noOfUnAttempt +examActivity.noNotVisited) }}</h2>
+                        <h3 class="text-xl pt-2">{{ ((examActivity.noOfUnAttempt +examActivity.noNotVisited)  * 100 / (examActivity.noOfInCorrect + examActivity.noOfCorrect +examActivity.noOfUnAttempt +examActivity.noNotVisited)) | number: '1.2-2' }}%</h3>
+                        <h4 class="text-lg text-[#E1A606] font-normal">Missed</h4>
+                    </div>
+                    <div class="border border-[#EA4435] bg-[#FFE2E0] rounded text-center pt-6 pb-4 h-min">
+                        <h2 class="text-[#EA4435] text-4xl">{{ examActivity.noOfInCorrect }}</h2>
+                        <h3 class="text-xl pt-2">{{ (examActivity.noOfInCorrect * 100 / (examActivity.noOfInCorrect + examActivity.noOfCorrect +examActivity.noOfUnAttempt +examActivity.noNotVisited)) | number:
+                            '1.2-2' }} %</h3>
+                        <h4 class="text-lg text-[#EA4435] font-normal">InCorrect</h4>
+                    </div>
+              
+                </div>
+            </div>
+            <div class="grid grid-cols-2 max-w-400 pt-2 mx-auto justify-between flex">
+                <!-- <h3 class="text-center text-sm font-normal" *ngIf="selectedType === 'allIndia' && !practiceMode">You performed better than {{examActivity.percentileRank}}% of your peers</h3>
+                <h3 class="text-center text-sm font-normal" *ngIf="selectedType === 'stateselected' && !practiceMode">You performed better than {{examActivity.stateWisePercentileRank}}% of your peers</h3> -->
+                <h4 class="text-center font-light flex justify-center items-center gap-2" *ngIf="examActivity?.status == 3">
+                    <img class="w-6" src="my-images/offline_pin_FILL1_wght600_GRAD0_opsz48.svg">
+                    You completed on {{ examActivity.completedOn | date: 'dd MMM, yyyy, hh:mma' }}
+                </h4>
+            </div>
+            <div class="flex justify-center gap-4 mt-8 btn_Qbank" *ngIf="!compareWithOthers">
+                <!-- <button *ngIf="!practiceMode" mat-raised-button class="min-w-72 py-6 text-primary rounded text-lg font-normal border border-primary mt-2" (click)="compareWithothers()"><mat-icon class="pr-2">compare</mat-icon>Compare with others</button> -->
+                <button mat-raised-button class="min-w-72 py-6 text-[#FFFFFF] rounded text-lg font-normal bg-primary mt-2" [routerLink]="['/exams/game-review',examId, taskGuid]" >Review the Exam</button>
+            </div>
+        </div>
+       <!-- desktop view ends  -->
+
+ <!-- mobile view starts -->
+ <div class="mobile-container bg-white   border-primary/30 rounded phone-view">
+
+
+    <div class="back-ground-color">
+        <div class="flex items-center gap-1 pt-3" (click)="Gotoback()" *ngIf="!compareWithOthers">
+            <mat-icon class="text-white ml-2">arrow_back</mat-icon>
+            <h2 class="text-xl text-white font-normal">Results</h2>
+        </div>
+        <div class="flex items-center gap-1 pt-3" (click)="backToResultScreen()" *ngIf="compareWithOthers">
+            <mat-icon class="text-white ml-2">arrow_back</mat-icon>
+            <h2 class="text-xl text-white font-normal">Results</h2>
+        </div>
+        <div class="back-ground-image">
+    <h2 class="text-white text-center text-2xl font-medium">{{examDetails.name}}</h2>
+    
+    <div class="flex items-center justify-center gap-1 text-sm pt-2">
+        <!-- <span class="text-base text-white text-center">★</span>
+        <h4 class="text-white text">4.5</h4> -->
+        <h5 class="pl-2.5 text-white text-center">{{examDetails.noOfQuestions}} MCQ'S</h5>
+    </div>
+    <h4 class="text-base font-light pt-1 text-white text-center">QBank ID : {{examDetails.guid}}</h4>
+    <!-- <h5 class="text-base font-normal pt-3 text-white text-center">Exam Taken<br> -->
+        <!-- <span class="text-[14px] text-white text-center font-light">Monday 11:30 AM - 2:30 PM, 22 Jan 2024</span> -->
+    <!-- </h5> -->
+    </div>
+    </div>
+<div class="bg-white pb-4">
+    <!-- image section -->
+    <div class="image-section mx-auto text-center pt-8 relative">
+          <div class="w-40 mx-auto image-frame">
+            <img src="my-images/default-img.png" class="profile-image rounded-full w-28 mx-auto absolute right-0 left-0 top-[16%]">
+           </div>
+
+        <!-- <h3 class="text-center pt-15 text-[#505050] text-[18px] font-medium" *ngIf="selectedType === 'stateselected' && !practiceMode">Rank : {{examActivity.stateRank}} / {{examActivity.stateNoOfStudents}}</h3>
+        <h3 class="text-center pt-15 text-[#505050] text-[18px] font-medium" *ngIf="selectedType === 'allIndia' && !practiceMode">Rank : {{examActivity.allIndiaRank}} / {{examActivity.noOfStudents}}</h3>
+        <h4 class="text-[16px]  font-normal text-primary pt-2 text-center" *ngIf="!practiceMode">Your Percentile {{examActivity.percentage}}%</h4> -->
+      
+    </div>
+        <!-- image section ends -->
+         <!-- <div class="flex states items-center gap-4 mt-4">
+            <div class="text-[#505050] font-light">All India</div>
+          <div>
+         <mat-form-field>
+           <mat-select matNativeControl required [(value)]="selected">
+             <mat-option value="Tamil Nadu">Tamil Nadu</mat-option>
+            <mat-option value="saab">Saab</mat-option>
+        <mat-option value="mercedes">Mercedes</mat-option>
+       <mat-option value="audi">Audi</mat-option>
+     </mat-select>
+          </mat-form-field>
+          </div>
+     </div> -->
+     <!-- component.html -->
+     <!-- <div class="flex states items-center gap-1 mt-4 justify-between" *ngIf="!practiceMode">
+        <div class="text-[#505050] font-light cursor-pointer all-india-btn" [class.active]="selectedType === 'allIndia'"(click)="selectAllIndia()">All India</div>
+        <div class="text-[#505050] font-light cursor-pointer state-btn" [class.active]="selectedType === 'stateselected'"(click)="selectState()">{{examActivity.stateName}}</div>
+                            
+    </div> -->
+<!-- <div class="flex states items-center gap-4 mt-4">
+    <div class="text-[#505050] font-light cursor-pointer all-india-btn" [class.active]="selectedType === 'allIndia'"(click)="selectAllIndia()">All India</div>
+      
+    
+    <div class="dropDown">
+        <mat-form-field appearance="fill" [class.active]="selectedType === 'select'">
+            <mat-select [(ngModel)]="selected" (selectionChange)="handleStateSelection($event)">
+                      
+                <mat-option value="Tamil Nadu">Tamil Nadu</mat-option>
+                <mat-option value="Karnataka">Karnataka</mat-option>
+                <mat-option value="Kerala">Kerala</mat-option>
+                <mat-option value="Andhra Pradesh">Andhra Pradesh</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div> -->
+
+      <h4 class="text-[#6E6E6E] font-light text-sm text-center pt-20">Completed {{examActivity.noOfCorrect + examActivity.noOfInCorrect}}/
+        {{(examActivity.noOfInCorrect + examActivity.noOfCorrect +examActivity.noOfUnAttempt +examActivity.noNotVisited)}} MCQ'S</h4>
+            <h3 class="text-center text-sm font-normal pt-3" *ngIf="selectedType === 'allIndia' && !practiceMode">You performed better than {{examActivity.percentileRank}}% of your peers</h3>
+            <h3 class="text-center text-sm font-normal pt-3" *ngIf="selectedType === 'stateselected' && !practiceMode">You performed better than {{examActivity.stateWisePercentileRank}}% of your peers</h3>
+
+       <div class="stats grid grid-cols-3 gap-3 mt-4 text-center m-4">
+        <div class="border border-[#28C397] rounded p-4 bg-[#EBFFF9]">
+            <h2 class="text-[#28C397] text-2xl font-semibold">{{ examActivity.noOfCorrect }}</h2>
+            <p class="text-[#505050] text-[16px]">{{ (examActivity.noOfCorrect * 100 / (examActivity.noOfInCorrect + examActivity.noOfCorrect +examActivity.noOfUnAttempt +examActivity.noNotVisited)) | number:
+                '1.2-2' }} % </p>
+            <p class="text-[#28C397] text-[16px] font-light">Correct</p>
+        </div>
+        <div class="border border-[#E1A606] rounded p-4 bg-[#FFF7E2]">
+            <h2 class="text-[#E1A606] text-2xl font-semibold">{{ (examActivity.noOfUnAttempt +examActivity.noNotVisited) }}</h2>
+            <p class="text-[#505050] text-[16px]">{{ ((examActivity.noOfUnAttempt +examActivity.noNotVisited)  * 100 / (examActivity.noOfInCorrect + examActivity.noOfCorrect +examActivity.noOfUnAttempt +examActivity.noNotVisited)) | number: '1.2-2' }}% </p>
+         <p class="text-[#E1A606] text-[16px] font-light">Missed</p>
+        </div>
+        <div class="border border-[#EA4435] rounded p-4 bg-[#FFE2E0]">
+            <h2 class="text-[#EA4435] text-2xl font-semibold">{{ examActivity.noOfInCorrect }}</h2>
+            <p class="text-[#505050] text-[16px]">{{ (examActivity.noOfInCorrect * 100 / (examActivity.noOfInCorrect + examActivity.noOfCorrect +examActivity.noOfUnAttempt +examActivity.noNotVisited)) | number:
+                '1.2-2' }}% </p>
+            <p class="text-[#EA4435] text-[16px] font-light">Incorrect</p>
+        </div>
+    </div>
+</div>
+   <div class="flex justify-center gap-4 btn_Qbank w-full px-4" *ngIf="!compareWithOthers">
+                <!-- <button *ngIf="!practiceMode" mat-raised-button class="min-w-72 w-full py-6 text-primary rounded text-lg font-normal border border-primary mt-2 compare-with-others" (click)="compareWithothers()"><mat-icon class="pr-2">compare</mat-icon>Compare with others</button> -->
+                <button mat-raised-button class="min-w-72 w-full py-6 text-[#FFFFFF] rounded text-lg font-normal bg-primary mt-2 mb-5" [routerLink]="['/exams/game-review',examId, taskGuid]">Review the QBank</button>
+            </div>
+      
+ </div>
+
+ <!-- mobile view ends -->
+<div class="bg-[#F5F5F5] ml-5 mr-5" *ngIf="!compareWithOthers">
+        <h2 class="mt-3 text-[#505050] text-[16px] font-medium">Your subject wise performance in this test</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 mt-3 gap-2" >
+            <div class="ranking_subject_div" *ngFor="let subject of (showAllItems ? examSubjectsWiseAnalytics : examSubjectsWiseAnalytics.slice(0, 3))">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-[14px]  font-medium">{{subject.subjectName}}</h2>
+                    <div class="" [ngClass]="[
+                    subject.tag === 'Weakest' ? 'weakest_div' : '',
+                    subject.tag === 'Strongest' ? 'Strongest_div' : '',
+                    subject.tag === 'Moderate' ? 'Moderate_div' : ''
+                  ]">
+                        <p class="font-normal">{{subject.tag}}</p>
+                    </div>
+                </div>
+                <h3 class="text-[#6E6E6E] text-[12px] font-light">Your score is {{subject.marks}} out of {{subject.totalMarks}} Marks</h3>
+                
+                <div class="flex items-center justify-between pt-2">
+                    <h4 class="text-[12px] text-[#6E6E6E] font-light">Correct Answers : {{(subject.noOfCorrect/(subject.noOfCorrect+subject.noOfInCorrect))*100 | number:'1.2-2' }}%</h4>
+                    <h5 class="text-[12px] text-[#6E6E6E] font-light">No. Question : {{subject.noOfQuestions}}</h5>
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                    <h4 class="text-[12px] text-[#6E6E6E] font-medium">Percentile</h4>
+                    <h5 class="text-[12px] text-[#6E6E6E] font-light">{{subject.percentage}}</h5>
+                </div>
+                <mat-progress-bar mode="determinate" class="text-primary/25"  [value]="subject.percentage"></mat-progress-bar>
+                <div class="flex items-center justify-between pt-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="dot_green"></span>
+                        <p class="text-[#28C397] text-[12px] font-normal">{{subject.noOfCorrect}} Correct</p>
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="dot_yellow"></span>
+                        <p class="text-[#E1A606] text-[12px] font-normal"> {{subject.noOfMissed}} Missed</p>
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="dot_red"></span>
+                        <p class="text-[#EA4435] text-[12px] font-normal"> {{subject.noOfInCorrect}} Incorrect</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-4 w-full text-center">
+            <button mat-raised-button class="min-w-72 py-6 text-primary rounded-full text-lg font-normal border  expand_btn" *ngIf="examSubjectsWiseAnalytics.length > 3" (click)="toggleItems()"><mat-icon class="pr-2 text-primary">{{ showAllItems ? 'remove_circle_outline' : 'control_point' }}</mat-icon>{{ showAllItems ? 'Collapse' : 'Expand all subjects' }}</button>
+        </div>
+        <!-- <div class="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 mt-3">
+            <div class="ranking_subject_div">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-[14px]  font-medium">Ophthalmology</h2>
+                    <div class="weakest_div">
+                        <p class="text-[#EA4435] font-normal">Weakest</p>
+                    </div>
+                </div>
+                <h3 class="text-[#6E6E6E] text-[12px] font-light">Your score is 7 out of 24 Marks</h3>
+                <div class="flex items-center justify-between pt-2">
+                    <h4 class="text-[12px] text-[#6E6E6E] font-light">Correct Answers : 33%</h4>
+                    <h5 class="text-[12px] text-[#6E6E6E] font-light">No. Question : 6</h5>
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                    <h4 class="text-[12px] text-[#6E6E6E] font-medium">Percentile</h4>
+                    <h5 class="text-[12px] text-[#6E6E6E] font-light">62%</h5>
+                </div>
+                <mat-progress-bar mode="determinate" class="text-primary" color="primary" value="40"></mat-progress-bar>
+                <div class="flex items-center justify-between pt-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="dot_green"></span>
+                        <p class="text-[#28C397] text-[12px] font-normal">2 Correct</p>
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="dot_yellow"></span>
+                        <p class="text-[#E1A606] text-[12px] font-normal"> 1 Missed</p>
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="dot_red"></span>
+                        <p class="text-[#EA4435] text-[12px] font-normal"> 3 Incorrect</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="mt-4 w-full text-center">
+            <button mat-raised-button class="min-w-72 py-6 text-primary rounded-full text-lg font-normal border expand_btn"><mat-icon class="pr-2 text-primary">control_point</mat-icon>Expand all subjects</button>
+        </div> -->
+        <h2 class="text-[#505050] text-[14px] font-medium mt-3">Timeline for this exam</h2>
+
+        <div class="grid grid grid-cols-2 pt-2 gap-2">
+            <div class="timing_div pt-2">
+                <h2 class="text-[#28C397] text-[16px]">{{formattedTime(examActivity.duration)}}</h2>
+                <p class="text-[#505050] text-[12px] font-light">Total time taken</p>
+            </div>
+            <div class="timing_div pt-2">
+                <h2 class="text-[#28C397] text-[16px] text-end">{{formattedTime(examActivity.timeSpentOnlearning)}}</h2>
+                <p class="text-[#505050] text-[12px] font-light text-end">Total time for answering</p>
+            </div>
+        </div>  
+
+        <div class="improvement_div mt-5 mb-5 p-5" *ngIf="examActivity.marksForMarkedForReview < 0">
+            <div class="flex items-center  gap-3">
+                <svg class="w-[50px]" fill="#da0707" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 351.413 351.414" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M80.608,216.845H21.879C9.815,216.845,0,205.472,0,191.505V30.541C0,16.576,9.815,5.212,21.879,5.212h58.729 c12.063,0,21.875,11.364,21.875,25.328v160.965C102.484,205.472,92.672,216.845,80.608,216.845z"></path> </g> <g> <path d="M195.096,346.201c-18.504,0-33.558-15.049-33.558-33.555c0-1.249,0.075-2.498,0.216-3.76 c-0.222-1.104-0.246-2.233-0.006-3.326c6.407-29.399-6.947-62.786-15.483-80.062c-0.739-1.488-1.457-2.936-2.147-4.251 c-1.291-1.495-3.035-2.504-5.005-2.87h-2.519c-0.363,0-0.937-0.036-1.378-0.09c-14.006-0.793-24.83-12.172-24.83-26.121V31.417 c0-14.448,11.757-26.205,26.208-26.205h181.24c0.799,0,1.567,0.099,2.294,0.288c16.976,1.789,30.012,16.081,30.012,33.278 c0,9.248-3.765,17.642-9.872,23.716c6.828,6.149,11.146,15.061,11.146,24.959c0,9.575-4.029,18.219-10.479,24.344 c6.449,6.113,10.479,14.769,10.479,24.343s-4.029,18.218-10.479,24.332c6.449,6.125,10.479,14.769,10.479,24.344 c0,18.506-15.055,33.566-33.567,33.566l-77.521-0.012c21.677,67.397-16.813,112.59-18.579,114.596 c-0.036,0.035-0.072,0.071-0.108,0.132C215.296,341.312,205.448,346.201,195.096,346.201z"></path> </g> </g> </g> </g></svg>
+                <p class="text-[#EA4435] text-[20px] font-medium">You need to improve your guessing!</p>
+            </div>
+            <div class="">
+                <p class="text-[12px] font-light pt-2">You have guessed {{examActivity.noAnsweredMarkedForReview}} answers and got {{examActivity.noOfCorrectMarkedForReview}} correct. your net score from guessed answer is {{examActivity.marksForMarkedForReview}}</p>
+            </div>
+
+        </div>
+        <div class="improvement_div border-[#28C397] bg-[#EBFFF9] mt-5 mb-5 p-5" *ngIf="examActivity.marksForMarkedForReview > 0">
+            <div class="flex items-center  gap-3">
+                <svg class="w-[50px] rotate-180" fill="#28C397" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 351.413 351.414" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M80.608,216.845H21.879C9.815,216.845,0,205.472,0,191.505V30.541C0,16.576,9.815,5.212,21.879,5.212h58.729 c12.063,0,21.875,11.364,21.875,25.328v160.965C102.484,205.472,92.672,216.845,80.608,216.845z"></path> </g> <g> <path d="M195.096,346.201c-18.504,0-33.558-15.049-33.558-33.555c0-1.249,0.075-2.498,0.216-3.76 c-0.222-1.104-0.246-2.233-0.006-3.326c6.407-29.399-6.947-62.786-15.483-80.062c-0.739-1.488-1.457-2.936-2.147-4.251 c-1.291-1.495-3.035-2.504-5.005-2.87h-2.519c-0.363,0-0.937-0.036-1.378-0.09c-14.006-0.793-24.83-12.172-24.83-26.121V31.417 c0-14.448,11.757-26.205,26.208-26.205h181.24c0.799,0,1.567,0.099,2.294,0.288c16.976,1.789,30.012,16.081,30.012,33.278 c0,9.248-3.765,17.642-9.872,23.716c6.828,6.149,11.146,15.061,11.146,24.959c0,9.575-4.029,18.219-10.479,24.344 c6.449,6.113,10.479,14.769,10.479,24.343s-4.029,18.218-10.479,24.332c6.449,6.125,10.479,14.769,10.479,24.344 c0,18.506-15.055,33.566-33.567,33.566l-77.521-0.012c21.677,67.397-16.813,112.59-18.579,114.596 c-0.036,0.035-0.072,0.071-0.108,0.132C215.296,341.312,205.448,346.201,195.096,346.201z"></path> </g> </g> </g> </g></svg>
+                <p class="text-[#28C397] text-[20px] font-medium">You are good in guessing!</p>
+            </div>
+            <div class="">
+                <p class="text-[12px] font-light pt-2">You have guessed {{examActivity.noAnsweredMarkedForReview}} answers and got {{examActivity.noOfCorrectMarkedForReview}} correct. your net score from guessed answer is {{examActivity.marksForMarkedForReview}}</p>
+            </div>
+
+        </div>
+    </div>
+    <div class="mt-3 px-4" *ngIf="compareWithOthers">
+       <h2 class="text-[#505050] text-[16px] font-medium pb-2">Top Ranker's - All India</h2>
+       <div class="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 mt-0 gap-2">
+            <div class="top_rankers_Div mb-2.5" *ngFor="let scorer of topScorers | slice:0:9">
+                <div class="flex justify-between items-start gap-2.5">
+                    <div class="flex items-start gap-2 w-full">
+                        <div class="">
+                            <!-- <img src="../../../../../assets/images/images/Profile Pic.png" alt="" class="w-full h-full"> -->
+                            <img [src]="'my-images/default-profile.png'" alt="" class="max-w-20 max-h-20 rounded-full border border-primary w-28">
+                        </div>
+                        <div class="w-full">
+                            <h2 class="text-[#505050] text-[16px] font-semibold">Rank {{scorer.rank}}</h2>
+                            <h3 class="text-[#505050] text-[14px] font-medium">{{scorer.name}}</h3>
+                            <h4 class="text-[#6E6E6E] font-light font-[12px] min-h-10">{{scorer.collegeName}}</h4>
+                        </div>
+                    </div>
+                    <div class="numbering_div">
+                        <p class="text-[10px] text-white font-normal">{{scorer.marks}}</p>
+                    </div>
+
+                </div>
+                <hr class="my-2 border-primary/25">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="dot_green"></span>
+                        <p class="text-[#28C397] text-[12px] font-normal">{{scorer.noOfCorrect}} Correct</p>
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="dot_yellow"></span>
+                        <p class="text-[#E1A606] text-[12px] font-normal"> {{scorer.noOfMissed}} Missed</p>
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="dot_red"></span>
+                        <p class="text-[#EA4435] text-[12px] font-normal"> {{scorer.noOfInCorrect}} Incorrect</p>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+         <!-- <div class="chart">
+            <apx-chart [series]="pieChartOptions.series" [chart]="pieChartOptions.chart" [labels]="pieChartOptions.labels" [responsive]="pieChartOptions.responsive" [colors]="pieChartOptions.colors" [dataLabels]="pieChartOptions.dataLabels" [plotOptions]="pieChartOptions.plotOptions"
+                [stroke]="pieChartOptions.stroke" [fill]="pieChartOptions.fill" [markers]="pieChartOptions.markers" [tooltip]="pieChartOptions.tooltip" [xaxis]="pieChartOptions.xaxis" [yaxis]="pieChartOptions.yaxis">
+            </apx-chart>
+
+        </div> -->
+       
+    </div>
+</div>

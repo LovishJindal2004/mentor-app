@@ -306,6 +306,43 @@ export class MentorKanbanViewComponent implements OnInit, OnDestroy {
     if (event.previousContainer === event.container) {
       // moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       console.log(event.previousIndex, event.currentIndex + 1);
+      const task = event.previousContainer.data[event.previousIndex];
+      var newStatus :number = 0;
+      if(event.container.id === 'cdk-drop-list-0' ) {
+        newStatus = 0; // New
+      }else if(event.container.id === 'cdk-drop-list-1' ) {
+        newStatus = 2; // Scheduled
+      }else if(event.container.id === 'cdk-drop-list-2' ) {
+        newStatus = 3; // In Progress
+      }
+      let data = {
+        taskGuid: task.id,
+        status: newStatus,
+        newQueueId: event.currentIndex + 1
+      }
+      this._taskService.updateTaskOrder(data)
+        .then(() => {
+          transferArrayItem(
+            event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex
+          );
+          this._taskService.openSnackBar('Task status updated', 'Close');
+        })
+        .catch(error => {
+          console.error('Error updating task status:', error);
+          this._taskService.openSnackBar('Failed to update task status', 'Close');
+
+          // Still update UI as fallback
+          transferArrayItem(
+            event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex
+          );
+        });
+
     } else {
       const task = event.previousContainer.data[event.previousIndex];
       var newStatus :number = 0;
@@ -317,8 +354,12 @@ export class MentorKanbanViewComponent implements OnInit, OnDestroy {
         newStatus = 3; // In Progress
       }
       
-
-      this._taskService.updateTaskStatus(task.id, newStatus)
+      let data = {
+        taskGuid: task.id,
+        status: newStatus,
+        newQueueId: event.currentIndex + 1
+      }
+      this._taskService.updateTaskOrder(data)
         .then(() => {
           transferArrayItem(
             event.previousContainer.data,

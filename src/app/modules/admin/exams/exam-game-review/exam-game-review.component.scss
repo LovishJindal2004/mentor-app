@@ -1,0 +1,433 @@
+.choices {
+    border: 1px solid #DCDCDC;
+    box-shadow: 0px 0px 8px #D8D8D880;
+    border-radius: 4px;
+}
+
+.wrong-choice {
+    border: 1px solid #EA4435 !important;
+    background: #FFF8F8 !important;
+    color: #EA4435;
+}
+.show-popup {
+    right: -50px;
+}
+.sevenper{
+    width: 70% !important;
+}
+.serial_listing{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: white;
+    padding-bottom: 40px;
+    min-width: 440px;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    box-shadow: 0px 0px 15px #D8D8D8;
+    height: fit-content;
+    z-index: 9999;
+}
+.right-popup {
+    position: absolute;
+    top: 12%;
+    right: -50px;
+    rotate: -90deg;
+    z-index: 9999;
+}
+.right-popup.hide-popup{
+    right: 390px;
+}
+::ng-deep .report-questions textarea{
+    color: black;
+}
+.hide-panel {
+    background: transparent linear-gradient(179deg, #F915AD 0%, #F97F15 100%) 0% 0% no-repeat padding-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 10px 10px 0 0;
+    // rotate: -90deg;
+}
+.show-panel {
+    background: transparent linear-gradient(179deg, #F915AD 0%, #F97F15 100%) 0% 0% no-repeat padding-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 10px 10px 0 0;
+    // rotate: -90deg;
+}
+.next-btn,
+.finish-btn {
+    background: transparent linear-gradient(175deg, #28C397 0%, #139FA3 100%) 0% 0% no-repeat padding-box;
+}
+
+.risk-btn {
+    background: transparent linear-gradient(175deg, #ff006c 0%, #ff006c 100%) 0% 0% no-repeat padding-box;
+}
+
+.marked-btn {
+    background: transparent linear-gradient(175deg, #e447dd 0%, #e447dd 100%) 0% 0% no-repeat padding-box;
+}
+
+//design
+.clip-design {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    min-height: 30px;
+    -webkit-clip-path: square(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0);
+    clip-path: polygon(33% 0, 62% 0, 100% 45%, 100% 80%, 100% 100%, 52% 100%, 0 100%, 0 45%);
+    // clip-path: polygon(26% 0, 75% 0, 100% 45%, 100% 80%, 100% 100%, 52% 100%, 0 100%, 0 45%);
+    // background: green;
+}
+
+.answered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    min-height: 30px;
+    -webkit-clip-path: square(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0);
+    clip-path: polygon(33% 0, 62% 0, 100% 45%, 100% 80%, 100% 100%, 52% 100%, 0 100%, 0 45%);
+    background: #28C397;
+}
+
+.answered div {
+    color: white;
+}
+
+.not-visited {
+    background: #F0F0F0;
+    width: 30px;
+    min-height: 30px;
+    height: 30px;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.not-answered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    min-height: 30px;
+    -webkit-clip-path: square(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0);
+    clip-path: polygon(33% 0, 62% 0, 100% 45%, 100% 80%, 100% 100%, 52% 100%, 0 100%, 0 45%);
+    background: #FF0000;
+    rotate: 180deg;
+}
+
+.not-answered div {
+    rotate: 180deg;
+}
+
+.reviewed {
+    position: relative;
+}
+
+.reviewed::after {
+    position: absolute;
+    content: "";
+    bottom: 2px;
+    right: 0px;
+    height: 8px;
+    width: 8px;
+    background: #28C397;
+    border-radius: 80px;
+}
+
+.missed {
+    width: 30px;
+    min-height: 30px;
+    border-radius: 9999px;
+    background: #E1A606;
+    display: flex;
+    align-items: center;
+    height: 30px;
+    justify-content: center;
+}
+
+.crisk {
+    width: 30px;
+    min-height: 30px;
+    border-radius: 9999px;
+    background: #E1A606;
+    display: flex;
+    align-items: center;
+    height: 30px;
+    justify-content: center;
+}
+::ng-deep .mat-slide-toggle-thumb {
+    border: 1px solid #dcdcdc;
+}
+::ng-deep ul {
+    list-style: inherit;
+    margin: 0;
+    padding: 0 20px;
+}
+::ng-deep body.light .mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-thumb {
+    border: 0;
+}
+::ng-deep ol{
+    list-style: auto !important;
+    padding: 0 40px !important;
+}
+.wrong-choice span {
+    background: #EA4435;
+    color: white;
+    font-weight: 300;
+}
+
+.correct-choice {
+    border: 1px solid #28C397 !important;
+    background: #F8FFFA !important;
+}
+
+.mulichoiesWrng {
+    color: #EA4435!important;
+    margin-right: 127px;
+    position: absolute;
+    right: 18px !important;
+    size: 43px;
+    font-size: 29px;
+}
+
+.shadow {
+    box-shadow: 0px 0px 10px rgba(var(--fuse-primary-rgb), .3) !important;
+}
+
+::ng-deep .question p img {
+    width: 300px;
+}
+
+.correct-choice span {
+    color: white;
+    background: #28C397;
+    font-weight: 300;
+}
+
+.correct-choice h2 {
+    color: #28C397;
+}
+
+::ng-deep mat-chip-list[aria-label="Tags"] mat-chip.mat-chip {
+    border: 1px solid;
+    border-color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+}
+
+::ng-deep mat-dialog-container {
+    width: 530px;
+    padding: 0px;
+}
+
+::ng-deep .game-review mat-dialog-container.mat-dialog-container {
+    padding: 0px;
+}
+
+::ng-deep .explanation td {
+    border: 1px solid;
+    padding: 10px 10px;
+}
+::ng-deep .explanation img{
+    max-width: max-content;
+}
+
+.correct-ans {
+    color: #28C397;
+    background-color: #EBFFF9;
+    border-color: #28C397;
+}
+
+.missed-ans {
+    color: #F9BC15;
+    background-color: #FFF7E2;
+    border-color: #F9BC15;
+}
+
+.unattemp-ans {
+    color: #6E6E6E !important;
+    background-color: white !important;
+    border-color: #6E6E6E !important;
+}
+.marked-ans {
+    color: #e447dd !important;
+    background-color: white !important;
+    border-color: #e447dd !important;
+}
+.CRisk-ans {
+    color: #ff006c !important;
+    background-color: white !important;
+    border-color: #ff006c !important;
+}
+.reportQuestion{
+    background: transparent linear-gradient(175deg, #be28c3 0%, #eb28da 100%) 0% 0% no-repeat padding-box;
+}
+.incorrect-ans {
+    color: #EA4435;
+    background-color: #FFE2E0;
+    border-color: #EA4435;
+}
+
+::ng-deep .session_expire .mat-button-wrapper {
+    flex-direction: column;
+}
+
+::ng-deep .popup-1 {
+    right: 10px;
+    top: 80px;
+    position: absolute !important;
+    width: 530px;
+}
+
+::ng-deep .cdk-overlay-dark-backdrop {
+    background: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+}
+
+::ng-deep .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+    opacity: .9 !important;
+}
+
+:host ::ng-deep .game-review app-game-header {
+    position: absolute;
+    width: 99.96%;
+    background: white;
+    z-index: 99999999999;
+    top: 0;
+}
+
+.mt-82 {
+    margin-top: 82px;
+}
+
+::ng-deep .mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-bar {
+    background-color: none !important;
+}
+
+.next-btn{
+    background: transparent linear-gradient(175deg, #28C397 0%, #139FA3 100%) 0% 0% no-repeat padding-box;
+}
+.question-list{
+    overflow-y: scroll;
+    max-height: 420px;
+}
+.write-review-btn{
+    background: transparent linear-gradient(175deg, #28C397 0%, #139FA3 100%) 0% 0% no-repeat padding-box;
+    color: white !important;
+    border-radius: 4px !important;
+    padding: 0 35px !important;
+}
+::ng-deep button.mat-focus-indicator.write-review-btn[disabled=true]{
+    background: #bcbcbc !important;
+}
+::ng-deep button.mat-focus-indicator.write-review-btn[disabled="true"] span {
+    color: white !important;
+}
+.create-question-btn{
+    position: fixed;
+    z-index: 999;
+    margin: 0 auto;
+    width: -webkit-fill-available;
+    bottom: 50px;
+    background: white;
+    width: 590px;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    border: 2px dashed #c1c1c1;
+    gap: 20px;
+    bottom: 57px;
+}
+::ng-deep .game-review .mat-tab-body-wrapper {
+    padding: 0 100px;
+}
+::ng-deep .game-review .mat-tab-group .mat-tab-header .mat-tab-label-container {
+    padding: 0 124px;
+}
+::ng-deep .header-tabs,
+::ng-deep .header-tabs .mat-tab-group,
+::ng-deep .header-tabs .mat-tab-body-wrapper
+{
+	height: 100%;
+}
+::ng-deep .header-tabs mat-tab-header{
+    box-shadow: 0px 0px 15px #D8D8D8;
+}
+::ng-deep .header-tabs .mat-tab-labels{
+    gap: 20px;
+    justify-content: left !important;
+}
+::ng-deep .header-tabs .mat-ripple.mat-tab-label {
+    max-width: 220px !important;
+    border-bottom: 3px solid transparent;
+    min-height: 54px;
+}
+::ng-deep .header-tabs .mat-tab-group .mat-tab-header .mat-tab-label-container .mat-tab-list .mat-tab-labels .mat-tab-label.mat-tab-label-active {
+    background: none !important;
+    border-bottom: 3px solid rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+    border-radius: 0px !important;
+}
+.header-tabs mat-icon.mat-icon {
+    color: #BBBBBB;
+}
+::ng-deep .header-tabs .mat-tab-group .mat-tab-header .mat-tab-label-container .mat-tab-list .mat-tab-labels .mat-tab-label.mat-tab-label-active mat-icon.mat-icon{
+    color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+}
+@media only screen and (max-width: 1199px) {
+    .sevenper {
+        width: 100% !important;
+    }
+    .header-tabs{
+        max-width: 100vw;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+   
+    .serial_listing{
+        max-width: 80vw !important;
+        min-width: 80vw !important;
+    }
+    .right-popup.hide-popup{
+        right: 268px;
+    }
+    .mtt-97 {
+        margin-top: 97px !important;
+    }
+
+    ::ng-deep .game-review .mat-tab-body-wrapper {
+        padding: 0 !important;
+    }
+
+    ::ng-deep .game-review .mat-tab-group .mat-tab-header .mat-tab-label-container {
+        padding: 0 24px !important;
+    }
+
+    .create-question-btn {
+        width: 95vw !important;
+        flex-wrap: wrap;
+        gap: 0px 10px !important;
+        padding: 5px 0 !important;
+    }
+    .ggrid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px 0px;
+    }
+    .serial_listing.p-6{
+        padding: 10px 0 0 0 !important;
+    }
+    .question-list{
+        max-height: 40vh !important; 
+    }
+    .wd-auto{
+        width: 100% !important;
+    }
+}

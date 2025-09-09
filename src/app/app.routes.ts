@@ -136,5 +136,29 @@ export const appRoutes: Route[] = [
         children: [
             {path: 'task', loadChildren: () => import('app/modules/admin/task-managament/task.routes')},
         ]
+    },
+    {
+        path: '',
+        canActivate: [AuthGuard, ChildAuthGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: initialDataResolver
+        },
+        children: [
+            {path: 'qbank', loadChildren: () => import('app/modules/admin/qbank/qbank.routes')},
+        ]
+    },
+    {
+        path: '',
+        canActivate: [AuthGuard, ChildAuthGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: initialDataResolver
+        },
+        children: [
+            {path: 'exams', loadChildren: () => import('app/modules/admin/exams/exams.routes')},
+        ]
     }
 ];
