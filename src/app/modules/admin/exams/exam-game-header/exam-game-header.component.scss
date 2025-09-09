@@ -1,0 +1,20 @@
+.game-header {
+    background: transparent linear-gradient(273deg,rgba(var(--fuse-primary-rgb),.5) 0%,rgba(var(--fuse-primary-rgb),1) 100%) 0% 0% no-repeat padding-box
+}
+.game-header.game-header-rytham{
+    background:  transparent linear-gradient(273deg,#63247C 0%,#3C006D 100%) 0% 0% no-repeat padding-box;
+}
+.game-header img {
+    max-width: 5rem !important;
+}
+@media only screen and (max-width: 767px) {
+    .orderr-1{
+        order: 1;
+    }
+    .orderr-2{
+        order: 2;
+    }
+    .orderr-3{
+        order: 3;
+    }
+}

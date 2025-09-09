@@ -1,0 +1,18 @@
+<div class="flex flex-wrap w-full justify-between h-20  header p-2 items-center game-header "  [ngClass]="themeName === 'theme-Rythm' ? 'game-header-rytham' : ''">
+    <!-- <div class="w-40 flex items-center gap-1 cursor-pointer orderr-1" routerLink="/">
+        <img src="../../../../../../assets/images/images/logo-v1.svg" class="w-20" routerLink="/student/student-dashboard" (click)="closedialog()">
+        <h2 class="text-white font-normal pl-2 text-xl">ADrPLEXUS</h2>
+    </div> -->
+    <div class="w-50 flex items-center gap-1 cursor-pointer orderr-1" routerLink="/">
+        <img [src]="sanitizeUrl('data:image/jpeg;base64,' + LogoUrl)" class="w-full h-full" routerLink="/student/student-dashboard" (click)="closedialog()">
+        <!-- <h2 class="text-white font-normal pl-2 text-xl">ADrPLEXUS</h2> -->
+    </div>
+    <h4 class="text-white flex items-center text-xl font-normal orderr-3">{{examType}}/{{Examtitle}}</h4>
+    <div class="flex gap-2 mr-3 icons items-center orderr-2">
+        <h2 class="text-white cursor-pointer" *ngIf="!hideinstructions" (click)="sendDataToExamView('examinstructions')">Help</h2>
+        <mat-icon class="cursor-pointer text-white list" (click)="sendDataToExamView('AllQuestion')" *ngIf="!hidetracker">list</mat-icon>
+        <mat-icon class="cursor-pointer text-white" (click)="sendDataToExamView('examinstructions')" *ngIf="!hideinstructions">help_outline</mat-icon>
+        <mat-icon class="cursor-pointer text-white" (click)="sendDataToExamView('CloseQuestion')">close</mat-icon>
+        <!-- <mat-icon class="cursor-pointer text-white" (click)="sendDataToExamView('submitExam')" *ngIf="!isfromMarksheet">done</mat-icon> -->
+    </div>
+</div>

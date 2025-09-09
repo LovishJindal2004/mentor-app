@@ -162,6 +162,78 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link : '/task/mentor-calendar',
         roles : ['Mentor']
     },
+    {
+        id   : 'qbank-details',
+        title: 'qbank-details',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbank',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'qbank-details',
+        title: 'qbank-details',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbank/details/:examId/:taskId',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'qbank-details',
+        title: 'qbank-details',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbank/game-view/:examId/:taskId',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'qbank-details',
+        title: 'qbank-details',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbank/game-review/:examId/:taskId',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'qbank-details',
+        title: 'qbank-details',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbank/game-analytics/:examId/:taskId',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'exam',
+        title: 'exam',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/exams',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'exam-game',
+        title: 'exam-game',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/exams/game-view/:examId/:taskId',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'exam-review',
+        title: 'exam-review',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/exams/game-review/:examId/:taskId',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'exam-analytics',
+        title: 'exam-analytics',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/exams/game-analytics/:examId/:taskId',
+        roles : ['Mentee']
+    },
 ];
 export const AdminNavigation: FuseNavigationItem[] = [
     {

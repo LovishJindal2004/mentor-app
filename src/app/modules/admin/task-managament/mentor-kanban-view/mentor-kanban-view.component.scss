@@ -804,7 +804,8 @@ body.modal-open {
     border: 1px solid #ffffff;
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 140px);
+    // max-height: calc(100vh - 140px);
+    max-height: 77vh;
 }
 
 .column-header {
@@ -902,7 +903,7 @@ body.modal-open {
 }
 
 .task-actions button {
-  background: #2a3346;
+  // background: #2a3346;
   border: none;
   color: #9aa4b2;
   padding: 4px 8px;
@@ -912,7 +913,7 @@ body.modal-open {
 }
 
 .task-actions button:hover {
-  background: #343a46;
+  // background: #343a46;
   color: #e6e6e6;
 }
 

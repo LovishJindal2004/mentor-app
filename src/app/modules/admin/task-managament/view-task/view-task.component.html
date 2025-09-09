@@ -67,26 +67,50 @@
                         </span>
                     </h3>
 
-                    <div class="mt-4 bg-gray-900 rounded-md p-4">
+                    <div class="mt-4 bg-gray-900 rounded-md p-4 overflow-y-auto h-[46vh]">
                         <!-- Table Header -->
-                        <div class="grid grid-cols-12 gap-4 items-center text-sm text-gray-400">
-                            <div class="col-span-2">Type</div>
-                            <div class="col-span-3">Subject</div>
-                            <div class="col-span-3">ExamType</div>
-                            <div class="col-span-4">Name</div>
+                        <div class="grid grid-cols-12 gap-4 items-center text-sm text-gray-400 border-b border-gray-700 pb-2">
+                          <div class="col-span-2">Type</div>
+                          <div class="col-span-3">Subject / ExamType</div>
+                          <div class="col-span-5">Name</div>
+                          <div class="col-span-2 text-center">Status</div>
                         </div>
-
+                      
                         <!-- Loop through resources -->
                         <div *ngFor="let res of taskDetails?.resources"
-                            class="mt-3 grid grid-cols-12 gap-4 items-center text-sm text-gray-200">
-                            <div class="col-span-2">{{ getResourceType(res.type) }}</div>
-                            <div class="col-span-3">{{ res.type != '1'? res.subject : 'NA' }}</div>
-                            <div class="col-span-3">{{ res.type == '1'? res.subject : 'NA' }}</div>
-                            <div class="col-span-4 flex items-center gap-3">
-                                <div>{{ res.name }}</div>
-                            </div>
+                          class="mt-3 grid grid-cols-12 gap-4 items-center text-sm text-gray-200 hover:bg-gray-800 rounded-md p-2 transition">
+                          
+                          <!-- Type -->
+                          <div class="col-span-2 font-medium">
+                            {{ getResourceType(res.type) }}
+                          </div>
+                      
+                          <!-- Subject or ExamType -->
+                          <div class="col-span-3">
+                            <ng-container *ngIf="res.type == '1'; else subjectBlock">
+                              {{ res.subject || 'NA' }}
+                            </ng-container>
+                            <ng-template #subjectBlock>
+                              {{ res.subject || 'NA' }}
+                            </ng-template>
+                          </div>
+                      
+                          <!-- Name with clickable navigation -->
+                          <div class="col-span-5 flex items-center gap-3 cursor-pointer" (click)="NavigatetoExam(res)">
+                            <div class="truncate">{{ res.name }}</div>
+                          </div>
+                      
+                          <!-- Status with Icon -->
+                          <div class="col-span-2 flex justify-center">
+                            <ng-container [ngSwitch]="res.status">
+                              <mat-icon *ngSwitchCase="3" class="text-green-500">check_circle</mat-icon>
+                              <mat-icon *ngSwitchCase="2" class="text-yellow-500">autorenew</mat-icon>
+                              <mat-icon *ngSwitchDefault class="text-gray-500">hourglass_empty</mat-icon>
+                            </ng-container>
+                          </div>
                         </div>
-                    </div>
+                      </div>
+                      
                 </div>
 
 

@@ -1,0 +1,62 @@
+<div class="bg-white py-6 px-4 header-examdetails">
+    <div class="flex text-primary">
+        <mat-icon class="text-primary mr-1 cursor-pointer" (click)="goToQanks()">arrow_back</mat-icon>
+        <h2 class="text-lg text-primary cursor-pointer" (click)="goToQanks()">Q'Banks<span class="text-[#6E6E6E] text-normal"> / {{QbnkExamDetails?.topicName}}</span></h2>
+    </div>
+</div>
+<div class="flex items-center justify-center mt-30" *ngIf="!dataLoaded">
+    <img src="my-images/imgLoder.gif" class="w-15">
+</div>
+<div class="py-8 px-5" *ngIf="dataLoaded">
+    <div class="w-full">
+        <div class="banner-exam rounded-lg" *ngIf="QbnkExamDetails?.banner!=''">
+            <img [src]="QbnkExamDetails?.banner">
+        </div>
+        <div class="px-8 py-4 pb-8 border-primary/25 border main_box">
+            <div> 
+                <div class="flex justify-between" *ngIf="QbnkExamDetails && QbnkExamDetails.questionDuration>0">
+                    <h3 class="text-xl font-medium text-primary">{{QbnkExamDetails?.subjectName}}</h3>
+                    <mat-slide-toggle class="slide-toggle" color="primary" [checked]="isUserSelectTimer" (change)="Settimer($event.checked)">
+                       Enable Timer
+                </mat-slide-toggle>
+                </div>
+              
+                <h4 class="text-[#505050] py-1 pt-1">{{QbnkExamDetails?.topicName}}</h4>
+                <h5 class="text-[#505050] font-medium pt-1">{{QbnkExamDetails?.examName}}</h5>
+                <div class="flex items-center gap-1 pt-1">
+                    <!-- <div class="flex items-center mr-2">
+                        <mat-icon class="text-primary text-base">star</mat-icon>
+                        <span class="font-light text-base text-[#6E6E6E]">4.5</span>
+                    </div> -->
+                    <!-- <h3 class="font-light text-base text-[#6E6E6E]">{{QbnkExamDetails?.noOfQuestions}} MCQ's</h3> -->
+                </div>
+              
+            </div>
+            <hr class="text-[#DCDCDC] w-full m-0 my-2">
+            <div>
+                <h2 class="font-light text-sm text-[#6E6E6E]">QBank ID : {{QbnkExamDetails?.examId}}</h2>
+                <h3 class="text-[#505050] py-1">Descriptions</h3>
+                <p class="text-[#505050] font-light" [innerHTML]="QbnkExamDetails?.description">
+                </p>
+                <div *ngIf="QbnkExamDetails?.chapters && QbnkExamDetails.chapters?.length>0">
+                    <h4 class="text-base font-medium text-primary pt-4" >Have you completed the chapter ?</h4>
+                    <h5 class="font-light text-sm text-[#6E6E6E] pt-1">Note : The collection of important & repeatedly asked
+                        topics.
+                        Following topics are covered in this module</h5>
+                </div>
+            
+            </div>
+            <div *ngIf="QbnkExamDetails">
+            <div class="mt-5 gap-8" *ngFor="let chapter of QbnkExamDetails.chapters">
+                <div class="flex bg-[#FFFFF7] border border-[#DCDCDC] p-2 py-3 items-center gap-2">
+                    <mat-icon class="done">done</mat-icon>
+                    <h3 class="font-light text-base text-[#6E6E6E]">{{chapter.chapterName}}</h3>
+                </div>
+            </div>
+        </div>
+            <button mat-raised-button
+                class="start-exam text-[#fff] align-center py-6 px-12 text-xl flex mx-auto mt-9 rounded-lg w-56" (click)="naviGateToExam()">Start
+                QBank</button>
+        </div>
+    </div>
+</div>

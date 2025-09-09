@@ -35,23 +35,24 @@
           </div>
 
           <div class="task-list" (scroll)="onColumnScroll($event, column)">
-            <div class="task-card" (click)="openViewTask(task.id)"
+            <div class="task-card" 
               *ngFor="let task of column.tasks" cdkDrag
               [ngClass]="'priority-' + task.priority"
               [style.border-left-color]="getTaskTypeColor(task)"
               [style.border-left-width.px]="6"
               [style.border-left-style]="'solid'">
 
-              <div class="task-type-badge">
+              <!-- <div class="task-type-badge">
                 <span class="type-name" [style.color]="getTaskTypeColor(task)">
                   {{ getTaskTypeName(task) }}
                 </span>
-              </div>
+              </div> -->
 
               <div class="task-header">
                 <h3>{{ task.title }}</h3>
                 <div class="task-actions">
-                  <button (click)="deleteTask(column, task)">×</button>
+                  <button class="text-sm bg-primary-500 text-white" (click)="openViewTask(task.id)"><mat-icon class="text-base text-white" >remove_red_eye</mat-icon></button>
+                  <button class="bg-primary-500 text-white" (click)="deleteTask(column, task)">×</button>
                 </div>
               </div>
               <p>{{ task.description }}</p>

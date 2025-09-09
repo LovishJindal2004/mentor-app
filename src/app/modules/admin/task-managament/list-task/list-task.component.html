@@ -1,20 +1,29 @@
 <div class="p-4">
-  <!-- <div *ngIf="isLoading" class="flex justify-center my-4">
-      <mat-spinner diameter="40"></mat-spinner></div> -->
   <div class="mb-3 flex items-center gap-2">
-      <button *ngIf="_userDetails?.Roles == 'Mentor'" mat-raised-button class="bg-primary rounded-full flex items-center gap-2 text-white" (click)="AssignTask()"><mat-icon>add</mat-icon>Add New</button>
-      <div>
-          <mat-button-toggle-group name="fontStyle" value="TableView" aria-label="Font Style">
-              <mat-button-toggle routerLink="/task/list" value="TableView"><mat-icon>table_chart</mat-icon>Table View</mat-button-toggle>
-              <mat-button-toggle routerLink="{{_userDetails?.Roles == 'Mentor' ? '/task/mentor-kanban' : '/task/kanban' }}" value="KanBan"><mat-icon>view_list</mat-icon>
-                  KanBan Board</mat-button-toggle>
-                  <mat-button-toggle routerLink="{{_userDetails?.Roles == 'Mentor' ? '/task/mentor-calendar' : '/task/calendar' }}" value="Calendar"><mat-icon>calendar_today</mat-icon>
-                    Calendar</mat-button-toggle>
-                   </mat-button-toggle-group>
-      </div>
+    <button *ngIf="_userDetails?.Roles == 'Mentor'" 
+            mat-raised-button 
+            class="bg-primary rounded-full flex items-center gap-2 text-white" 
+            (click)="AssignTask()">
+      <mat-icon>add</mat-icon>Add New
+    </button>
+    <div>
+      <mat-button-toggle-group name="fontStyle" value="TableView" aria-label="Font Style">
+        <mat-button-toggle routerLink="/task/list" value="TableView">
+          <mat-icon>table_chart</mat-icon>Table View
+        </mat-button-toggle>
+        <mat-button-toggle routerLink="{{_userDetails?.Roles == 'Mentor' ? '/task/mentor-kanban' : '/task/kanban' }}" 
+                          value="KanBan">
+          <mat-icon>view_list</mat-icon>KanBan Board
+        </mat-button-toggle>
+        <mat-button-toggle routerLink="{{_userDetails?.Roles == 'Mentor' ? '/task/mentor-calendar' : '/task/calendar' }}" 
+                          value="Calendar">
+          <mat-icon>calendar_today</mat-icon>Calendar
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
   </div>
-  <mat-accordion multi="true">
 
+  <mat-accordion multi="true">
     <!-- Active Tasks -->
     <mat-expansion-panel expanded="true">
       <mat-expansion-panel-header>
@@ -23,45 +32,61 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <table mat-table [dataSource]="activeTasks" class="mat-elevation-z8 w-full">
+      <div class="table-container">
+        <table mat-table [dataSource]="activeTasks" class="mat-elevation-z8 w-full">
+          <!-- Task Column -->
+          <ng-container matColumnDef="task">
+            <th mat-header-cell *matHeaderCellDef> Task </th>
+            <td mat-cell *matCellDef="let task"> {{ task.title }} </td>
+          </ng-container>
 
-        <!-- Task Column -->
-        <ng-container matColumnDef="task">
-          <th mat-header-cell *matHeaderCellDef> Task </th>
-          <td mat-cell *matCellDef="let task"> {{ task.title }} </td>
-        </ng-container>
+          <ng-container matColumnDef="createdby">
+            <th mat-header-cell *matHeaderCellDef> Assigned By </th>
+            <td mat-cell *matCellDef="let task"> {{ task.createdBy || 'N/A' }} </td>
+          </ng-container>
 
-        <ng-container matColumnDef="createdby">
-          <th mat-header-cell *matHeaderCellDef> Assigned By </th>
-          <td mat-cell *matCellDef="let task"> {{ task.createdBy || 'N/A' }} </td>
-        </ng-container>
+          <ng-container matColumnDef="createdon">
+            <th mat-header-cell *matHeaderCellDef> Created On </th>
+            <td mat-cell *matCellDef="let task"> {{ task.date | date:'MMM d, y' || 'N/A' }} </td>
+          </ng-container>
 
-        <ng-container matColumnDef="createdon">
-          <th mat-header-cell *matHeaderCellDef> Created On </th>
-          <td mat-cell *matCellDef="let task"> {{ task.date | date:'MMM d, y'	|| 'N/A' }} </td>
-        </ng-container>
+          <!-- Action Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let task">
+              <div class="flex items-center gap-2">
+                <mat-icon class="cursor-pointer" 
+                         *ngIf="_userDetails?.Roles == 'Mentor'" 
+                         (click)="edit(task)" 
+                         routerLink="/task/edit/{{task.guid}}">
+                  edit
+                </mat-icon>
+                <mat-icon class="cursor-pointer" 
+                         (click)="showTask(task.guid)">
+                  remove_red_eye
+                </mat-icon>
+                <button mat-raised-button 
+                        *ngIf="_userDetails?.Roles == 'Mentor'" 
+                        color="primary" 
+                        (click)="markCompleted(task.guid)">
+                  Mark Completed
+                </button>
+              </div>
+            </td>
+          </ng-container>
 
-        <!-- Action Column -->
-        <ng-container matColumnDef="action">
-          <th mat-header-cell *matHeaderCellDef> Action </th>
-          <td mat-cell *matCellDef="let task">
-            <div class="flex items-center gap-2">
-            <mat-icon class="cursor-pointer" *ngIf="_userDetails?.Roles == 'Mentor'" click="edit(task)" routerLink="/task/edit/{{task.guid}}">edit</mat-icon>
-              <!-- <mat-icon (click)="openDrawer(task)">pageview</mat-icon> -->
-              <mat-icon class="cursor-pointer" (click)="showTask(task.guid)">pageview</mat-icon>
-            <!-- </button> -->
-            <button mat-raised-button *ngIf="_userDetails?.Roles == 'Mentor'" color="border border-primary" (click)="markCompleted(task.guid)">
-              Mark Completed
-            </button>
-            </div>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      <mat-paginator #activePaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        
+        <!-- Active Tasks Paginator -->
+        <mat-paginator #activePaginator 
+                      [pageSizeOptions]="[5, 10, 20]" 
+                      [pageSize]="5"
+                      showFirstLastButtons
+                      aria-label="Select page of active tasks">
+        </mat-paginator>
+      </div>
     </mat-expansion-panel>
 
     <!-- Completed Tasks -->
@@ -72,214 +97,80 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <table mat-table [dataSource]="completedTasks" class="mat-elevation-z8 w-full">
+      <div class="table-container">
+        <table mat-table [dataSource]="completedTasks" class="mat-elevation-z8 w-full">
+          <!-- Task Column -->
+          <ng-container matColumnDef="task">
+            <th mat-header-cell *matHeaderCellDef> Task </th>
+            <td mat-cell *matCellDef="let task"> {{ task.title }} </td>
+          </ng-container>
 
-        <!-- Task Column -->
-        <ng-container matColumnDef="task">
-          <th mat-header-cell *matHeaderCellDef> Task </th>
-          <td mat-cell *matCellDef="let task"> {{ task.title }} </td>
-        </ng-container>
+          <ng-container matColumnDef="createdby">
+            <th mat-header-cell *matHeaderCellDef> Assigned By </th>
+            <td mat-cell *matCellDef="let task"> {{ task.createdBy || 'N/A' }} </td>
+          </ng-container>
 
-        <ng-container matColumnDef="createdby">
-          <th mat-header-cell *matHeaderCellDef> Assigned By </th>
-          <td mat-cell *matCellDef="let task"> {{ task.createdBy || 'N/A' }} </td>
-        </ng-container>
+          <ng-container matColumnDef="createdon">
+            <th mat-header-cell *matHeaderCellDef> Created On </th>
+            <td mat-cell *matCellDef="let task"> {{ task.date | date:'MMM d, y' || 'N/A' }} </td>
+          </ng-container>
 
-        <ng-container matColumnDef="createdon">
-          <th mat-header-cell *matHeaderCellDef> Created On </th>
-          <td mat-cell *matCellDef="let task"> {{ task.date |  date:'MMM d, y'	|| 'N/A' }} </td>
-        </ng-container>
+          <!-- Action Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let task">
+              <div class="flex items-center gap-2">
+                <mat-icon class="cursor-pointer" 
+                         *ngIf="_userDetails?.Roles == 'Mentor'" 
+                         (click)="edit(task)" 
+                         routerLink="/task/edit/{{task.guid}}">
+                  edit
+                </mat-icon>
+                <mat-icon class="cursor-pointer" 
+                         (click)="showTask(task.guid)">
+                  remove_red_eye
+                </mat-icon>
+                <button mat-raised-button 
+                        *ngIf="_userDetails?.Roles == 'Mentor'" 
+                        color="primary" 
+                        (click)="markActive(task.guid)">
+                  Move to Active
+                </button>
+              </div>
+            </td>
+          </ng-container>
 
-        <!-- Action Column -->
-        <ng-container matColumnDef="action">
-          <th mat-header-cell *matHeaderCellDef> Action </th>
-          <td mat-cell *matCellDef="let task">
-            <div class="flex items-center gap-2">
-            <mat-icon class="cursor-pointer" *ngIf="_userDetails?.Roles == 'Mentor'" click="edit(task)" routerLink="/task/edit/{{task.guid}}">edit</mat-icon>
-            <mat-icon class="cursor-pointer" (click)="showTask(task.guid)">pageview</mat-icon>
-            <button mat-raised-button *ngIf="_userDetails?.Roles == 'Mentor'" color="border border-primary" (click)="markActive(task.guid)">
-              Move to Active
-            </button></div>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      <mat-paginator #completedPaginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        
+        <!-- Completed Tasks Paginator -->
+        <mat-paginator #completedPaginator 
+                      [length]="completedTasksPagination.totalCount"
+                      [pageSize]="completedTasksPagination.pageSize"
+                      [pageIndex]="completedTasksPagination.currentPage - 1"
+                      [pageSizeOptions]="[5, 10, 20]" 
+                      (page)="onCompletedPageChange($event)"
+                      showFirstLastButtons
+                      aria-label="Select page of completed tasks">
+        </mat-paginator>
+      </div>
     </mat-expansion-panel>
-
   </mat-accordion>
 </div>
+
+<!-- Drawer component remains the same -->
 <fuse-drawer #drawer 
-class="z-999 w-screen min-w-screen sm:w-200 sm:min-w-200"
-fixed
-[mode]="'over'"
-[name]="'drawer'"
-[position]="'right'">
-  <!-- <h2>Task Detail</h2>
-  <p><strong>Name:</strong> a</p>
-  <p><strong>Description:</strong> aa</p>
-  <button mat-button (click)="drawer.close()">Close</button> -->
-  <!-- Angular component template: TaskCardComponent.html
-     TailwindCSS applied for styling
--->
-<div class="min-h-screen bg-gray-900 text-gray-100 p-6 font-sans">
-  <div class="max-w-6xl mx-auto h-full grid grid-cols-12 gap-6">
-
-    <!-- Left: Task details -->
-    <div class="col-span-8 bg-gray-950 rounded-lg shadow-lg p-6">
-
-      <!-- Workspace & Title -->
-      <div class="flex items-start justify-between">
-        <div>
-          <div class="text-sm text-gray-400">Task</div>
-          <h1 class="text-2xl font-semibold mt-2">XZCV</h1>
-        </div>
-        <div class="flex items-center gap-2">
-          <button class="p-2 rounded-full hover:bg-gray-800">
-            <span class="material-icons text-gray-300" (click)="drawer.close()">close</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="border-t border-gray-800 my-4"></div>
-
-      <!-- Properties grid -->
-      <div class="grid grid-cols-3 gap-6 mt-2">
-        <div>
-          <div class="text-sm text-gray-400">Status</div>
-          <div class="mt-2 font-medium">New task</div>
-        </div>
-
-        <div>
-          <div class="text-sm text-gray-400">Assignee</div>
-          <div class="mt-2 flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-green-600 flex items-center justify-center">L</div>
-            <span>Me</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Action buttons -->
-      <div class="flex gap-3 mt-6 flex-wrap">
-        <button class="border border-gray-700 px-3 py-1 rounded hover:bg-gray-800">Video</button>
-        <button class="border border-gray-700 px-3 py-1 rounded hover:bg-gray-800">QBank</button>
-        <button class="border border-gray-700 px-3 py-1 rounded hover:bg-gray-800">Test</button>
-      </div>
-
-      <div class="border-t border-gray-800 my-6"></div>
-
-      <!-- Description -->
-      <div>
-        <h3 class="flex items-center gap-2 text-sm text-gray-400"><span class="material-icons text-base">description</span> Description</h3>
-        <p class="mt-3 text-sm text-gray-300">zcxvzxcvzxcv</p>
-      </div>
-
-      <div class="border-t border-gray-800 my-6"></div>
-
-      <!-- Scheduled work -->
-      <div>
-        <h3 class="flex items-center gap-2 text-sm text-gray-400"><span class="material-icons text-base">calendar_today</span> Assigned Tasks <span class="ml-2 bg-gray-800 px-2 py-0.5 rounded-full text-xs">1</span></h3>
-
-        <div class="mt-4 bg-gray-900 rounded-md p-4">
-          <div class="grid grid-cols-12 gap-4 items-center text-sm text-gray-400">
-            <div class="col-span-3">Module</div>
-            <div class="col-span-3">Subject</div>
-            <div class="col-span-2">Test Type</div>
-            <div class="col-span-4">Name</div>
-          </div>
-
-          <div class="mt-3 grid grid-cols-12 gap-4 items-center text-sm text-gray-200">
-            <div class="col-span-3">Video</div>
-            <div class="col-span-3">Anatomy</div>
-            <div class="col-span-2">NA</div>
-            <div class="col-span-4 flex items-center gap-3">
-              <button class="p-2 rounded-full hover:bg-gray-800"><span class="material-icons text-gray-300">play_circle_outline</span></button>
-              <div>Introduction <br>00:00:00</div>
-            </div>
-          </div>
-          <div class="mt-3 grid grid-cols-12 gap-4 items-center text-sm text-gray-200">
-            <div class="col-span-3">Test</div>
-            <div class="col-span-3">NA</div>
-            <div class="col-span-2">Grand Test</div>
-            <div class="col-span-4 flex items-center gap-3">
-              <div>GRAND MOCK 2025</div>
-            </div>
-          </div>
-          <!-- <div class="mt-3">
-            <a class="text-sm text-gray-300 hover:underline cursor-pointer">+ Schedule more work</a>
-          </div> -->
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Right: Chat panel -->
-    <!-- Right: Comment panel -->
-<div class="col-span-4 bg-gray-950 rounded-lg p-6 flex flex-col">
-  <!-- Header -->
-  <div class="flex items-center justify-between mb-4">
-    <h3 class="text-sm text-gray-400 flex items-center gap-2">
-      <span class="material-icons text-base">comment</span> Comments
-    </h3>
-  </div>
-
-  <!-- Comments feed -->
-  <div class="flex-1 overflow-y-auto space-y-4 pr-1">
-    <!-- Single comment -->
-    <div class="flex items-start gap-3">
-      <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">L</div>
-      <div class="flex-1">
-        <div class="bg-gray-800 rounded-lg p-3">
-          <div class="flex items-center justify-between">
-            <span class="font-medium text-sm">Lovish</span>
-            <span class="text-xs text-gray-400">20 Aug, 12:35</span>
-          </div>
-          <p class="text-sm text-gray-200 mt-1">Hi, this is my first comment.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Another comment -->
-    <div class="flex items-start gap-3">
-      <div class="w-9 h-9 rounded-full bg-green-600 flex items-center justify-center text-white font-medium">A</div>
-      <div class="flex-1">
-        <div class="bg-gray-800 rounded-lg p-3">
-          <div class="flex items-center justify-between">
-            <span class="font-medium text-sm">Admin</span>
-            <span class="text-xs text-gray-400">20 Aug, 13:00</span>
-          </div>
-          <p class="text-sm text-gray-200 mt-1">Thanks for the update!</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Comment input -->
-  <div class="mt-4 flex items-start gap-3">
-    <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">L</div>
-    <div class="flex-1">
-      <textarea
-        rows="2"
-        placeholder="Write a comment..."
-        class="w-full bg-transparent border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 resize-none outline-none focus:ring-1 focus:ring-blue-600"
-      ></textarea>
-      <div class="mt-2 flex justify-end">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 text-sm rounded-lg">Post</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-  </div>
-</div>
-
+            class="z-999 w-screen min-w-screen sm:w-200 sm:min-w-200"
+            fixed
+            [mode]="'over'"
+            [name]="'drawer'"
+            [position]="'right'">
+  <!-- Your existing drawer content -->
 </fuse-drawer>
 
 <app-view-task
-[isOpen]="showTaskModal"
-[taskId]="selectedTaskId"
-(close)="onSidePanelClose()">
+  [isOpen]="showTaskModal"
+  [taskId]="selectedTaskId"
+  (close)="onSidePanelClose()">
 </app-view-task>

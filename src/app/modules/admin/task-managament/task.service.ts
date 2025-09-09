@@ -111,6 +111,14 @@ export class TaskService {
             }, reject);
         })
     };
+    updateTaskOrder(data) {
+        return new Promise((resolve, reject) => {
+            this._https.post(`${environment.externalApiURL}/api/task/reorder`,{...data}).subscribe((response: any) => {
+                this.onTasksChanged.next(response);
+                resolve(response);
+            }, reject);
+        })
+    };
     // getAssignedTaskList(data) {
 
     //     return new Promise((resolve, reject) => {
