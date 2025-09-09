@@ -51,6 +51,22 @@ export const defaultNavigation: FuseNavigationItem[] = [
         roles : ['Mentor']
     },
     {
+        id   : 'viewprogress',
+        title: 'View Progress',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/student/view-progress',
+        roles : ['Admin','Mentor']
+    },
+    {
+        id   : 'viewreport',
+        title: 'View Report',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-bar',
+        link : '/student/view-report',
+        roles : ['Admin','Mentor']
+    },
+    {
         id   : 'course',
         title: 'course',
         type : 'basic',
@@ -168,6 +184,20 @@ export const AdminNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:book-open',
         link : '/course/list'
+    },
+    {
+        id   : 'viewprogress',
+        title: 'View Progress',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/student/view-progress'
+    },
+    {
+        id   : 'viewreport',
+        title: 'View Report',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-bar',
+        link : '/student/view-report'
     },
 ];
 export const MentorNavigation: FuseNavigationItem[] = [

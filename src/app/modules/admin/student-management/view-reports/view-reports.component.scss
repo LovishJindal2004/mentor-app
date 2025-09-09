@@ -1,0 +1,106 @@
+/* Tab body should still adapt to content */
+:host ::ng-deep .mat-mdc-tab-body-wrapper {
+    height: auto !important;
+}
+
+/* [Angular Material tabs] */
+mat-tab-group {
+    width: 100%;
+}
+
+/* full width tabs */
+
+/* Panel layout */
+.dashboard-container {
+    display: flex;
+    margin-top: 24px;
+}
+
+.activity-report-panel {
+    flex: 1;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .05);
+    display: flex;
+    flex-direction: column;
+}
+
+.report-header {
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f9f9f9;
+}
+
+/* Make content full width */
+.simple-report-content {
+    padding: 24px;
+    display: block;
+    /* no centering */
+    width: 100%;
+}
+
+/* Make the card fill the panel width */
+.sketch-style-report {
+    width: 100%;
+    max-width: none;
+    /* remove previous cap; or set e.g., 1100px if needed */
+    background-color: #fffdf7;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, .1);
+    position: relative;
+    transform: rotate(-0.5deg);
+}
+
+/* Optional: tighten rows for wide layouts */
+.report-item {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.report-item .label {
+    font-weight: 700;
+    color: #333;
+}
+
+.report-item .value {
+    color: #0066cc;
+    font-weight: 600;
+}
+
+/* Lists remain as before */
+.report-section {
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.section-title {
+    font-weight: 700;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    text-decoration: underline;
+    color: #333;
+}
+
+.simple-list {
+    list-style: none;
+    padding-left: 10px;
+}
+
+.simple-list li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 15px;
+}
+
+.simple-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #666;
+}

@@ -130,7 +130,7 @@ export class StudentService {
       }
       unassignedStudent(mentorId, menteeId) {
         return new Promise((resolve, reject) => {
-          this._https.delete(`${environment.externalApiURL}/api/v1/mentor/${mentorId}/mentee/${menteeId}`).subscribe(
+          this._https.get(`${environment.externalApiURL}/api/v1/mentor/${mentorId}/mentee/${menteeId}`).subscribe(
             (response: any) => {
               resolve(response);
             },

@@ -1,0 +1,108 @@
+<div class="container p-4">
+    <div class="header mb-4">
+        <h2 class="text-2xl font-bold">View Progress</h2>
+        
+        <!-- Tabs Navigation -->
+        <mat-tab-group [(selectedIndex)]="selectedTab" class="mt-4">
+            <!-- All Tab with Date Picker -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <div class="flex items-center" [matMenuTriggerFor]="dateMenu">
+                        <span>{{ selectedDate ? (selectedDate | date:'mediumDate') : 'All' }}</span>
+                        <mat-icon class="ml-1">arrow_drop_down</mat-icon>
+                    </div>
+                </ng-template>
+                <mat-menu #dateMenu="matMenu" class="date-picker-menu">
+                    <div class="p-4" (click)="$event.stopPropagation()">
+                        <mat-calendar [(selected)]="selectedDate" (selectedChange)="onDateChange($event)"></mat-calendar>
+                    </div>
+                </mat-menu>
+            </mat-tab>
+            
+            <!-- Subject Tab with Dropdown -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <div class="flex items-center" [matMenuTriggerFor]="subjectMenu">
+                        <span>{{ selectedSubject }}</span>
+                        <mat-icon class="ml-1">arrow_drop_down</mat-icon>
+                    </div>
+                </ng-template>
+                <mat-menu #subjectMenu="matMenu">
+                    <button mat-menu-item *ngFor="let subject of subjects" (click)="onSubjectChange(subject)">
+                        {{ subject }}
+                    </button>
+                </mat-menu>
+            </mat-tab>
+            
+            <!-- Student Tab with Dropdown -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <div class="flex items-center" [matMenuTriggerFor]="studentMenu">
+                        <span>{{ selectedStudent }}</span>
+                        <mat-icon class="ml-1">arrow_drop_down</mat-icon>
+                    </div>
+                </ng-template>
+                <mat-menu #studentMenu="matMenu">
+                    <button mat-menu-item *ngFor="let student of students" (click)="onStudentChange(student)">
+                        {{ student }}
+                    </button>
+                </mat-menu>
+            </mat-tab>
+            
+            <!-- Video Tab with Options -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <div class="flex items-center" [matMenuTriggerFor]="videoMenu">
+                        <span>{{ selectedVideoOption }}</span>
+                        <mat-icon class="ml-1">arrow_drop_down</mat-icon>
+                    </div>
+                </ng-template>
+                <mat-menu #videoMenu="matMenu">
+                    <button mat-menu-item *ngFor="let option of videoOptions" (click)="onVideoOptionChange(option)">
+                        {{ option }}
+                    </button>
+                </mat-menu>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+
+    <!-- CVS Section -->
+    <div class="section-title mb-2">
+        <h3 class="text-xl font-semibold">CVS</h3>
+    </div>
+
+    <!-- Course Modules Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let module of courseModules" 
+             class="module-card p-4 rounded-lg shadow" 
+             [ngClass]="{'border-green': module.color === 'green', 'border-blue': module.color === 'blue', 'border-pink': module.color === 'pink'}">
+            
+            <div class="card-header mb-2">
+                <h4 class="text-lg font-medium">{{ module.title }}</h4>
+                <div class="duration">{{ module.duration }}</div>
+            </div>
+            
+                            <div class="progress-text" *ngIf="module.progress !== undefined">
+                    {{ module.progress }}%
+                </div>
+            <!-- Progress Bar -->
+            <div class="progress-container mt-2 mb-2">
+
+                <div class="progress-bar" [style.width.%]="module.progress || 0"></div>
+                <div class="progress-text" *ngIf="module.progress !== undefined">
+                    {{ module.progress }}%
+                </div>
+            </div>
+            
+            <div class="card-footer mt-2">
+                <div *ngIf="module.isAssigned" class="assigned-status">
+                    <span>{{ module.assignmentStatus }}</span>
+                    <span *ngIf="module.dueDate"> {{ module.dueDate }}</span>
+                </div>
+                <div *ngIf="!module.isAssigned" class="not-assigned-status">
+                    {{ module.assignmentStatus }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,127 @@
+<div class="container p-4">
+    <div class="header mb-4">
+        <h2 class="text-2xl font-bold">View Reports</h2>
+        
+        <!-- Tabs Navigation -->
+        <mat-tab-group [(selectedIndex)]="selectedTab" class="mt-4">
+            <!-- All Tab with Date Picker -->
+            <!-- <mat-tab>
+                <ng-template mat-tab-label>
+                    <div class="flex items-center" [matMenuTriggerFor]="dateMenu">
+                        <span>{{ selectedDate ? (selectedDate | date:'mediumDate') : 'All' }}</span>
+                        <mat-icon class="ml-1">arrow_drop_down</mat-icon>
+                    </div>
+                </ng-template>
+                <mat-menu #dateMenu="matMenu" class="date-picker-menu">
+                    <div class="p-4" (click)="$event.stopPropagation()">
+                        <mat-calendar [(selected)]="selectedDate" (selectedChange)="onDateChange($event)"></mat-calendar>
+                    </div>
+                </mat-menu>
+            </mat-tab> -->
+            
+            <!-- Subject Tab with Dropdown -->
+            <!-- <mat-tab>
+                <ng-template mat-tab-label>
+                    <div class="flex items-center" [matMenuTriggerFor]="subjectMenu">
+                        <span>{{ selectedSubject }}</span>
+                        <mat-icon class="ml-1">arrow_drop_down</mat-icon>
+                    </div>
+                </ng-template>
+                <mat-menu #subjectMenu="matMenu">
+                    <button mat-menu-item *ngFor="let subject of subjects" (click)="onSubjectChange(subject)">
+                        {{ subject }}
+                    </button>
+                </mat-menu>
+            </mat-tab> -->
+            
+            <!-- Student Tab with Dropdown -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <div class="flex items-center" [matMenuTriggerFor]="studentMenu">
+                        <span>{{ selectedStudent }}</span>
+                        <mat-icon class="ml-1">arrow_drop_down</mat-icon>
+                    </div>
+                </ng-template>
+                <mat-menu #studentMenu="matMenu">
+                    <button mat-menu-item *ngFor="let student of students" (click)="onStudentChange(student)">
+                        {{ student }}
+                    </button>
+                </mat-menu>
+            </mat-tab>
+            
+            <!-- Activity Tab with Options -->
+            <!-- <mat-tab>
+                <ng-template mat-tab-label>
+                    <div class="flex items-center" [matMenuTriggerFor]="activityMenu">
+                        <span>{{ selectedActivity }}</span>
+                        <mat-icon class="ml-1">arrow_drop_down</mat-icon>
+                    </div>
+                </ng-template>
+                <mat-menu #activityMenu="matMenu">
+                    <button mat-menu-item *ngFor="let option of activityOptions" (click)="onActivityChange(option)">
+                        {{ option }}
+                    </button>
+                </mat-menu>
+            </mat-tab> -->
+        </mat-tab-group>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div class="dashboard-container">
+        <!-- Student List Panel -->
+        <!-- <div class="student-list-panel">
+            <h3 class="text-xl font-semibold mb-3">Students</h3>
+            <div class="student-list">
+                <div *ngFor="let report of studentReports" 
+                     class="student-item p-3" 
+                     [class.active]="report.name === selectedStudent"
+                     (click)="onStudentChange(report.name)">
+                    {{ report.name }}
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Activity Report Panel -->
+        <div class="activity-report-panel">
+            <div class="report-header">
+                <h3 class="text-xl font-semibold">{{ selectedActivity }}</h3>
+            </div>
+            
+            <!-- Simple Report View (Sketch-like) -->
+            <div class="simple-report-content p-4" *ngFor="let report of studentReports">
+                <div *ngIf="report.name === selectedStudent" class="sketch-style-report">
+                    <div class="report-item">
+                        <span class="label">Videos Watched:</span>
+                        <span class="value">{{ report.videosWatched }}</span>
+                    </div>
+                    <div class="report-item">
+                        <span class="label">MCQs Attempted:</span>
+                        <span class="value">{{ report.questionsAttempted }}</span>
+                    </div>
+                    <div class="report-item">
+                        <span class="label">Time Spent:</span>
+                        <span class="value">{{ report.timeSpent }}</span>
+                    </div>
+                    <div class="report-item">
+                        <span class="label">Streak:</span>
+                        <span class="value">{{ report.streak }}</span>
+                    </div>
+                    
+                    <div class="report-section">
+                        <h4 class="section-title">Weak Topics</h4>
+                        <ul class="simple-list">
+                            <li *ngFor="let topic of report.weakTopics">{{ topic }}</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="report-section">
+                        <h4 class="section-title">Recommendations</h4>
+                        <ul class="simple-list">
+                            <li *ngFor="let rec of report.recommendations">{{ rec }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
