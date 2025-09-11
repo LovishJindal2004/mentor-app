@@ -263,14 +263,7 @@ export const AdminNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:chart-pie',
         link : '/student/view-progress'
-    },
-    {
-        id   : 'viewreport',
-        title: 'View Report',
-        type : 'basic',
-        icon : 'heroicons_outline:chart-bar',
-        link : '/student/view-report'
-    },
+    }
 ];
 export const MentorNavigation: FuseNavigationItem[] = [
     {
@@ -286,6 +279,20 @@ export const MentorNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:chart-pie',
         link : '/task/list'
+    },
+    {
+        id   : 'viewreport',
+        title: 'View Report',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-bar',
+        link : '/student/view-report'
+    },
+    {
+        id   : 'viewprogress',
+        title: 'View Progress',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/student/view-progress'
     }
 ];
 export const MenteeNavigation: FuseNavigationItem[] = [
@@ -296,6 +303,13 @@ export const MenteeNavigation: FuseNavigationItem[] = [
     //     icon : 'heroicons_outline:chart-pie',
     //     link : '/student'
     // }
+    {
+        id   : 'Dashboard',
+        title: 'Dashboard',
+        type : 'basic',
+        icon : 'heroicons_outline:cube',
+        link : '/dashboard'
+    },
     {
         id   : 'task-list',
         title: 'Task List',

@@ -53,8 +53,8 @@
         background-color: #4CAF50;
     }
 
-    &.border-blue .progress-bar {
-        background-color: #2196F3;
+    &.border-orange .progress-bar {
+        background-color: orange;
     }
 
     &.border-pink .progress-bar {
@@ -77,8 +77,8 @@
     border-left-width: 4px;
 }
 
-.border-blue {
-    border-left-color: #2196F3;
+.border-orange {
+    border-left-color: orange;
     border-left-width: 4px;
 }
 

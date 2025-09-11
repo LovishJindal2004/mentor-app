@@ -42,7 +42,7 @@
               </div>
               <p>{{ task.description }}</p>
               <div class="task-footer">
-                <span class="due-date">Date: {{ task.dueDate | date:'shortDate'
+                <span class="due-date">Date: {{ task.dueDate | date:'MMM d, y' || 'N/A'
                   }}</span>
               </div>
             </div>

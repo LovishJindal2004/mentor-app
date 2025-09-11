@@ -1,0 +1,131 @@
+<div class="p-6" *ngIf="currentReport">
+    <!-- Stats Grid -->
+     <h2 class="text-primary font-semibold text-xl mb-4">Daily Activities</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      
+      <!-- Videos Watched -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex items-center gap-4 hover:shadow-lg transition flex-col">
+        <div class="p-4 rounded-full bg-blue-100 text-blue-600">
+          <!-- Heroicon: Video Camera -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m0 0V10m0 4l-6 4V6l6 4" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-gray-500 text-xl">Videos Watched</p>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center">{{ currentReport.videoCompleted }}</h3>
+        </div>
+      </div>
+  
+      <!-- MCQs Attempted -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex items-center gap-4 hover:shadow-lg transition flex-col">
+        <div class="p-4 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
+          <!-- Heroicon: Question Mark Circle -->
+          <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 14h.01M16 10h.01M9 16h6m2-12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg> -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          
+        </div>
+        <div>
+          <p class="text-gray-500 text-xl">MCQs Attempted</p>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center">{{ currentReport.totalMcqAttended }}</h3>
+        </div>
+      </div>
+  
+      <!-- Time Spent -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex items-center gap-4 hover:shadow-lg transition flex-col">
+        <div class="p-4 rounded-full bg-purple-100 text-purple-600">
+          <!-- Heroicon: Clock -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-gray-500 text-xl">Time Spent</p>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center">{{ currentReport.totalSpendingToday }}</h3>
+        </div>
+      </div>
+  
+      <!-- Streak -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex items-center gap-4 hover:shadow-lg transition flex-col">
+        <div class="p-4 rounded-full bg-orange-100 text-orange-600">
+          <!-- Heroicon: Fire -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2.25m0 13.5V21m-6.364-3.636l1.591-1.59m8.546 1.59l-1.59-1.59M4.5 12H6.75m10.5 0H21M7.636 7.636l1.591 1.59m6.546-1.59l-1.59 1.59" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-gray-500 text-xl">Streak</p>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center">{{ currentReport.streaks }}</h3>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Weak Subjects Section -->
+    <div *ngIf="currentReport.weakestSubjects.length > 0" 
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+   
+   <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+     <!-- Analytics icon -->
+     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.054 0 1.502-1.285.732-2.049l-6.928-7.072a1 1 0 00-1.464 0l-6.928 7.072c-.77.764-.322 2.049.732 2.049z" />
+     </svg>
+     Weak Subjects Overview
+   </h4>
+ 
+   <div class="space-y-4">
+     <div *ngFor="let subject of currentReport.weakestSubjects" class="p-4 bg-red-50 dark:bg-gray-700 rounded-lg shadow-sm">
+       <div class="flex justify-between items-center mb-2">
+         <h5 class="text-md font-semibold text-red-600 dark:text-red-400">
+           {{ subject.subjectName }}
+         </h5>
+ 
+         <!-- Performance Icon -->
+         <div>
+           <ng-container [ngSwitch]="true">
+             <svg *ngSwitchCase="subject.percentage < 0" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+             </svg>
+             <svg *ngSwitchCase="subject.percentage === 0" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 4a8 8 0 110 16 8 8 0 010-16z" />
+             </svg>
+             <svg *ngSwitchCase="subject.percentage > 0" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+             </svg>
+           </ng-container>
+         </div>
+       </div>
+ 
+       <!-- Marks Display -->
+       <p class="text-sm text-gray-700 dark:text-gray-300">
+         Marks: <strong>{{ subject.obtainedMarks }}</strong> / {{ subject.totalMarks }}
+       </p>
+ 
+       <!-- Percentage Bar -->
+       <div class="w-full bg-gray-200 dark:bg-gray-600 h-2 rounded mt-2">
+         <div 
+           class="h-2 rounded"
+           [ngClass]="{
+             'bg-red-500': subject.percentage < 25,
+             'bg-yellow-500': subject.percentage >= 25 && subject.percentage < 50,
+             'bg-green-500': subject.percentage >= 50
+           }"
+           [style.width.%]="getPercentageWidth(subject.percentage)"
+
+         ></div>
+       </div>
+ 
+       <!-- Optional: Show percentage text -->
+       <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+         {{ (subject.percentage) | number:'1.0-2' }}%
+       </p>
+     </div>
+   </div>
+ </div>
+ 
+  </div>
+  

@@ -57,7 +57,7 @@
               </div>
               <p>{{ task.description }}</p>
               <div class="task-footer">
-                <span class="due-date">Due: {{ task.dueDate | date:'shortDate'
+                <span class="due-date">Due: {{ task.dueDate | date:'MMM d, y' || 'N/A'
                   }}</span>
                 <span class="assignee" *ngIf="task.assignee">{{ task.assignee
                   }}</span>

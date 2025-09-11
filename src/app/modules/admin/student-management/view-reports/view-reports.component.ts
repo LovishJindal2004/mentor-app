@@ -7,17 +7,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-
-interface StudentReport {
-  name: string;
-  date: string;
-  videosWatched: number;
-  questionsAttempted: number;
-  timeSpent: string;
-  streak: string;
-  weakTopics: string[];
-  recommendations: string[];
-}
+import { StudentService } from '../student.service';
+import { helperService } from 'app/core/auth/helper';
 
 @Component({
   selector: 'app-view-reports',
@@ -37,35 +28,45 @@ interface StudentReport {
 })
 export class ViewReportsComponent implements OnInit {
   selectedTab = 0;
-
   selectedDate: Date | null = null;
   selectedSubject = 'Anatomy';
-  subjects = ['Anatomy', 'Physiology', 'Biochemistry', 'Pathology'];
-
-  selectedStudent = 'Student1';
-  students = ['Student1', 'Student2', 'Student3', 'Student4', 'Student5'];
-
+  selectedStudent: any;
+  students: any[] = [];
   selectedActivity = "Today's Activity";
   activityOptions = ["Today's Activity", 'Weekly Summary', 'Monthly Report'];
+  userDetails: any;
 
-  studentReports: StudentReport[] = [];
+  currentReport: any = null; // Store single report object
 
-  ngOnInit(): void {
-    this.studentReports = [
-      { name: 'Student1', date: 'Today', videosWatched: 2, questionsAttempted: 5, timeSpent: '1hr 15mins', streak: '4 days', weakTopics: ['Cardiac Cycle', 'Renal Physiology'], recommendations: ['Review Cardiac Videos', 'Practice Renal MCQs'] },
-      { name: 'Student2', date: 'Yesterday', videosWatched: 3, questionsAttempted: 10, timeSpent: '2hr 30mins', streak: '7 days', weakTopics: ['Neuroanatomy', 'Immunology'], recommendations: ['Schedule Neuroanatomy Review', 'Take Immunology Practice Test'] },
-      { name: 'Student3', date: '2 days ago', videosWatched: 1, questionsAttempted: 15, timeSpent: '45mins', streak: '2 days', weakTopics: ['Biochemical Pathways', 'Cell Biology'], recommendations: ['Watch Metabolism Videos', 'Review Cell Structure Notes'] },
-      { name: 'Student4', date: '3 days ago', videosWatched: 5, questionsAttempted: 20, timeSpent: '3hr 10mins', streak: '10 days', weakTopics: ['Pharmacology', 'Pathology'], recommendations: ['Focus on Drug Mechanisms', 'Practice Pathology Questions'] },
-      { name: 'Student5', date: '1 week ago', videosWatched: 0, questionsAttempted: 0, timeSpent: '0mins', streak: '0 days', weakTopics: ['Engagement', 'Participation'], recommendations: ['Schedule Check-in Meeting', 'Set Weekly Goals'] }
-    ];
+  constructor(
+    private _studentService: StudentService,
+    private _helperService: helperService,
+  ) {
+    this.userDetails = this._helperService.getUserDetail();
   }
 
-  onDateChange(_: any): void { }
-  onSubjectChange(v: string): void { this.selectedSubject = v; }
-  onStudentChange(v: string): void { this.selectedStudent = v; }
-  onActivityChange(v: string): void { this.selectedActivity = v; }
+  ngOnInit(): void {
+    const req = {
+      keyword: '',
+      pageNumber: 1,
+      pageSize: 100,
+      orderBy: '',
+      sortOrder: ''
+    };
+    this._studentService.getAssignedStudentList(req, this.userDetails?.Id).then((res: any) => {
+      this.students = res?.data || [];
+      if (this.students.length > 0) {
+        this.selectedStudent = this.students[0];
+        this.onStudentChange(this.selectedStudent);
+      }
+    });
+  }
 
-  get currentReport(): StudentReport | undefined {
-    return this.studentReports.find(r => r.name === this.selectedStudent);
+  onStudentChange(student: any): void {
+    if (!student) return;
+    this.selectedStudent = student;
+    this._studentService.getStudentReport(student.id).then((res: any) => {
+      this.currentReport = res; // Direct assignment since response is a single object
+    });
   }
 }
