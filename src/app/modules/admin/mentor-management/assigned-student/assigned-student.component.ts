@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FuseConfirmationDialogComponent } from '@fuse/services/confirmation/dialog/dialog.component';
@@ -28,6 +28,10 @@ export class AssignedStudentComponent implements OnInit, OnDestroy {
   dialogRef: any;
   userID: any;
   mentorDetails: any;
+  totalCount: number = 0;
+  currentPage: number = 1;
+  pageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20];
 
   constructor(
     private _studentsService: StudentService,
@@ -42,24 +46,40 @@ export class AssignedStudentComponent implements OnInit, OnDestroy {
       })
     })
   }
-
+  ngAfterViewInit(): void {
+    // Set up paginator event listener
+    if (this.paginator) {
+      this.paginator.page.subscribe((event: PageEvent) => {
+        this.pageSize = event.pageSize;
+        this.currentPage = event.pageIndex + 1; // MatPaginator is 0-based, API is 1-based
+        this.loadStudents();
+      });
+    }
+  }
+  
   ngOnInit(): void {
     this._studentsService.onStudentManagementChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(() => {
-        const req = {
-          keyword: '',
-          pageNumber: 1,
-          pageSize: 10,
-          orderBy: '',
-          sortOrder: ''
-        };
-        this._studentsService.getAssignedStudentList(req,this.userID).then((res: any) => {
-          this.studentList = res?.data || [];
-          this.dataSource = new MatTableDataSource(this.studentList);
-          this.dataSource.paginator = this.paginator; // ✅ attach paginator
-        });
+          this.loadStudents()
       });
+  }
+  loadStudents(){
+    const req = {
+      keyword: '',
+      pageNumber: this.currentPage,
+      pageSize: this.pageSize,
+      orderBy: '',
+      sortOrder: ''
+    };
+    this._studentsService.getAssignedStudentList(req,this.userID).then((res: any) => {
+      this.studentList = res?.data || [];
+      
+      this.totalCount = res?.totalCount || 0;
+      this.currentPage = res?.currentPage || 1;
+      this.dataSource = new MatTableDataSource(this.studentList);
+      // this.dataSource.paginator = this.paginator; // ✅ attach paginator
+    });
   }
 
   ngOnDestroy(): void {

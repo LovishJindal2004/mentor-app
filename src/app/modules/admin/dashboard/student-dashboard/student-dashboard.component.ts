@@ -13,7 +13,8 @@ import { MatIconModule } from '@angular/material/icon';
 export class StudentDashboardComponent implements OnInit {
   userDetails: any;
   currentReport: any;
-
+  mcqReport : any;
+  subjectWiseAnalytics:any;
 
   constructor(
     private _dashboardService: DashBoardService,
@@ -24,6 +25,12 @@ export class StudentDashboardComponent implements OnInit {
   ngOnInit(): void {
     this._dashboardService.getStudentReport(this.userDetails?.Id).then(res=>{
       this.currentReport = res
+    });
+    this._dashboardService.getStudentMCQAnalytics(this.userDetails?.Id).then(res=>{
+      this.mcqReport = res
+    })    
+    this._dashboardService.getSubjectReport(this.userDetails?.Id).then((res:any)=>{
+      this.subjectWiseAnalytics = res;
     })
   }
   getPercentageWidth(percentage: number): number {

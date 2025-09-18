@@ -65,6 +65,10 @@
                          (click)="showTask(task.guid)">
                   remove_red_eye
                 </mat-icon>
+                <mat-icon class="cursor-pointer" *ngIf="_userDetails?.Roles == 'Mentor'"
+                         routerLink="/task/assigned-students/{{task.guid}}">
+                         assignment_ind
+                </mat-icon>
                 <button mat-raised-button 
                         *ngIf="_userDetails?.Roles == 'Mentor'" 
                         color="primary" 
@@ -130,6 +134,11 @@
                          (click)="showTask(task.guid)">
                   remove_red_eye
                 </mat-icon>
+                
+                <mat-icon class="cursor-pointer" *ngIf="_userDetails?.Roles == 'Mentor'"
+                         routerLink="/task/assigned-students/{{task.guid}}">
+                         assignment_ind
+                </mat-icon>
                 <button mat-raised-button 
                         *ngIf="_userDetails?.Roles == 'Mentor'" 
                         color="primary" 
@@ -142,6 +151,7 @@
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          
         </table>
         
         <!-- Completed Tasks Paginator -->

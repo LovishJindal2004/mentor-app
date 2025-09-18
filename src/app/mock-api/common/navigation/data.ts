@@ -115,6 +115,22 @@ export const defaultNavigation: FuseNavigationItem[] = [
         roles : ['Mentor','Mentee']
     },
     {
+        id   : 'assigned-students',
+        title: 'assigned-students',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/task/assigned-students/:taskId',
+        roles : ['Mentor','Mentee']
+    },
+    {
+        id   : 'Report-student',
+        title: 'Report-student',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/task/report/:taskId/:menteeId',
+        roles : ['Mentor','Mentee']
+    },
+    {
         id   : 'task-list',
         title: 'task-list',
         type : 'basic',
@@ -256,13 +272,6 @@ export const AdminNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:book-open',
         link : '/course/list'
-    },
-    {
-        id   : 'viewprogress',
-        title: 'View Progress',
-        type : 'basic',
-        icon : 'heroicons_outline:chart-pie',
-        link : '/student/view-progress'
     }
 ];
 export const MentorNavigation: FuseNavigationItem[] = [

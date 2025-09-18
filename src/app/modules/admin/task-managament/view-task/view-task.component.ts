@@ -52,7 +52,9 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
   title = '';
   showComments = true;
   taskDetails: any;
-  _userdetails : any
+  _userdetails : any;
+  isEditingDescription = false;
+  editableDescription = '';
 
   constructor(
     private fb: FormBuilder,
@@ -111,6 +113,37 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
     } catch (err) {
       console.error("Failed to load task", err);
     }
+  }
+  toggleEditDescription() {
+    if (this.isEditingDescription) {
+      // Save action
+      this.taskDetails.description = this.editableDescription;
+  
+      // Call API to update in backend
+      this.updateTaskDescription(this.taskId, this.editableDescription);
+    } else {
+      // Switch to edit mode
+      this.editableDescription = this.taskDetails?.description || '';
+    }
+  
+    this.isEditingDescription = !this.isEditingDescription;
+  }
+  
+  updateTaskDescription(taskId: string, description: string) {
+    let req = {
+      taskGuid: taskId,
+      description: description
+    }
+    try {
+      this._taskService.updateTaskDescription(req).then(res=>{        
+          // this._taskService.openSnackBar('Description updated!','')
+      })
+    }
+    catch (err) {
+      this._taskService.openSnackBar("Failed to load task", err);
+    }
+
+    
   }
   NavigatetoExam(res) {
     if (this._userdetails.Roles == 'Mentee') {
@@ -196,10 +229,10 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
     return c.author.split(' ').map(n => n).join('').toUpperCase().slice(0, 2);
   }
 
-  toggleCommentMenu(commentId: string) {
-    this.currentTaskComments.forEach(c => c.showMenu = c.id === commentId ? !c.showMenu : false);
-    // if (this.taskId) localStorage.setItem(`task-comments-${this.taskId}`, JSON.stringify(this.currentTaskComments));
-  }
+  // toggleCommentMenu(commentId: string) {
+  //   this.currentTaskComments.forEach(c => c.showMenu = c.id === commentId ? !c.showMenu : false);
+  //   // if (this.taskId) localStorage.setItem(`task-comments-${this.taskId}`, JSON.stringify(this.currentTaskComments));
+  // }
 
 
   replyToComment(comment: Comment) {}
@@ -254,10 +287,70 @@ export class ViewTaskComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
   
-  deleteComment(comment: Comment) {
-    this._taskService.deleteComment(comment.id).then(() => {
-      this.currentTaskComments = this.currentTaskComments.filter(c => c.id !== comment.id);
+  // deleteComment(comment: Comment) {
+  //   this._taskService.deleteComment(comment.id).then(() => {
+  //     this.currentTaskComments = this.currentTaskComments.filter(c => c.id !== comment.id);
+  //   });
+  // }
+
+  toggleCommentMenu(commentId: any) {
+    // debugger
+    this.currentTaskComments.forEach((c: any) => {
+      if (c.commentId === commentId) {
+        c.showMenu = !c.showMenu; // toggle only clicked one
+      } else {
+        c.showMenu = false;       // close all others
+      }
     });
+  }
+  
+  
+  toggleEditComment(comment: any) {
+    // Only this comment goes into edit mode
+    this.currentTaskComments.forEach((c: any) => {
+      c.isEditing = false; // reset all others
+    });
+  
+    comment.isEditing = true;
+    comment.showMenu = false;
+    comment.editableContent = comment.content; // preload current text
+  }
+  
+  cancelEdit(comment: any) {
+    comment.isEditing = false;
+  }
+  
+  saveComment(comment: any) {
+    console.log(comment,"comment")
+    try {
+      const updatedContent = comment.editableContent.trim();
+      if (!updatedContent) return;
+      let req = {
+        taskGuid: this.taskId,
+        guid: comment.guid,
+        content: updatedContent
+      }
+      // Call API to save update
+      this._taskService.updateComment(req).then(res => {
+        comment.content = updatedContent;  // update UI
+        comment.isEditing = false;
+      });
+    } catch (err) {
+      this._taskService.openSnackBar("Update failed", 'Close');
+    }
+  }
+  
+  deleteComment(comment: any) {
+    if (confirm("Are you sure you want to delete this comment?")) {
+      // this.commentService.deleteComment(comment.id).subscribe({
+      //   next: () => {
+      //     this.taskDetails.comments = this.taskDetails.comments.filter((c: any) => c.id !== comment.id);
+      //   },
+      //   error: (err) => {
+      //     console.error("Delete failed", err);
+      //   }
+      // });
+    }
   }
   
   // For infinite scroll

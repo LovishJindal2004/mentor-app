@@ -5,11 +5,21 @@ import { KanbanBoardViewComponent } from './kanban-board-view/kanban-board-view.
 import { CalendarViewComponent } from './calendar-view/calendar-view.component';
 import { MentorKanbanViewComponent } from './mentor-kanban-view/mentor-kanban-view.component';
 import { MentorCalendarViewComponent } from './mentor-calendar-view/mentor-calendar-view.component';
+import { TaskAssignedStudentsComponent } from './task-assigned-students/task-assigned-students.component';
+import { TaskStudentReportComponent } from './task-student-report/task-student-report.component';
 
 export default [
     {
         path     : 'list',
         component: ListTaskComponent,
+    },
+    {
+        path     : 'assigned-students/:taskId',
+        component: TaskAssignedStudentsComponent,
+    },
+    {
+        path     : 'report/:taskId/:menteeId',
+        component: TaskStudentReportComponent,
     },
     {
         path     : 'assign',

@@ -35,26 +35,56 @@
 
                     <div>
                         <div class="text-sm text-gray-400">Assignees</div>
-                        <div class="mt-2 flex items-center gap-2 flex-wrap">
-                            <div *ngFor="let person of taskDetails?.assignedTo" class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-full bg-green-600 flex items-center justify-center">
-                                    {{ person.name[0] | uppercase }}
-                                </div>
-                                <span>{{ person.name }}</span>
+                        <div class="mt-2 flex items-center gap-2 flex-wrap badges-group">
+                            <!-- Show first 3 persons -->
+                            <div *ngFor="let person of taskDetails?.assignedTo | slice:0:3" class="flex items-center gap-2 badges">
+                              <div class="w-7 h-7 rounded-full bg-green-600 text-white text-sm font-medium flex items-center justify-center">
+                                {{ person.name[0] | uppercase }}
+                              </div>
                             </div>
-                        </div>
+                          
+                            <!-- Show + count if more -->
+                            <div *ngIf="taskDetails?.assignedTo?.length > 3"
+                                 class="w-7 h-7 rounded-full bg-gray-500 ml-[-15px] text-white text-sm font-medium flex items-center justify-center">
+                              +{{ taskDetails?.assignedTo?.length - 3 }}
+                            </div>
+                          </div>
+                          
                     </div>
                 </div>
 
                 <div class="border-t border-gray-800 my-6"></div>
 
                 <!-- Description -->
-                <div>
+                <div *ngIf="_userdetails?.Roles != 'Mentor'">
                     <h3 class="flex items-center gap-2 text-sm text-gray-400">
                         <span class="material-icons text-base">description</span> Description
                     </h3>
                     <p class="mt-3 text-sm text-gray-300">{{ taskDetails?.description }}</p>
                 </div>
+                <div *ngIf="_userdetails?.Roles == 'Mentor'">
+                    <h3 class="flex items-center gap-2 text-sm text-gray-400">
+                      <span class="material-icons text-base">description</span> Description
+                      <button 
+                        class="ml-2 text-xs text-blue-400 hover:underline"
+                        (click)="toggleEditDescription()">
+                        {{ isEditingDescription ? 'Save' : 'Edit' }}
+                      </button>
+                    </h3>
+                  
+                    <!-- Show normal text -->
+                    <p *ngIf="!isEditingDescription" class="mt-3 text-sm text-gray-300">
+                      {{ taskDetails?.description || 'No description available' }}
+                    </p>
+                  
+                    <!-- Show editable input -->
+                    <textarea 
+                      *ngIf="isEditingDescription"
+                      [(ngModel)]="editableDescription"
+                      rows="3"
+                      class="mt-3 w-full text-sm text-white rounded-md p-2 outline-none">
+                    </textarea>
+                  </div>
 
                 <div class="border-t border-gray-800 my-6"></div>
 
@@ -149,30 +179,38 @@
                             </div>
                             <div class="comment-content">
                                 <div class="comment-header">
-                                    <span class="comment-author">{{ comment.userName }}</span>
-                                    <span class="comment-date">{{ comment.createdAt | date:'MMM d, y \'at\' h:mm a'
-                                        }}</span>
-                                    <div class="comment-menu" *ngIf="comment.canEdit">
-                                        <button class="comment-menu-btn"
-                                            (click)="toggleCommentMenu(comment.id)">⋯</button>
-                                        <div class="comment-dropdown" *ngIf="comment.showMenu">
-                                            <button *ngIf="comment.userId === currentUserId"
-                                                (click)="editComment(comment)">Edit</button>
-                                            <button *ngIf="comment.userId === currentUserId"
-                                                (click)="deleteComment(comment)">Delete</button>
-
-                                        </div>
+                                  <span class="comment-author">{{ comment.userName }}</span>
+                                  <span class="comment-date">
+                                    {{ comment.createdAt | date:'MMM d, y \'at\' h:mm a' }}
+                                  </span>
+                              
+                                  <!-- Show menu only if current user is owner -->
+                                  <div class="comment-menu" *ngIf="comment.userId == _userdetails?.Id">
+                                    <button class="comment-menu-btn" (click)="toggleCommentMenu(comment.commentId)">⋯</button>
+                                    <div class="comment-dropdown" *ngIf="comment.showMenu">
+                                      <button (click)="toggleEditComment(comment)">Edit</button>
                                     </div>
+                                  </div>
                                 </div>
-                                <div class="comment-text">{{ comment.content }}</div>
-                                <div class="comment-actions">
-                                    <!-- <button class="comment-action" (click)="likeComment(comment)">
-                                        <span [class]="comment.liked ? 'liked' : ''">👍</span>
-                                        <span *ngIf="comment.likes > 0">{{ comment.likes }}</span>
-                                    </button> -->
-                                    <!-- <button class="comment-action" (click)="replyToComment(comment)">Reply</button> -->
+                              
+                                <!-- Normal view -->
+                                <div class="comment-text" *ngIf="!comment.isEditing">{{ comment.content }}</div>
+                              
+                                <!-- Edit mode -->
+                                <div class="comment-text" *ngIf="comment.isEditing">
+                                  <textarea
+                                    [(ngModel)]="comment.editableContent"
+                                    rows="3"
+                                    class="mt-3 w-full text-sm text-white bg-gray-800 rounded-md p-2 outline-none">
+                                  </textarea>
+                              
+                                  <div class="flex gap-2 mt-2">
+                                    <button class="px-3 py-1 bg-blue-600 text-white rounded" (click)="saveComment(comment)">Save</button>
+                                    <button class="px-3 py-1 bg-gray-500 text-white rounded" (click)="cancelEdit(comment)">Cancel</button>
+                                  </div>
                                 </div>
-                            </div>
+                              </div>
+                              
                         </div>
                         <div *ngIf="isLoadingComments" class="text-xs text-gray-500">Loading...</div>
                     </div>

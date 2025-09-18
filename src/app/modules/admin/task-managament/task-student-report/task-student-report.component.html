@@ -1,0 +1,327 @@
+<div class="min-h-screen p-6">
+    <div class="w-full mx-auto relative z-10">
+        <!-- Header Section -->
+        <div class="glass-card rounded-3xl p-8 mb-8 card-enter hover-lift">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-bold  mb-2">{{reportDetails?.menteeName}}</h1>
+                    <p class="text-xl /80">Task Name: {{reportDetails?.taskName}}</p>
+                </div>
+                <div class="flex gap-3">
+                    <span *ngFor="let module of uniqueModules" class="module-badge px-6 py-3 rounded-full  font-semibold text-sm">{{module}}</span>
+                    <!-- <span class="module-badge px-6 py-3 rounded-full  font-semibold text-sm">TEST</span>
+                    <span class="module-badge px-6 py-3 rounded-full  font-semibold text-sm">VIDEO</span> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- QBANK Section -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold  mb-8 flex items-center">
+                <span class="w-2 h-8 bg-gradient-to-b from-purple-400 to-pink-400 rounded-full mr-4"></span>
+                QBANK
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 hover-lift card-enter neon-glow"
+                     *ngFor="let qbank of qbankItems; let i = index"
+                     [style.animation-delay]="(i * 0.1) + 's'">
+                    
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-semibold  text-lg">{{qbank.name}}</h3>
+                            <p class="/70 text-sm">Exam Assessment</p>
+                        </div>
+                        <div class="status-icon w-8 h-8 rounded-full flex items-center justify-center"
+                             [ngClass]="{
+                                'bg-green-500': qbank.status == 3,
+                                'bg-yellow-500': qbank.status == 2,
+                                'bg-gray-500': qbank.status == 0
+                             }">
+                            <!-- Completed Icon -->
+                            <mat-icon *ngIf="qbank.status == 3" class="text-white text-base">check_circle</mat-icon>
+                            <!-- In Progress Icon -->
+                            <mat-icon *ngIf="qbank.status == 2" class="text-white text-base animate-spin">autorenew</mat-icon>
+                            <!-- Pending Icon -->
+                            <mat-icon *ngIf="qbank.status == 0" class="text-white text-base">hourglass_empty</mat-icon>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-sm">
+                            <span class="/80">Questions Attempted</span>
+                            <span class=" font-semibold">{{qbank.attempted}}/{{qbank.total}}</span>
+                        </div>
+                        <div class="progress-bar w-full bg-white/20 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full transition-all duration-1000" 
+                            [ngStyle]="{ width: (qbank.attempted / qbank.total) * 100 + '%' }"></div>
+                        </div>
+                        
+                        <div *ngIf="qbank.status == 3" class="flex justify-between text-sm">
+                            <span class="/80">Accuracy</span>
+                            <span class=" font-semibold">{{qbank.accuracy}}</span>
+                        </div>
+                        <div *ngIf="qbank.status == 3" class="progress-bar w-full bg-white/20 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full transition-all duration-1000" 
+                            [ngStyle]="{ width: qbank.accuracy  + '%' }"></div>
+                        </div>
+                    </div>
+                    
+                    <button *ngIf="qbank.status == 3"
+                            class="w-full py-3 px-6 bg-gradient-to-r from-purple-600 to-blue-600  rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 relative overflow-hidden">
+                        View Answersheet
+                    </button>
+                    <!-- 
+                    <button *ngIf="qbank.status == 2"
+                            class="w-full py-3 px-6 bg-gradient-to-r from-orange-500 to-red-500  rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300">
+                        Continue Test
+                    </button> -->
+                    
+                    <!-- <button *ngIf="qbank.status == 0"
+                            class="w-full py-3 px-6 bg-gradient-to-r from-gray-600 to-gray-700  rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300">
+                        Start Test
+                    </button> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TEST Section -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold  mb-8 flex items-center">
+                <span class="w-2 h-8 bg-gradient-to-b from-blue-400 to-cyan-400 rounded-full mr-4"></span>
+                TEST
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 hover-lift card-enter neon-glow"
+                     *ngFor="let test of testItems; let i = index"
+                     [style.animation-delay]="((i + qbankItems.length) * 0.1) + 's'">
+                    
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-semibold  text-lg">{{test.name}}</h3>
+                            <p class="/70 text-sm">Assessment Test</p>
+                        </div>
+                        <div class="status-icon w-8 h-8 rounded-full flex items-center justify-center"
+                             [ngClass]="{
+                                'bg-green-500': test.status == 3,
+                                'bg-yellow-500': test.status == 2,
+                                'bg-gray-500': test.status == 0
+                             }">
+                            <!-- Completed Icon -->
+                            <mat-icon *ngIf="test.status == 3" class="text-white text-base">check_circle</mat-icon>
+                            <!-- In Progress Icon -->
+                            <mat-icon *ngIf="test.status == 2" class="text-white text-base animate-spin">autorenew</mat-icon>
+                            <!-- Pending Icon -->
+                            <mat-icon *ngIf="test.status == 0" class="text-white text-base">hourglass_empty</mat-icon>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-sm">
+                            <span class="/80">Questions Attempted</span>
+                            <span class=" font-semibold">{{test.attempted}}/{{test.total}}</span>
+                        </div>
+                        <div class="progress-bar w-full bg-white/20 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full transition-all duration-1000" 
+                            [ngStyle]="{ width: (test.attempted / test.total) * 100 + '%' }"></div>
+                        </div>
+                        
+                        <div *ngIf="test.status == 3" class="flex justify-between text-sm">
+                            <span class="/80">Accuracy</span>
+                            <span class=" font-semibold">{{test.accuracy}}</span>
+                        </div>
+                        <div *ngIf="test.status == 3" class="progress-bar w-full bg-white/20 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full transition-all duration-1000" 
+                            [ngStyle]="{ width: test.accuracy  + '%' }"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- <button *ngIf="test.status == 3"
+                            class="w-full py-3 px-6 bg-gradient-to-r from-purple-600 to-blue-600  rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105">
+                        View Answersheet
+                    </button>
+                    
+                    <button *ngIf="test.status == 2"
+                            class="w-full py-3 px-6 bg-gradient-to-r from-orange-500 to-red-500  rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300">
+                        Continue Test
+                    </button> -->
+                    
+                    <!-- <button *ngIf="test.status == 0"
+                            class="w-full py-3 px-6 bg-gradient-to-r from-gray-600 to-gray-700  rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300">
+                        Start Test
+                    </button> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VIDEO Section -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold  mb-8 flex items-center">
+                <span class="w-2 h-8 bg-gradient-to-b from-pink-400 to-red-400 rounded-full mr-4"></span>
+                VIDEO
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 hover-lift card-enter neon-glow"
+                     *ngFor="let video of videoItems; let i = index"
+                     [style.animation-delay]="((i + qbankItems.length + testItems.length) * 0.1) + 's'">
+                    
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-semibold  text-lg">{{video.topic || video.name}}</h3>
+                            <p class="/70 text-sm">Video Lecture</p>
+                        </div>
+                        <div class="status-icon w-8 h-8 rounded-full flex items-center justify-center"
+                             [ngClass]="{
+                                'bg-green-500': video.status == 3,
+                                'bg-yellow-500': video.status == 2,
+                                'bg-gray-500': video.status == 0
+                             }">
+                            <!-- Completed Icon -->
+                            <mat-icon *ngIf="video.status == 3" class="text-white text-base">check_circle</mat-icon>
+                            <!-- In Progress Icon -->
+                            <mat-icon *ngIf="video.status == 2" class="text-white text-base animate-spin">autorenew</mat-icon>
+                            <!-- Pending Icon -->
+                            <mat-icon *ngIf="video.status == 0" class="text-white text-base">hourglass_empty</mat-icon>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-sm">
+                            <span class="/80">Watch Progress</span>
+                            <span class=" font-semibold">{{getVideoProgress(video.attempted, video.total) | number:'1.2-2'}}%</span>
+                        </div>
+                        <div class="progress-bar w-full bg-white/20 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-pink-400 to-purple-500 h-2 rounded-full transition-all duration-1000" 
+                            [ngStyle]="{ width: getVideoProgress(video.attempted, video.total) + '%' }"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- <button *ngIf="video.status == 3"
+                            class="w-full py-3 px-6 bg-gradient-to-r from-green-600 to-teal-600  rounded-xl font-semibold hover:from-green-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105">
+                        Rewatch Video
+                    </button>
+                    
+                    <button *ngIf="video.status == 2"
+                            class="w-full py-3 px-6 bg-gradient-to-r from-pink-600 to-purple-600  rounded-xl font-semibold hover:from-pink-700 hover:to-purple-700 transition-all duration-300">
+                        Continue Watching
+                    </button> -->
+                    
+                    <!-- <button *ngIf="video.status == 0"
+                            class="w-full py-3 px-6 bg-gradient-to-r from-gray-600 to-gray-700  rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300">
+                        Start Watching
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .gradient-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+        animation: float 20s ease-in-out infinite;
+    }
+    
+    .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hover-lift {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-enter {
+        animation: slideUp 0.6s ease-out forwards;
+    }
+    
+    .status-icon {
+        transition: all 0.3s ease;
+    }
+    
+    .status-icon:hover {
+        transform: scale(1.2);
+    }
+    
+    .progress-bar {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #dfdfdf;
+    }
+    
+    .progress-bar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+    
+    .module-badge {
+        background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+        background-size: 200% 200%;
+        animation: gradientShift 3s ease infinite;
+    }
+    
+    .neon-glow {
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .neon-glow:hover {
+        box-shadow: 0 0 40px rgba(102, 126, 234, 0.8);
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-30px) rotate(1deg); }
+        66% { transform: translateY(-20px) rotate(-1deg); }
+    }
+    
+    @keyframes slideUp {
+        from { 
+            opacity: 0; 
+            transform: translateY(30px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0px); 
+        }
+    }
+    
+    @keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+    
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+</style>

@@ -83,6 +83,9 @@
                     <div  class="assigned-status">
                         <span>Marks : {{ module.marks }}</span>
                     </div>
+                    <div  class="assigned-status">
+                        <span>Completed On : {{ module.completedOn | date:'MMM d, y, h:mm a'}}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -127,7 +130,7 @@
                         </div>
 
                         <div class="progress-text" >
-                            {{ (qbanks.noOfCompletedQuestion / qbanks.numberOfQuestions) * 100  }}%
+                            Marks : {{ (qbanks.percentage) }}%
                         </div>
                         <div class="progress-container mt-2 mb-2">
                             <div class="progress-bar" [style.width.%]="(qbanks.noOfCompletedQuestion / qbanks.numberOfQuestions) * 100 || 0"></div>
@@ -135,6 +138,10 @@
                                 {{ (qbanks.noOfCompletedQuestion / qbanks.numberOfQuestions) * 100 }}%
                             </div>
                         </div>
+                        
+                    <div  class="assigned-status">
+                        <span>Completed On : {{ qbanks.completedDate | date:'MMM d, y, h:mm a'}}</span>
+                    </div>
                     </div>
                 </div>
             </div>

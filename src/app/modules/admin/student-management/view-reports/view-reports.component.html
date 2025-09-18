@@ -49,7 +49,7 @@
           <div class="report-section" *ngIf="currentReport.weakestSubjects.length >  0">
             <h4 class="section-title">Weak Subjects</h4>
             <ul class="simple-list">
-              <li *ngFor="let topic of currentReport.weakestSubjects">{{ topic }}</li>
+              <li *ngFor="let topic of currentReport.weakestSubjects">{{ topic.subjectName }}</li>
             </ul>
           </div>
         </div>

@@ -12,6 +12,7 @@ import { map } from "rxjs/operators";
 export class TaskService {
 
     onStudentManagementChanged: BehaviorSubject<any>;
+    onAssignedStudentManagementChanged: BehaviorSubject<any>;
     onTasksChanged: BehaviorSubject<any>;
     openSnackBar(message: string, action: string) {
         this._matSnockbar.open(message, action, {
@@ -23,6 +24,7 @@ export class TaskService {
         private _matSnockbar: MatSnackBar
     ) {
         this.onStudentManagementChanged = new BehaviorSubject([]);
+        this.onAssignedStudentManagementChanged = new BehaviorSubject([]);
         this.onTasksChanged = new BehaviorSubject([]);
     }
 
@@ -89,6 +91,13 @@ export class TaskService {
             }, reject);
         })
     };
+    updateTaskDescription(data) {
+        return new Promise((resolve, reject) => {
+            this._https.post(`${environment.externalApiURL}/api/task/update-task-description`, { ...data }).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
     getTask(guid) {
         return new Promise((resolve, reject) => {
             this._https.get(`${environment.externalApiURL}/api/task/get-task/${guid}`).subscribe((response: any) => {
@@ -113,7 +122,7 @@ export class TaskService {
     };
     updateTaskOrder(data) {
         return new Promise((resolve, reject) => {
-            this._https.post(`${environment.externalApiURL}/api/task/reorder`,{...data}).subscribe((response: any) => {
+            this._https.post(`${environment.externalApiURL}/api/task/reorder`, { ...data }).subscribe((response: any) => {
                 this.onTasksChanged.next(response);
                 resolve(response);
             }, reject);
@@ -160,7 +169,7 @@ export class TaskService {
     }
 
     updateComment(data) {
-        return this._https.patch(`${environment.apiURL}/comment/update-comment`, { data }).toPromise();
+        return this._https.post(`${environment.apiURL}/comment/update-comment`, { ...data }).toPromise();
     }
 
     deleteComment(commentId: string) {
@@ -183,6 +192,20 @@ export class TaskService {
             }, reject);
         });
     }
+    getAssignedStudentList(mentorId) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.externalApiURL}/api/task/assigned-task-students?taskguid=${mentorId}`, {}).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    getReport(taskId,mentorId) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.externalApiURL}/api/task/task/${taskId}/mentee/${mentorId}/activity`, {}).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
 
 
     // updateTask(taskId: string, taskData: any) {

@@ -9,7 +9,7 @@ import { BehaviorSubject, catchError, tap } from "rxjs";
 })
 
 export class DashBoardService {
-    
+
     onStudentManagementChanged: BehaviorSubject<any>;
     openSnackBar(message: string, action: string) {
         this._matSnockbar.open(message, action, {
@@ -21,10 +21,25 @@ export class DashBoardService {
         private _matSnockbar: MatSnackBar
     ) {
         this.onStudentManagementChanged = new BehaviorSubject([]);
-     }
-      getStudentReport(userId) {
+    }
+    getStudentReport(userId) {
         return new Promise((resolve, reject) => {
             this._https.get(`${environment.externalApiURL}/api/v1/analytic/mentee-today-activity?menteeId=${userId}`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    getStudentMCQAnalytics(userId) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.externalApiURL}/api/v1/analytic/progress-report?menteeId=${userId}`).subscribe((response: any) => {
+                resolve(response);
+            }, reject);
+        })
+    };
+    
+    getSubjectReport(mentorId) {
+        return new Promise((resolve, reject) => {
+            this._https.get(`${environment.externalApiURL}/api/v1/analytic/subjects-report?menteeId=${mentorId}`, {}).subscribe((response: any) => {
                 resolve(response);
             }, reject);
         })

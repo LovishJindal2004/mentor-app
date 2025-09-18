@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FuseConfirmationDialogComponent } from '@fuse/services/confirmation/dialog/dialog.component';
@@ -28,6 +28,12 @@ export class AssignStudentComponent implements OnInit, OnDestroy {
   assignedUsers: any;
   mentorId: any;
 
+  // Pagination properties
+  totalCount: number = 0;
+  currentPage: number = 1;
+  pageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 20];
+
   constructor(
     private _studentService: StudentService,
     private _matDialog: MatDialog,
@@ -42,30 +48,55 @@ export class AssignStudentComponent implements OnInit, OnDestroy {
     this._studentService.onAssignBulkStudent
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(() => {
-        const req = {
-          keyword: '',
-          pageNumber: 1,
-          pageSize: 10,
-          orderBy: '',
-          sortOrder: ''
-        };
-        this._studentService.getUnAssignedStudentList(req).then((res: any) => {
-          const assignedIds = this.assignedUsers?.map((u: any) => u.id) || [];
-
-          this.studentList = (res?.data || []).map((student: any) => ({
-            ...student,
-            selected: assignedIds.includes(student.id) // mark assigned students
-          }));
-          this.dataSource = new MatTableDataSource(this.studentList);
-          this.dataSource.paginator = this.paginator; // ✅ attach paginator
-        });
+        this.loadStudents();
       });
+  }
+
+  ngAfterViewInit(): void {
+    // Set up paginator event listener
+    if (this.paginator) {
+      this.paginator.page.subscribe((event: PageEvent) => {
+        this.pageSize = event.pageSize;
+        this.currentPage = event.pageIndex + 1; // MatPaginator is 0-based, API is 1-based
+        this.loadStudents();
+      });
+    }
+  }
+
+  private loadStudents(): void {
+    const req = {
+      keyword: '',
+      pageNumber: this.currentPage,
+      pageSize: this.pageSize,
+      orderBy: '',
+      sortOrder: ''
+    };
+
+    this._studentService.getUnAssignedStudentList(req).then((res: any) => {
+      const assignedIds = this.assignedUsers?.map((u: any) => u.id) || [];
+
+      this.studentList = (res?.data || []).map((student: any) => ({
+        ...student,
+        selected: assignedIds.includes(student.id) // mark assigned students
+      }));
+
+      // Update pagination info from API response
+      this.totalCount = res?.totalCount || 0;
+      this.currentPage = res?.currentPage || 1;
+
+      // Update data source without paginator (we handle pagination manually)
+      this.dataSource = new MatTableDataSource(this.studentList);
+      
+      // Don't attach paginator to dataSource - we're handling it manually
+      // this.dataSource.paginator = this.paginator; // ❌ Remove this line
+    });
   }
 
   ngOnDestroy(): void {
     this._unsubscribeAll.next();
     this._unsubscribeAll.complete();
   }
+
   assignMentor() {
     const selectedStudentIds = this.studentList
       .filter(student => student.selected)
@@ -83,8 +114,8 @@ export class AssignStudentComponent implements OnInit, OnDestroy {
       }
     })
   }
+
   closeDialog(){    
     this._matDialog.closeAll();
   }
-
 }
