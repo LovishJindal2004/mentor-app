@@ -11,10 +11,10 @@
         <mat-button-toggle routerLink="/task/list"
           value="TableView"><mat-icon>table_chart</mat-icon>Table
           View</mat-button-toggle>
-        <mat-button-toggle routerLink="/task/kanban"
+        <mat-button-toggle routerLink="/task/mentor-kanban"
           value="KanBan"><mat-icon>view_list</mat-icon>
           KanBan Board</mat-button-toggle>
-        <mat-button-toggle routerLink="/task/calendar"
+        <mat-button-toggle routerLink="/task/mentor-calendar"
           value="Calendar"><mat-icon>calendar_today</mat-icon>
           Calendar</mat-button-toggle>
       </mat-button-toggle-group>
@@ -23,32 +23,47 @@
   <!-- Main Content -->
   <div class="main-content" [class.content-expanded]="!sidenavOpen">
     <div *ngIf="activeTool==='tasks'" class="kanban-container">
-      <div class="board-content">
-        <div class="board-column" *ngFor="let column of columns">
+
+      <div class="board-content" cdkDropListGroup>
+        <div class="board-column" *ngFor="let column of columns" cdkDropList
+          [cdkDropListData]="column.tasks"
+          (cdkDropListDropped)="drop($event)">
           <div class="column-header">
             <h2 [contentEditable]="true"
               (blur)="updateColumnTitle(column, $event)">{{ column.title }}</h2>
+            <!-- <button class="delete-column" (click)="deleteColumn(column)">×</button> -->
           </div>
 
-          <div class="task-list" (scroll)="onScroll($event)">
-            <div class="task-card" (click)="openViewTask(task.id)"
-              *ngFor="let task of column.tasks"
+          <div class="task-list" (scroll)="onColumnScroll($event, column)">
+            <div class="task-card" 
+              *ngFor="let task of column.tasks" cdkDrag
               [ngClass]="'priority-' + task.priority"
               [style.border-left-color]="getTaskTypeColor(task)"
               [style.border-left-width.px]="6"
               [style.border-left-style]="'solid'">
+
+              <!-- <div class="task-type-badge">
+                <span class="type-name" [style.color]="getTaskTypeColor(task)">
+                  {{ getTaskTypeName(task) }}
+                </span>
+              </div> -->
+
               <div class="task-header">
                 <h3>{{ task.title }}</h3>
+                <div class="task-actions">
+                  <button class="text-sm bg-primary-500 text-white" (click)="openViewTask(task.id)"><mat-icon class="text-base text-white" >remove_red_eye</mat-icon></button>
+                  <!-- <button class="bg-primary-500 text-white" (click)="deleteTask(column, task)">×</button> -->
+                </div>
               </div>
               <p>{{ task.description }}</p>
               <div class="task-footer">
-                <span class="due-date">Date: {{ task.dueDate | date:'MMM d, y' || 'N/A'
+                <span class="due-date">Due: {{ task.dueDate | date:'MMM d, y' || 'N/A'
+                  }}</span>
+                <span class="assignee" *ngIf="task.assignee">{{ task.assignee
                   }}</span>
               </div>
             </div>
-            <div *ngIf="isLoading" class="loading">Loading...</div>
           </div>
-
         </div>
       </div>
     </div>

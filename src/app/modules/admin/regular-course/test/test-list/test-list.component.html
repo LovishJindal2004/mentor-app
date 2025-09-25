@@ -1,0 +1,92 @@
+<div class="py-8 px-6 w-full student-list">
+    <div class="grid grid-cols-6 grid-div">
+        <div class="col-span-5">
+            <div class="flex items-center text-[#0C529A] text-xl gap-2 ">
+                <!-- <mat-icon class="float-left text-primary text-2xl cursor-pointer"
+                    routerLink="/student/qbanktype">arrow_back</mat-icon> -->
+                <h2 class="text-primary capitalize">{{ExamName}}</h2>
+            </div>
+            <div class="filters flex gap-2 pb-3 pt-8 ">
+                <mat-chip class="cursor-pointer" [class.active]="examStatus === 1" (click)="FilterbyExamStatus(1)">All</mat-chip>
+                <mat-chip class="cursor-pointer" [class.active]="examStatus === 3" (click)="FilterbyExamStatus(3)">Completed</mat-chip>
+                <!-- <mat-chip class="cursor-pointer" [class.active]="examStatus === 1" (click)="FilterbyExamStatus(1)">Unattempt</mat-chip> -->
+                <mat-chip class="cursor-pointer" [class.active]="examStatus === 2" (click)="FilterbyExamStatus(2)">Paused</mat-chip>
+                <!-- <mat-chip class="cursor-pointer" [class.active]="examStatus === 5" (click)="FilterbyExamStatus(5)">Free</mat-chip> -->
+                <mat-chip class="cursor-pointer" [class.active]="examStatus === 0" (click)="FilterbyExamStatus(0)">New</mat-chip>
+            </div>
+        </div>
+
+        <ng-container>
+            <div class="flex col-span-1 items-center relative" *ngIf="examList.length!=0">
+                <h2>{{noOfExamCompleted}}/{{noOfexams}} Module's</h2>
+                <div class="relative">
+                    <h2 class="absolute left-[30%] top-[38%] text-center w-[37px] ">{{noOfExamCompleted/noOfexams | percent}}
+                    </h2>
+                    <apx-chart class="piechart-div" [series]="pieChartOptions?.series" [chart]="pieChartOptions?.chart" [labels]="pieChartOptions?.labels" [responsive]="pieChartOptions?.responsive" [colors]="pieChartOptions?.colors"></apx-chart>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <!-- <div class="grid my-4 sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 gap-4">
+        <div class="percentages_div cursor-pointer" (click)="NavigatetoOverall()">
+            <mat-icon> bar_chart</mat-icon>
+            <h2 class="text-[#505050] text-[16px] font-normal" >
+                Your overall subject percentile
+            </h2>
+            <mat-icon>chevron_right</mat-icon>
+        </div>
+    </div> -->
+    <!-- 1st row -->
+    <div>
+        <div class="grid sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 gap-4">
+            <div class="grandtest cursor-pointer" *ngFor="let exam of examList" [ngClass]="{'new-badge': exam.status==0}">
+                <div class="link-div"
+                    [routerLink]="exam.status === 3?['/exam-management/game-analytics/' + exam.guid]:examtype==6?['/exam-management/cbtgameview/' + exam.guid]:['/exam-management/gameview/' + exam.guid]">
+                        
+                    <div class="flex justify-between">
+                        <h4 class="font-medium">{{exam.title}}</h4>
+                        <div class="flex items-center gap-2">
+                            <mat-icon class="bg-[#28C397] text-white text-xl rounded-full font-medium"
+                                *ngIf="exam.status==3">done</mat-icon>
+                            <mat-icon class=" text-[#db1627] text-3xl rounded-full font-medium"
+                                *ngIf="exam.status==2">pause_circle_filled</mat-icon>
+                        </div>
+                    </div>
+                    <div class="flex items-center pt-4">
+                        <!-- <mat-icon class="text-primary text-base">star</mat-icon>
+                
+                                <h5 class="font-light text-sm">4.5</h5> -->
+                        <h6 class="font-light text-sm">MCQ's
+                        </h6>
+                    </div>
+                    <mat-progress-bar class="my-2 " mode="determinate" [ngClass]="{'stop': exam.status==2}"
+                        [value]="exam.noOfQuestionsAttempted/exam.noOfQuestions*100"></mat-progress-bar>
+                    <div class="flex justify-end grid grid-cols-3">
+                        <div class="font-light text-sm examid col-span-2">
+                            exam ID: {{exam.guid}}</div>
+                        <div class="font-light text-sm text-right">Performance</div>
+                    </div>
+                    <div class="flex justify-end grid grid-cols-2 pt-2 pb-2">
+                        <div class="font-light text-sm" *ngIf="exam.status==3">CompleteOn :- {{exam.completedOn | date}}
+                        </div>
+                        <div class="font-light text-sm text-right score_percentage" *ngIf="exam.status==3">
+                            {{exam.marks}} % Average</div>
+                    </div>
+                    
+                    <p class="text-red-500 text-sm" *ngIf="!exam.hasAccess">You Don't have Access </p>
+                </div>
+                <div *ngIf="exam.status==3" class="leaderboard-div">
+                    <button [routerLink]="['/exam-management/exam-leaderboard/' + exam.guid]" mat-raised-button
+                        class="leaderboard-btn">Leaderboard</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <h1 *ngIf="examList.length<=0">No Records Found</h1>
+    <!-- 2nd row -->
+
+
+
+
+</div>

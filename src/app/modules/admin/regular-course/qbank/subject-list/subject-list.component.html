@@ -1,0 +1,88 @@
+<div class="w-full">
+
+    <div class="p-5">
+      <div class="flex md:flex-row flex-col gap-2">
+        <div class="all_mcq flex items-center gap-2.5 w-56 p-4 mb-2 cursor-pointer" routerLink="/qbanks/bookmarks"
+          *ngIf="BookmarkCount!=0">
+          <div><mat-icon class="text-primary">bookmark</mat-icon></div>
+          <div>
+            <h2 class="text-lg">Bookmarks</h2>
+            <h3 class="text-sn">{{BookmarkCount}} Bookmarks</h3>
+          </div>
+        </div>
+        <div class="all_mcq flex items-center gap-2.5 p-4 mb-2 cursor-pointer" routerLink="/CustomQbank/list">
+          <div><mat-icon class="text-primary">playlist_add</mat-icon></div>
+          <div>
+            <h2 class="text-lg">Create Custom QBank</h2>
+          </div>
+        </div>
+      </div>
+      <!-- box -->
+       <div class="flex justify-between items-center px-5">
+      <mat-label class="text-[14px] text-[#505050] font-semibold">All Chapter MCQ'S <span
+          class="text-[12px] text-[#505050] font-light">({{noOfTotelModule}} Modules) ({{noOfTotalQuestions}} Questions)</span></mat-label>
+      <button *ngIf="showtracker" mat-raised-button class="text-[#fff] text-lg w-40 py-6 rounded-lg bg-primary" (click)="openDatePicker()">QBank Tracker</button>
+      </div>   
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 ml-7 mr-7">
+      <div class="all_mcq" *ngFor="let subject of SubjectDetail; let i = index">
+        <div [routerLink]="['/qbanks/exam-list/',subject.subjectId]"
+          class="grid grid-cols-3 justify-between cursor-pointer">
+          <div class="col-span-1 bg-primary/10 flex items-center justify-center w-[102px] h-[102px] plus_bg">
+            <div *ngIf="subject.subjectImage; else defaultIcon">
+              <img [src]="subject.subjectImage" alt="Subject Image" class="w-full h-full object-cover">
+            </div>
+            <ng-template #defaultIcon>
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48"
+                height="47.998" viewBox="0 0 48 47.998">
+                <defs>
+                  <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+                    <stop offset="0" stop-color="#28c397" />
+                    <stop offset="1" stop-color="#9735d0" />
+                  </linearGradient>
+                </defs>
+                <path id="Union_6" data-name="Union 6"
+                  d="M38.782,47.529l-4.494-4.493A21.642,21.642,0,0,1,4.962,13.711L.469,9.218a1.6,1.6,0,0,1,0-2.263L6.956.468a1.6,1.6,0,0,1,2.262,0l4.493,4.493A21.643,21.643,0,0,1,43.038,34.287l4.493,4.494a1.6,1.6,0,0,1,0,2.261l-6.487,6.487a1.6,1.6,0,0,1-2.263,0Zm1.131-3.393,4.224-4.225-8.051-8.05a1.6,1.6,0,0,1-.469-1.132V25.284a2.987,2.987,0,0,0-5.974,0v2.759a1.6,1.6,0,0,1-1.6,1.6H25.286a2.987,2.987,0,0,0,0,5.974h5.445a1.594,1.594,0,0,1,1.131.468l3.779,3.779c.026.024.051.05.076.076Zm-28.948-7.1A18.348,18.348,0,0,0,31.91,40.658l-1.842-1.842H25.286a6.187,6.187,0,1,1,0-12.373h1.159V25.284a6.187,6.187,0,0,1,12.373,0v4.784l1.841,1.841A18.445,18.445,0,0,0,16.09,7.34l1.842,1.842h4.783a6.186,6.186,0,1,1,0,12.373H21.556v1.158a6.187,6.187,0,1,1-12.375,0V17.93L7.34,16.088A18.345,18.345,0,0,0,10.966,37.032ZM3.863,8.086l8.05,8.051a1.6,1.6,0,0,1,.469,1.132v5.445a2.987,2.987,0,0,0,5.974,0V19.955a1.6,1.6,0,0,1,1.6-1.6h2.759a2.987,2.987,0,0,0,0-5.974H17.269a1.6,1.6,0,0,1-1.131-.468L8.087,3.863Z"
+                  transform="translate(0 0)" fill="url(#linear-gradient)" />
+              </svg>
+            </ng-template>
+          </div>
+          <div class="col-span-1 m-auto ml-0">
+            <h2 class="text-[14px] text-[#505050]">{{subject.subjectName}}</h2>
+            <h3 class="font-light text-[12px] text-[#6E6E6E] pt-1">
+              {{subject.totalNoOfCompletedModules}}/{{subject.totalNoOfModules}} Module's</h3>
+              <h3 class="font-light text-[12px] text-[#6E6E6E] pt-1">{{subject.noOfQuestions}} Qbank's</h3>
+          </div>
+          <div class="flex items-center gap-2 justify-end relative">
+            <!-- <h2 class="absolute right-[26px] top-[25px] text-[10px] text-center w-[26px]">
+              {{(subject.totalNoOfCompletedModules / subject.totalNoOfModules) * 100 | number:'1.0-0'}}%</h2> -->
+            <apx-chart class="piechart-div" [series]="subject.pieChartOptions.series"
+              [chart]="subject.pieChartOptions.chart" [labels]="subject.pieChartOptions.labels"
+              [responsive]="subject.pieChartOptions.responsive" [colors]="subject.pieChartOptions.colors" [plotOptions]="subject.pieChartOptions.plotOptions"  [stroke]="subject.pieChartOptions.stroke"></apx-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #openDatePickerTemplate class="w-94">
+    <div class="bg-[#F5F5F5] p-6">
+        <div class="relative">
+            <apx-chart class="w-60 block mx-auto" [series]="pieChartOptions.series" [chart]="pieChartOptions.chart" [labels]="pieChartOptions.labels" [plotOptions]="pieChartOptions.plotOptions" [responsive]="pieChartOptions.responsive" [colors]="pieChartOptions.colors"
+                [dataLabels]="pieChartOptions.dataLabels"></apx-chart>
+            <h2 class="circle-content text-[#28c397] font-bold text-lg">{{this.noOfCompletedTotelModule}}</h2>
+        </div>
+        <h2 class="text-[#505050] text-2xl	text-center font-semibold">Modules Completed</h2>
+        <h3 class="text-[#505050] text-sm text-center font-semibold">Out of {{noOfTotelModule}} Total Modules</h3>
+        <div class="mt-2">
+            <mat-card class="demo-inline-calendar-card">
+                <div class="subheader">
+                    The Number of modules you have attempted daily
+                </div>
+                <mat-calendar (click)="handleViewChanged($event)" [(selected)]="selected" [attr.data-content]="dynamicContent" [maxDate]="maxDate">
+  
+                </mat-calendar>
+            </mat-card>
+        </div>
+    </div>
+  
+  </ng-template>

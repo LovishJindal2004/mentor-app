@@ -36,6 +36,7 @@ import { DataGuardService } from 'app/core/auth/guards/dataGuard';
 import { CousreService } from 'app/modules/common/services/course.service';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
+import { SignalRService } from 'app/modules/common/services/signalR.service';
 
 @Component({
     selector: 'auth-sign-in',
@@ -131,6 +132,7 @@ export class AuthSignInComponent implements OnInit {
         private _errohendling: ApiErrorHandlerService,
         private courseService: CousreService,
         private errorhandling: ApiErrorHandlerService,
+        private _signalRService: SignalRService,
 
     ) {
         this._CommanService.getTenantDetails.subscribe((TenantInfo: any) => {
@@ -746,6 +748,11 @@ export class AuthSignInComponent implements OnInit {
         this.IsuserVerified = true;
     }
     LoadMore() {
+        
+        let token = this._dataGuardService.getLocalData('accessToken');
+        if(token){
+            this._signalRService.connect();
+        }
         this._router.navigate(['/dashboard']);
         // this.courseService.getsubjects().subscribe((res: any) => {
         //     if (res) {

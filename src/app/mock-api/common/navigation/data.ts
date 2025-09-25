@@ -250,6 +250,215 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link : '/exams/game-analytics/:examId/:taskId',
         roles : ['Mentee']
     },
+    {
+        id: 'chat',
+        title: 'chat',
+        type: 'basic',
+        icon: 'heroicons_outline:chart-pie',
+        link: '/chat',
+        roles: ['Mentor', 'Mentee'],
+        children: [
+            {
+                id: 'new-chat',
+                title: 'new-chat',
+                type: 'basic',
+                icon: 'heroicons_outline:chart-pie',
+                link: '/:id',
+                roles: ['Mentor']
+            },
+            {
+                id: 'new-chat',
+                title: 'new-chat',
+                type: 'basic',
+                icon: 'heroicons_outline:chart-pie',
+                link: '/new-chat/:id',
+                roles: ['Mentor']
+            }
+        ]
+    },
+    {
+        id   : 'qbank-list',
+        title: 'qbank-list',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbanks',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'qbank-list',
+        title: 'qbank-list',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbanks/subjects',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'exam-list',
+        title: 'exam-list',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbanks/exam-list/:subjectId',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'test-list',
+        title: 'test-list',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/exam-management',
+        roles : ['Mentee']
+    },
+    {
+        id: 'exams management',
+        title: 'Exams Management',
+        type: 'collapsable',
+        children: [            
+            {
+                id: 'grandtest',
+                title: 'Grand Test',
+                type: 'basic',
+                link: '/exam-management/list/:categoryname/:examtype',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'grandtest',
+                title: 'Grand Test',
+                type: 'basic',
+                link: '/exam-management/list/PYQ/3',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'grandtest',
+                title: 'Grand Test',
+                type: 'basic',
+                link: '/exam-management/list/PYQ/3/examtype',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'cbtgameview',
+                title: 'cbt Game View',
+                type: 'basic',
+                link: '/exam-management/cbtgameview/:examid',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'gameview',
+                title: 'Game View',
+                type: 'basic',
+                link: '/exam-management/gameview/:examid',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'game-analytics',
+                title: 'game-analytics',
+                type: 'basic',
+                link: '/exam-management/game-analytics/:examid',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'game-analytics',
+                title: 'game-analytics',
+                type: 'basic',
+                link: '/exam-management/game-full-analytics/:examid',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'game-analytics',
+                title: 'game-analytics',
+                type: 'basic',
+                link: '/exam-management/game-reviews/:examid/:Questionid',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'game-analytics',
+                title: 'game-analytics',
+                type: 'basic',
+                link: '/exam-management/game-reviews/:examid',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'game-analytics',
+                title: 'game-analytics',
+                type: 'basic',
+                link: '/exam-management/exam-leaderboard/:examid',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'courselist',
+                title: 'courselist',
+                type: 'basic',
+
+                link: '/course/list/course-list',
+                roles: ['Mentee']
+            },
+            {
+                id: 'grandtest',
+                title: 'Grand Test',
+                type: 'basic',
+                link: '/exam-management/list/leaderboard/:categoryname/:examtype',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'subjects',
+                title: 'subjects',
+                type: 'basic',
+                link: '/exam-management/list/leaderboard/:categoryname/:examtype/subject/:subjectname',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'className',
+                title: 'className',
+                type: 'basic',
+                link: '/exam-management/list/leaderboard/:categoryname/:examtype/:className',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'className',
+                title: 'className',
+                type: 'basic',
+                link: '/exam-management/list/leaderboard/:categoryname/:examtype/:className/:examType',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'className',
+                title: 'className',
+                type: 'basic',
+                link: '/exam-management/list/leaderboard/:categoryname/:examtype/exam-list/:className',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'className',
+                title: 'className',
+                type: 'basic',
+                link: '/exam-management/list/leaderboard/:categoryname/:examtype/:sessionName',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'gameview',
+                title: 'Game View',
+                type: 'basic',
+                link: '/exam-management/leaderboard-gameview/:examid',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'game-analytics',
+                title: 'game-analytics',
+                type: 'basic',
+                link: '/exam-management/leaderboard-game-analytics/:examid',
+                roles: ["Mentee"]
+            },
+            {
+                id: 'game-analytics',
+                title: 'game-analytics',
+                type: 'basic',
+                link: '/exam-management/leaderboard-game-reviews/:examid',
+                roles: ["Mentee"]
+            },
+
+        ]
+
+    },
+   
 ];
 export const AdminNavigation: FuseNavigationItem[] = [
     {
@@ -302,7 +511,15 @@ export const MentorNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:chart-pie',
         link : '/student/view-progress'
-    }
+    },
+    {
+        id   : 'chat',
+        title: 'Chat',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/chat',
+        roles : ['Mentor']
+    },
 ];
 export const MenteeNavigation: FuseNavigationItem[] = [
     // {
@@ -325,7 +542,22 @@ export const MenteeNavigation: FuseNavigationItem[] = [
         type : 'basic',
         icon : 'heroicons_outline:chart-pie',
         link : '/task/list'
-    }
+    },
+    {
+        id   : 'qbank-list',
+        title: 'QBank',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbanks/subjects',
+        roles : ['Mentee']
+    },
+    {
+        id: 'exams management',
+        title: 'Exams',
+        type: 'collapsable',
+        icon : 'heroicons_outline:clipboard-document-list',
+        children: []
+    },    
 ];
 export const compactNavigation: FuseNavigationItem[] = [
     {

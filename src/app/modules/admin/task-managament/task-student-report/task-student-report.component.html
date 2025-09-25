@@ -16,7 +16,7 @@
         </div>
 
         <!-- QBANK Section -->
-        <div class="mb-12">
+        <div class="mb-12" *ngIf="qbankItems?.length > 0">
             <h2 class="text-3xl font-bold  mb-8 flex items-center">
                 <span class="w-2 h-8 bg-gradient-to-b from-purple-400 to-pink-400 rounded-full mr-4"></span>
                 QBANK
@@ -66,10 +66,10 @@
                         </div>
                     </div>
                     
-                    <button *ngIf="qbank.status == 3"
+                    <!-- <button *ngIf="qbank.status == 3"
                             class="w-full py-3 px-6 bg-gradient-to-r from-purple-600 to-blue-600  rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 relative overflow-hidden">
                         View Answersheet
-                    </button>
+                    </button> -->
                     <!-- 
                     <button *ngIf="qbank.status == 2"
                             class="w-full py-3 px-6 bg-gradient-to-r from-orange-500 to-red-500  rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300">
@@ -85,7 +85,7 @@
         </div>
 
         <!-- TEST Section -->
-        <div class="mb-12">
+        <div class="mb-12" *ngIf="testItems?.length > 0">
             <h2 class="text-3xl font-bold  mb-8 flex items-center">
                 <span class="w-2 h-8 bg-gradient-to-b from-blue-400 to-cyan-400 rounded-full mr-4"></span>
                 TEST
@@ -154,7 +154,7 @@
         </div>
 
         <!-- VIDEO Section -->
-        <div class="mb-12">
+        <div class="mb-12" *ngIf="videoItems?.length > 0">
             <h2 class="text-3xl font-bold  mb-8 flex items-center">
                 <span class="w-2 h-8 bg-gradient-to-b from-pink-400 to-red-400 rounded-full mr-4"></span>
                 VIDEO

@@ -19,6 +19,7 @@ import { MockApiService } from 'app/mock-api';
 import { firstValueFrom } from 'rxjs';
 import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
 import { tenantGuard } from './core/auth/guards/tenant.guard';
+import { SignalRService } from './modules/common/services/signalR.service';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -144,5 +145,13 @@ export const appConfig: ApplicationConfig = {
             deps: [Router],
             multi: true,
         },
+        {
+            provide: APP_INITIALIZER,
+            useFactory: () => {
+              const signalR = inject(SignalRService);
+              return () => signalR.connect();  // ✅ Connect to SignalR on startup
+            },
+            multi: true,
+          }
     ],
 };

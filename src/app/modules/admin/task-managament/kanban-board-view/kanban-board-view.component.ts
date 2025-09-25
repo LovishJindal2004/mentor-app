@@ -11,7 +11,10 @@ import {
   FormControl,
 } from '@angular/forms';
 import {
+  CdkDragDrop,
   DragDropModule,
+  moveItemInArray,
+  transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
 // import {CalendarViewComponent} from '../calendar-view/calendar-view.component';
@@ -50,6 +53,7 @@ interface Column {
   id: string;
   title: string;
   tasks: Task[];
+  pageNumber?: number; // Add this
 }
 
 interface Comment {
@@ -138,15 +142,19 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
       scheduleDate: [{ value: null, disabled: true }],
       type: [{ value: 'operational', disabled: true }, Validators.required]
     });
-    
+
     this._userDetails = this._helperService.getUserDetail();
     // Note: Comment section remains enabled
   }
 
-  ngOnInit() {
+  private boardInitialized = false;
+  private loadingStatuses = new Set<string>();
+
+  async ngOnInit() {
     this.loadTaskTypes();
-    this.initializeBoard();
-    this.loadTasks();
+    await this.initializeBoard();
+    this.boardInitialized = true;
+    this.loadAllColumnTasks(); // Load tasks for all columns
   }
 
   ngOnDestroy() {
@@ -154,6 +162,87 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
       this._taskSubscription.unsubscribe();
     }
   }
+
+  loadAllColumnTasks() {
+  if (!this.boardInitialized) return;
+
+  this.columns.forEach(column => {
+    this.loadTasksForColumn(column, false);
+  });
+}
+
+  // New method to load tasks for a specific column
+  loadTasksForColumn(column: Column, loadMore: boolean = false) {
+  const columnId = column.id;
+  if (this.loadingStatuses.has(columnId)) return;
+
+  const apiStatus = this.reverseMapStatus(columnId);
+
+  this.loadingStatuses.add(columnId);
+
+  // Track page number per column
+  if (!column.pageNumber) column.pageNumber = 1;
+  const pageNumber = loadMore ? column.pageNumber + 1 : 1;
+
+  const data = {
+    pageNumber,
+    pageSize: this.pageSize,
+    orderBy: "",
+    sortOrder: "",
+  };
+
+  this._taskService.getAssignedTaskList(data, apiStatus).then((response: any) => {
+    if (response && response.data && Array.isArray(response.data)) {
+      if (response.data.length > 0) {
+        this.processTasksFromApiForColumn(response.data, column, loadMore);
+        column.pageNumber = pageNumber; // Only increment if new tasks returned
+      } else {
+        this.hasMore = false; // No more tasks
+      }
+    }
+    this.loadingStatuses.delete(columnId);
+  }).catch(error => {
+    console.error(`Error loading tasks for column ${columnId}:`, error);
+    this.loadingStatuses.delete(columnId);
+  });
+}
+
+  processTasksFromApiForColumn(apiTasks: any[], targetColumn: Column, append: boolean = false) {
+  if (!targetColumn || !targetColumn.tasks) {
+    console.warn('Target column not found or invalid');
+    return;
+  }
+
+  if (!append) {
+    targetColumn.tasks = []; // Clear existing tasks if not appending
+  }
+
+  console.log(`Processing ${apiTasks.length} tasks for column: ${targetColumn.title}`);
+
+  apiTasks.forEach(apiTask => {
+    // Check if task already exists in this column to prevent duplicates
+    const existingTask = targetColumn.tasks.find(t => t.id === apiTask.guid);
+    if (existingTask && !append) {
+      return; // Skip if task already exists and we're not appending
+    }
+
+    const task: Task = {
+      id: apiTask.guid,
+      title: apiTask.title || 'Untitled Task',
+      description: apiTask.description || '',
+      priority: this.mapPriority(apiTask.priority), // Use priority field, not taskType
+      dueDate: apiTask.date ? new Date(apiTask.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      assignee: apiTask.students ? apiTask.students.join(', ') : '',
+      estimatedTimeHours: 1,
+      scheduleDate: null,
+      type: this.mapTaskType(apiTask.taskType)
+    };
+
+    targetColumn.tasks.push(task);
+  });
+
+  console.log(`Column ${targetColumn.title} now has ${targetColumn.tasks.length} tasks`);
+}
 
   private getStartOfWeek(date: Date): Date {
     const d = new Date(date);
@@ -170,42 +259,36 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
       return d;
     });
   }
+
   loadTasks(loadMore: boolean = false) {
-    if (this.isLoading || !this.hasMore) return;
-
-    this.isLoading = true;
-
-    const data = {
-      pageNumber: this.pageNumber,
-      pageSize: this.pageSize,
-      orderBy: "",
-      sortOrder: "",
-    };
-
-    this._taskService.getAssignedTaskList(data).then((response: any) => {
-      if (response && response.data && Array.isArray(response.data)) {
-        if (response.data.length < this.pageSize) {
-          this.hasMore = false; // no more tasks to load
-        }
-
-        if (loadMore) {
-          // append tasks
-          this.processTasksFromApi(response.data, true);
-        } else {
-          // first load (replace)
-          this.processTasksFromApi(response.data, false);
-        }
-
-        this.pageNumber++; // increment for next call
-      }
-      this.isLoading = false;
-    }).catch(error => {
-      console.error('Error loading tasks:', error);
-      this._taskService.openSnackBar('Failed to load tasks from server', 'Close');
-      this.isLoading = false;
-    });
+    console.warn('loadTasks called - consider using loadTasksForColumn instead');
+    this.loadAllColumnTasks();
   }
 
+  loadMoreTasksForColumn(column: Column) {
+    this.loadTasksForColumn(column, true);
+  }
+
+  deleteTask(column: Column, task: Task) {
+    this._taskService.deleteTask(task.id)
+      .then(() => {
+        const index = column.tasks.indexOf(task);
+        if (index > -1) {
+          column.tasks.splice(index, 1);
+        }
+        this._taskService.openSnackBar('Task deleted successfully', 'Close');
+      })
+      .catch(error => {
+        console.error('Error deleting task:', error);
+        this._taskService.openSnackBar('Failed to delete task', 'Close');
+
+        // Still remove from local UI as fallback
+        const index = column.tasks.indexOf(task);
+        if (index > -1) {
+          column.tasks.splice(index, 1);
+        }
+      });
+  }
 
   showTask() {
     this.showTaskModal = true;
@@ -219,18 +302,108 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
     this.panelOpen = true;
     document.body.classList.add('modal-open');
   }
+  drop(event: CdkDragDrop<Task[]>) {
+    if (event.previousContainer === event.container) {
+      // moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      console.log(event.previousIndex, event.currentIndex + 1);
+      const task = event.previousContainer.data[event.previousIndex];
+      var newStatus :number = 0;
+      if(event.container.id === 'cdk-drop-list-0' ) {
+        newStatus = 0; // New
+      }else if(event.container.id === 'cdk-drop-list-1' ) {
+        newStatus = 2; // Scheduled
+      }else if(event.container.id === 'cdk-drop-list-2' ) {
+        newStatus = 3; // In Progress
+      }
+      let data = {
+        taskGuid: task.id,
+        status: newStatus,
+        newQueueId: event.currentIndex + 1
+      }
+      this._taskService.updateTaskOrder(data)
+        .then(() => {
+          transferArrayItem(
+            event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex
+          );
+          this._taskService.openSnackBar('Task status updated', 'Close');
+        })
+        .catch(error => {
+          console.error('Error updating task status:', error);
+          this._taskService.openSnackBar('Failed to update task status', 'Close');
+
+          // Still update UI as fallback
+          transferArrayItem(
+            event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex
+          );
+        });
+
+    } else {
+      const task = event.previousContainer.data[event.previousIndex];
+      var newStatus :number = 0;
+      if(event.container.id === 'cdk-drop-list-0' ) {
+        newStatus = 0; // New
+      }else if(event.container.id === 'cdk-drop-list-1' ) {
+        newStatus = 2; // Scheduled
+      }else if(event.container.id === 'cdk-drop-list-2' ) {
+        newStatus = 3; // In Progress
+      }
+      
+      let data = {
+        taskGuid: task.id,
+        status: newStatus,
+        newQueueId: event.currentIndex + 1
+      }
+      this._taskService.updateTaskOrder(data)
+        .then(() => {
+          transferArrayItem(
+            event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex
+          );
+          this._taskService.openSnackBar('Task status updated', 'Close');
+        })
+        .catch(error => {
+          console.error('Error updating task status:', error);
+          this._taskService.openSnackBar('Failed to update task status', 'Close');
+
+          // Still update UI as fallback
+          transferArrayItem(
+            event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex
+          );
+        });
+    }
+  }
 
 
   closePanel() {
     this.panelOpen = false;
     this.panelTaskId = null;
     document.body.classList.remove('modal-open');
-    // Optionally re-sync view in case task edited in panel
   }
 
   processTasksFromApi(apiTasks: any[], append: boolean = false) {
+    // Safety check: ensure columns are initialized
+    if (!this.columns || this.columns.length === 0) {
+      console.warn('Columns not initialized yet, skipping task processing');
+      return;
+    }
+
     if (!append) {
-      this.columns.forEach(column => column.tasks = []);
+      this.columns.forEach(column => {
+        if (column && column.tasks) {
+          column.tasks = [];
+        }
+      });
     }
 
     apiTasks.forEach(apiTask => {
@@ -248,46 +421,50 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
         type: this.mapTaskType(apiTask.taskType)
       };
 
-      const status = this.mapStatus(apiTask.status);
-      const column = this.columns.find(c => c.id === status) || this.columns[0];
-      column.tasks.push(task);
+      const column = this.columns.find(c => c.id === status);
+
+      // Safety check before pushing task
+      if (column && column.tasks) {
+        column.tasks.push(task);
+      } else if (this.columns.length > 0 && this.columns[0].tasks) {
+        // Fallback to first column if status mapping fails
+        this.columns[0].tasks.push(task);
+      }
     });
   }
 
-  onScroll(event: any) {
+  onColumnScroll(event: any, column: Column) {
     const element = event.target;
     if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-      // reached bottom
-      this.loadTasks(true);
+      this.loadMoreTasksForColumn(column);
     }
   }
 
-  // Helper methods to map API values to our format
-  mapStatus(apiStatus: number): string {
-    // Map API status values to column IDs
-    switch (apiStatus) {
-      case 0: return 'new';
-      case 1: return 'scheduled';
-      case 2: return 'inprogress';
-      case 3: return 'completed';
-      case 4: return 'request';
-      default: return 'new';
-    }
-  }
 
-  // Reverse mapping to convert from our format to API format
   reverseMapStatus(columnId: string): number {
-    // Map column IDs to API status values
-    switch (columnId) {
-      case 'new': return 0;
-      case 'inprogress': return 1;
-      case 'completed': return 2;
-      default: return 0;
-    }
+  switch (columnId) {
+    case '0': // Convert to string comparison if your column IDs are strings
+    case 'new': 
+      return 0;
+    case '1':
+    case 'scheduled': 
+      return 1;
+    case '2':
+    case 'inprogress': 
+      return 2;
+    case '3':
+    case 'completed': 
+      return 3;
+    case '4':
+    case 'request': 
+      return 4;
+    default: 
+      console.warn(`Unknown column ID: ${columnId}`);
+      return 0;
   }
+}
 
   mapPriority(taskType: number): Priority {
-    // Map task type to priority (you can adjust this mapping)
     switch (taskType) {
       case 0: return 'low';
       case 1: return 'medium';
@@ -306,27 +483,23 @@ export class KanbanBoardViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Reverse mapping to convert from our format to API format
-  reverseMapTaskType(typeId: string): number {
-    // Map our task type IDs to API task type values
-    switch (typeId) {
-      case 'operational': return 0;
-      case 'technical': return 1;
-      case 'strategic': return 2;
-      default: return 0;
-    }
-  }
+  async initializeBoard() {
+  try {
+    const statusResponse: any = await this._taskService.status();
 
-  initializeBoard() {
-    const defaultColumns: Column[] = [
-      { id: '0', title: 'New task', tasks: [] },
-      // { id: '1', title: 'Scheduled', tasks: [] },
-      { id: '2', title: 'In Progress', tasks: [] },
-      { id: '3', title: 'Completed', tasks: [] },
-      // { id: '4', title: 'Request', tasks: [] },
-    ];
-    this.columns = defaultColumns;
+    this.columns = (statusResponse || []).map((status: any) => ({
+      id: String(status.id), // Ensure this matches your reverseMapStatus mapping
+      title: status.name,
+      tasks: []
+    }));
+    
+    console.log('Initialized columns:', this.columns.map(c => ({ id: c.id, title: c.title })));
+  } catch (error) {
+    console.error('Failed to load statuses:', error);
+    this.columns = [];
   }
+}
+
 
 
   createDefaultTasks() {

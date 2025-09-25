@@ -37,7 +37,7 @@
             <ng-container matColumnDef="Action">
                 <th mat-header-cell *matHeaderCellDef> Report </th>
                 <td mat-cell *matCellDef="let element"> 
-                    <mat-icon class="cursor-pointer" routerLink="/task/report/{{taskGuid}}/30a6a567-248f-42bd-a52c-5b66cdea953c">assignment</mat-icon> 
+                    <mat-icon class="cursor-pointer" routerLink="/task/report/{{taskGuid}}/{{element.guid}}">assignment</mat-icon> 
                 </td>
             </ng-container>
         

@@ -1,0 +1,57 @@
+<div>
+    <div class="qbank-header">
+      <mat-form-field class="w-[200px]">
+        <mat-select [(value)]="subjectId" placeholder="Select Subject" (selectionChange)="getsubjectAndQbank($event.value)">
+          <mat-option *ngFor="let subject of subjectDetail" [value]="subject.subjectId">
+            {{ subject.subjectName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex items-center justify-center mt-30" *ngIf="!dataLoaded">
+      <img src="../../../../../assets/images/logo/imgLoder.gif" class="w-15">
+  </div>
+    <div class="py-8 px-6 w-full student-list" *ngIf="dataLoaded">
+      <div class="grid grid-cols-6">
+        <div class="col-span-5">
+          <div class="filters flex gap-2 pb-3">
+            <mat-chip class="cursor-pointer" [class.active]="examStatus === 0" (click)="FilterbyExamStatus(0)">All</mat-chip>
+            <mat-chip class="cursor-pointer" [class.active]="examStatus === 3" (click)="FilterbyExamStatus(3)">Completed</mat-chip>
+            <mat-chip class="cursor-pointer" [class.active]="examStatus === 2" (click)="FilterbyExamStatus(2)">Paused</mat-chip>
+            <mat-chip class="cursor-pointer" [class.active]="examStatus === 1" (click)="FilterbyExamStatus(1)">New</mat-chip>
+          </div>
+        </div>
+      </div>
+  
+      <div *ngFor="let qbnak of filteredExamData">
+        <h3 class="py-4" *ngIf="qbnak.exams.length !== 0">{{qbnak.topicName}}</h3>
+        <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3  gap-4">
+          <div class="games cursor-pointer" *ngFor="let exam of qbnak.exams"
+            [ngClass]="{'new-badge': exam.examStatus==1}"
+            [routerLink]="exam.examStatus === 3 ? subjectId == 0 ? ['/qbank/game-analytics/' + exam.examId, { type: 'allexam' }]: '/qbank/game-analytics/' + exam.examId: '/qbank/exam-details/' + exam.examId">
+  
+            <div class="flex justify-between">
+              <h4 class="font-medium" [innerHTML]="exam.examName"></h4>
+              <mat-icon class="bg-[#28C397] text-white text-xl rounded-full font-medium" *ngIf="exam.examStatus==3">done</mat-icon>
+              <mat-icon class=" text-[#db1627] text-3xl rounded-full font-medium" *ngIf="exam.examStatus==2">pause_circle_filled</mat-icon>
+            </div>
+            <div class="flex items-center pt-4">
+              <h6 class="font-light text-sm">{{exam.noOfCompletedQuestion}}/{{exam.numberOfQuestions}} MCQ's</h6>
+            </div>
+            <mat-progress-bar class="my-2" mode="determinate" [ngClass]="{'stop': exam.examStatus==2}" [value]="exam.noOfCompletedQuestion/exam.numberOfQuestions*100"></mat-progress-bar>
+            <div class="flex justify-end grid grid-cols-3">
+              <div class="font-light text-sm examid col-span-2">QBANK ID: {{exam.examId}}</div>
+              <div class="font-light text-sm text-right" *ngIf="exam.percentage!=0 && exam.percentage !== null">Performance</div>
+            </div>
+            <div class="flex justify-end grid grid-cols-2 pt-2 pb-2" *ngIf="exam.examStatus==3 ">
+              <div class="font-light text-sm">{{exam.examStatus==2?'Paused :':exam.examStatus==3 ?'Completed :':''}} {{ exam.examStatus == 3 ? (exam.completedDate | date: 'dd MMM, yyyy, hh:mma') : (exam.examStatus == 2 ? (exam.updatedOn | date: 'dd MMM, yyyy, hh:mma') : '') }}</div>
+              <div class="font-light text-sm text-right score_percentage" *ngIf="exam.percentage!=0 && exam.percentage !== null">
+                {{exam.percentage | number: '1.2-2'}}% Average</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1 *ngIf="filteredExamData.length==0">No Exam Found</h1>
+    </div>
+  </div>
+  

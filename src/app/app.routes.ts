@@ -160,5 +160,41 @@ export const appRoutes: Route[] = [
         children: [
             {path: 'exams', loadChildren: () => import('app/modules/admin/exams/exams.routes')},
         ]
+    },
+    {
+        path: '',
+        canActivate: [AuthGuard, ChildAuthGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: initialDataResolver
+        },
+        children: [
+            {path: 'chat', loadChildren: () => import('app/modules/admin/chat/chat.routes')},
+        ]
+    },
+    {
+        path: '',
+        canActivate: [AuthGuard, ChildAuthGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: initialDataResolver
+        },
+        children: [
+            {path: 'qbanks', loadChildren: () => import('app/modules/admin/regular-course/qbank/qbanks.routes')},
+        ]
+    },
+    {
+        path: '',
+        canActivate: [AuthGuard, ChildAuthGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: initialDataResolver
+        },
+        children: [
+            {path: 'exam-management', loadChildren: () => import('app/modules/admin/regular-course/test/test.routes')},
+        ]
     }
 ];

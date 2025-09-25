@@ -1,8 +1,9 @@
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { DOCUMENT, DatePipe, NgClass, NgTemplateOutlet } from '@angular/common';
+import { CommonModule, DOCUMENT, DatePipe, NgClass, NgTemplateOutlet } from '@angular/common';
 import {
     AfterViewInit,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     HostBinding,
@@ -15,13 +16,18 @@ import {
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { FuseScrollbarDirective } from '@fuse/directives/scrollbar';
+import { HubConnection } from '@microsoft/signalr';
+import { helperService } from 'app/core/auth/helper';
 import { QuickChatService } from 'app/layout/common/quick-chat/quick-chat.service';
 import { Chat } from 'app/layout/common/quick-chat/quick-chat.types';
+import { ChatService } from 'app/modules/admin/chat/chat.service';
+import { SignalRService } from 'app/modules/common/services/signalR.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -34,25 +40,47 @@ import { Subject, takeUntil } from 'rxjs';
         NgClass,
         MatIconModule,
         MatButtonModule,
-        FuseScrollbarDirective,
+        // FuseScrollbarDirective,
         NgTemplateOutlet,
         MatFormFieldModule,
         MatInputModule,
         TextFieldModule,
         DatePipe,
+        MatFormFieldModule,
+        MatInputModule,
+        TextFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        CommonModule
     ],
 })
 export class QuickChatComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('messageInput') messageInput: ElementRef;
-    chat: Chat;
+    @ViewChild('chatBox') chatBoxRef!: ElementRef;
+    chat: any;
+    currentPage = 1;
+    totalPages = 1;
+    totalCount = 0;
+    hasNextPage = false;
+    hasPreviousPage = false;
+    Message: FormControl;
     chats: Chat[];
     opened: boolean = false;
+    threadId: any;
+    showInput: boolean = true;
+    isLoading = false;
+    
     selectedChat: Chat;
     private _mutationObserver: MutationObserver;
     private _scrollStrategy: ScrollStrategy =
         this._scrollStrategyOptions.block();
     private _overlay: HTMLElement;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    userAccount: any;
+    showSendButton: boolean = false;
+    private _hubConnection: HubConnection;
+    threadData: any;
+    private scrollThreshold = 10;
 
     /**
      * Constructor
@@ -63,8 +91,18 @@ export class QuickChatComponent implements OnInit, AfterViewInit, OnDestroy {
         private _renderer2: Renderer2,
         private _ngZone: NgZone,
         private _quickChatService: QuickChatService,
+        private _chatService: ChatService,
+        private _helperService: helperService,
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _signalRService: SignalRService,
         private _scrollStrategyOptions: ScrollStrategyOptions
-    ) {}
+    ) {
+        this.Message = new FormControl('');        
+        this.userAccount = this._helperService.getUserDetail();
+        this._signalRService.connection$.subscribe(res=>{
+            this._hubConnection = res;
+        })
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Decorated methods
@@ -78,7 +116,7 @@ export class QuickChatComponent implements OnInit, AfterViewInit, OnDestroy {
             'quick-chat-opened': this.opened,
         };
     }
-
+    
     /**
      * Resize on 'input' and 'ngModelChange' events
      *
@@ -127,6 +165,123 @@ export class QuickChatComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((chat: Chat) => {
                 this.selectedChat = chat;
             });
+        this.currentPage = 1;
+        this.totalPages = 1;
+        this.totalCount = 0;
+        this.hasNextPage = false;
+        this.hasPreviousPage = false;
+        this.isLoading = false;
+        let data = {
+            "keyword": "",
+            "pageNumber": 1,
+            "pageSize": 10,
+            "orderBy": "",
+            "sortOrder": ""
+          }
+        this._chatService.getConversion(data).subscribe(res=>{
+            if(res?.data?.length > 0){
+                this.threadId = res?.data[0].threadGuid;
+                this.getConversation();
+                this.threadData = res?.data
+                this._chatService._threadDetails.next(res?.data);
+
+            }else{
+                this._chatService.getContact(data).subscribe(response=>{
+                    if(response?.data?.length > 0){
+                        this._chatService.CreateThread(response?.data[0], this.userAccount?.Id).subscribe(val=>{
+                            // debugger
+                            this.threadId = val.threadGuid;
+                            this.getConversation();
+                            this.threadData = val;
+                            this._chatService._threadDetails.next(val);
+                        })
+                    }
+                })
+            }
+        });
+        this.Message.valueChanges.subscribe(res=>{
+            if(res.length > 0){
+                this.showSendButton = true
+            } else {
+                this.showSendButton = false
+            }
+        });
+         // SignalR message handler
+         this._hubConnection.on("ReceiveMessage", data => {
+            const { senderId, message, sentOn, messageGuid, isOwn, sender, profilePic,messageType } = data;
+            // Ensure chat is initialized as array
+            if (!Array.isArray(this.chat)) {
+                this.chat = [];
+            }
+
+            // Push to chat list
+            this.chat.push({
+                senderId,
+                message,
+                sentOn,
+                messageGuid,
+                messageType,
+                isMine: isOwn,
+                id: messageGuid
+            });
+        
+            this._changeDetectorRef.markForCheck();
+        
+            // Scroll to bottom after Angular renders it
+            setTimeout(() => {
+                this.scrollToBottom();
+            }, 50);
+        
+            if (!isOwn) {
+                // Optionally mark as seen
+                // setTimeout(() => markAsSeen(messageGuid), 1000);
+            }
+        });
+        
+    }
+    getConversation(){
+        const grid = {
+            keyword: "",
+            pageNumber: 1,
+            pageSize: 10,
+            orderBy: "sentOn", // Order by date
+            sortOrder: "desc"  // Newest first
+        };
+        this._chatService.getConversation(this.threadId, grid)
+                        .pipe(takeUntil(this._unsubscribeAll))
+                        .subscribe((response: any) => {
+                            
+                            // API returns newest first, but we want oldest at top for chat
+                            // So reverse the initial data
+                            // const initialMessages = response?.data || [];
+                            // this.chat = [...initialMessages].reverse();
+                            
+                            // // Set pagination info from API response
+                            // this.currentPage = response?.currentPage || 1;
+                            // this.totalPages = response?.totalPages || 1;
+                            // this.totalCount = response?.totalCount || 0;
+                            // this.hasNextPage = response?.hasNextPage || false;
+                            // this.hasPreviousPage = response?.hasPreviousPage || false;
+                            
+                            // this._changeDetectorRef.markForCheck();
+                            
+                            // // Scroll to bottom after initial load (to show newest messages)
+                            // setTimeout(() => {
+                            //     this.scrollToBottom();
+                            // }, 100);
+                            const msgs = response.data.reverse(); // now oldest first
+                            this.chat = msgs;
+                            this.currentPage = response.currentPage;
+                            this.totalPages = response.totalPages;
+                            this.hasNextPage = response.hasNextPage;
+                            this.scrollToBottom();
+                        });
+    }
+    private scrollToBottom(): void {
+        if (this.chatBoxRef?.nativeElement) {
+            const chatBox = this.chatBoxRef.nativeElement;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
     }
 
     /**
@@ -168,6 +323,17 @@ export class QuickChatComponent implements OnInit, AfterViewInit, OnDestroy {
             attributes: true,
             attributeFilter: ['class'],
         });
+        setTimeout(() => {
+            if (this.chatBoxRef?.nativeElement) {
+                this.chatBoxRef.nativeElement.addEventListener(
+                    'scroll',
+                    this.onScroll.bind(this),
+                    { passive: true } // Add passive option for better performance
+                );
+            } else {
+                console.warn('chatBoxRef not available in ngAfterViewInit');
+            }
+        }, 100); // Increased timeout to ensure DOM is ready
     }
 
     /**
@@ -180,6 +346,60 @@ export class QuickChatComponent implements OnInit, AfterViewInit, OnDestroy {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
+        // Remove scroll event listener
+        if (this.chatBoxRef?.nativeElement) {
+            this.chatBoxRef.nativeElement.removeEventListener('scroll', this.onScroll);
+        }
+    }
+
+    async SendMessage() {
+        if (!this._hubConnection || !this.Message.value?.trim()) {
+            console.error('Cannot send message: SignalR connection is not ready or message is empty.');
+            return;
+        }
+        try {
+            console.log(this.threadData,"threadData")
+            let data = {
+                receiverId: this.threadData[0]?.userId,
+                senderId: this.userAccount?.Id,
+                messageText: this.Message.value,
+                messageType: 0,
+            }
+            console.log(data,this._hubConnection,"hubconnection")
+
+            const result = await this._hubConnection.invoke("SendMessage",
+                data.receiverId,
+                data.senderId,
+                data.messageText,
+                data.messageType
+            );
+
+            if (result && result.messageId && result.sentOn) {
+                // Add message to chat array instead of DOM manipulation
+                if (!Array.isArray(this.chat)) {
+                    this.chat = [];
+                }
+                
+                this.chat.push({
+                    senderId: this.userAccount?.Id,
+                    message: this.Message.value,
+                    sentOn: result.sentOn,
+                    messageGuid: result.messageId,
+                    isMine: true,
+                    id: result.messageId
+                });
+
+                this._changeDetectorRef.markForCheck();
+                
+                setTimeout(() => {
+                    this.scrollToBottom();
+                }, 50);
+            }
+
+            this.Message.setValue('');
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -216,12 +436,8 @@ export class QuickChatComponent implements OnInit, AfterViewInit, OnDestroy {
      * Toggle the panel
      */
     toggle(): void {
-        if (this.opened) {
-            this.close();
-        } else {
-            this.open();
-        }
-    }
+        this.opened = !this.opened;
+      }
 
     /**
      * Select the chat
@@ -325,4 +541,55 @@ export class QuickChatComponent implements OnInit, AfterViewInit, OnDestroy {
             this._hideOverlay();
         }
     }
+    onScroll(): void {
+        const el = this.chatBoxRef?.nativeElement;
+        if (!el) return;
+      
+        // If user scrolled near the top, load more
+        if (el.scrollTop <= this.scrollThreshold && !this.isLoading && this.hasNextPage) {
+          this.loadOlderMessages();
+        }
+      }
+      loadOlderMessages(): void {
+        if (this.isLoading || !this.threadId || !this.hasNextPage) return;
+      
+        this.isLoading = true;
+        const nextPage = this.currentPage + 1;
+      
+        const grid = {
+          keyword: "",
+          pageNumber: nextPage,
+          pageSize: 10,
+          orderBy: "sentOn",
+          sortOrder: "desc" // backend sends newest first
+        };
+      
+        const el = this.chatBoxRef.nativeElement;
+        const prevHeight = el.scrollHeight;
+        const prevTop = el.scrollTop;
+      
+        this._chatService.getConversation(this.threadId, grid)
+          .subscribe({
+            next: (response: any) => {
+              const olderMsgs = response.data.reverse(); // fix order
+              this.chat = [...olderMsgs, ...this.chat]; // prepend
+      
+              this.currentPage = response.currentPage;
+              this.hasNextPage = response.hasNextPage;
+      
+              this._changeDetectorRef.detectChanges();
+              setTimeout(() => {
+                // restore scroll position
+                el.scrollTop = el.scrollHeight - (prevHeight - prevTop);
+              }, 0);
+      
+              this.isLoading = false;
+            },
+            error: () => {
+              this.isLoading = false;
+            }
+          });
+      }
+      
+
 }

@@ -1,7 +1,7 @@
 <div class="p-6" *ngIf="currentReport">
   <!-- Stats Grid -->
   <h2 class="text-primary font-semibold text-xl mb-4">Daily Activities</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
 
     <!-- Videos Watched -->
     <div
@@ -72,10 +72,9 @@
       </div>
     </div>
 
-    <div
+    <!-- <div
       class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex items-center gap-4 hover:shadow-lg transition flex-col">
       <div class="p-4 rounded-full bg-teal-100 text-teal-600">
-        <!-- Heroicon: Chart Bar -->
         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 19V6a1 1 0 00-1-1H6a1 1 0 00-1 1v13m8 0v-6a1 1 0 00-1-1h-2a1 1 0 00-1 1v6m8 0V10a1 1 0 00-1-1h-2a1 1 0 00-1 1v9" />
@@ -90,8 +89,9 @@
           {{ mcqReport.attemptedPercentage | number:'1.0-2' }}%
         </p>
       </div>
-    </div>
+    </div> -->
   </div>
+
   <!-- Subject Wise Analytics -->
   <div *ngIf="subjectWiseAnalytics?.length > 0"
     class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 hover:shadow-lg transition mt-6">
@@ -138,6 +138,7 @@
       </div>
     </div>
   </div>
+  
 
 
   <!-- Weak Subjects Section -->
@@ -187,7 +188,7 @@
 
         <!-- Marks -->
         <p class="text-sm text-gray-700 dark:text-gray-300">
-          Marks: <strong>{{ subject.obtainedMarks }}</strong> / {{ subject.totalMarks }}
+          <strong>{{ subject.obtainedMarks }}</strong> / {{ subject.totalMarks }}
         </p>
 
         <!-- Progress Bar -->
@@ -203,6 +204,32 @@
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
           {{ subject.percentage | number:'1.0-2' }}%
         </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subject Wise Analytics -->
+  <div *ngIf="mcqReport?.length > 0"
+    class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 hover:shadow-lg transition mt-6">
+
+    <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+      <!-- Chart Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+      </svg>
+      
+      Momentum (Progress compared to last Week)
+    </h4>
+
+    <!-- Horizontal Scroll -->
+    <div class="grid grid-cols-5 gap-4 overflow-x-auto pb-2">
+      <div *ngFor="let subject of mcqReport" class="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded-xl shadow-md p-4 flex-shrink-0 hover:shadow-lg transition">
+        <h5 class="font-semibold text-teal-600 dark:text-teal-400 text-center">{{ subject.subjectName }}</h5>
+        <div class="flex items-center gap-2 justify-center">
+          <mat-icon *ngIf="subject.momentum > 0" class="text-green-500">trending_up</mat-icon>
+          <mat-icon *ngIf="subject.momentum < 0" class="text-red-500">trending_down</mat-icon>
+          <h2 [ngClass]="{'text-green-500':subject.momentum > 0,'text-red-500':subject.momentum < 0}">{{ subject.momentum }}% <span class="text-sm font-light">this week</span></h2>
+        </div>
       </div>
     </div>
   </div>

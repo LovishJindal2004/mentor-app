@@ -160,11 +160,11 @@ export class ExamService {
     params = params.append('courseId', CourseId);
     return this._httpClient.get<any>(`${environment.apiURL}/test/list?${params}&testType=${examtype}`)
   }
-  getcategoryExamList(CourseId, examtype,categoryName,isPracticeMode): Observable<any> {
+  getcategoryExamList(examtype,categoryName): Observable<any> {
     let params = new HttpParams();
     const encodedCategoryName = encodeURIComponent(categoryName);
-    params = params.append('courseId', CourseId);
-    return this._httpClient.get<any>(`${environment.apiURL}/test/v3-list?${params}&testType=${examtype}&categoryName=${encodedCategoryName}&isPracticeMode=${isPracticeMode}`)
+    // params = params.append('courseId', CourseId);
+    return this._httpClient.get<any>(`${environment.apiURL}/test/list?testType=${examtype}&categoryName=${encodedCategoryName}`)
   }
   getpyqExamList(courseId, pyqExamType,year, isPracticeMode): Observable<any> {
     let params = new HttpParams();

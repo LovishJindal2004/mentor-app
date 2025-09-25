@@ -1,0 +1,8 @@
+
+::ng-deep .no-download::-webkit-media-controls-enclosure {
+    overflow: hidden;
+}
+
+::ng-deep .no-download::-webkit-media-controls-panel {
+    width: calc(100% - 30px); /* adjust as needed */
+}

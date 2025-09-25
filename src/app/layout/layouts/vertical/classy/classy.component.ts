@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,13 +35,14 @@ import { Subject, takeUntil } from 'rxjs';
         UserComponent,
         MatIconModule,
         MatButtonModule,
+        CommonModule,
         // LanguagesComponent,
         // FuseFullscreenComponent,
         // SearchComponent,
         // ShortcutsComponent,
         // MessagesComponent,
         RouterOutlet,
-        // QuickChatComponent,
+        QuickChatComponent,
     ],
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {

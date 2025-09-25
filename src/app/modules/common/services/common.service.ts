@@ -227,7 +227,7 @@ export class CommanService {
     );
   }
   getexamCategorybyCourse(courseid): Observable<any> {
-    return this._httpClient.get<any>(`${environment.apiURL}/test/categories/` + courseid).pipe(
+    return this._httpClient.get<any>(`${environment.apiURL}/test/categories/`).pipe(
       tap((response: any) => {
         this._courses.next(response);
       })

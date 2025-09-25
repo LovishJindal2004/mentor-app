@@ -1,0 +1,238 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+}
+
+:host ::ng-deep form .filters .mat-form-field.mat-form-field {
+    min-width: auto;
+    max-width: initial;
+    padding-top: 0px;
+}
+
+:host ::ng-deep form .filters .mat-form-field.mat-form-field .mat-form-field-wrapper {
+    margin-bottom: 0px;
+}
+
+::ng-deep .filters .mat-form-field .mat-form-field-wrapper {
+    margin-bottom: 0;
+}
+
+// :host ::ng-deep .mat-form-field.mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+//     border-color: #00AEEF !important;
+// }
+.student_div {
+    border: 1px solid #B5E7FB;
+    background: white;
+}
+
+.active_btn {
+    display: flex;
+    align-items: center;
+    border: 1px solid;
+    border-radius: 50px;
+    padding: 0 10px 0 3px;
+    color: #28C397;
+}
+
+.active_btn mat-icon.mat-icon {
+    font-size: 15px;
+    color: #28C397;
+}
+
+.float-left {
+    float: left;
+}
+
+.first_div {
+    padding: 20px;
+    border-bottom: 1px solid #B5E7FB;
+}
+
+.second_div {
+    padding: 10px 20px 20px 20px;
+    position: relative;
+}
+
+.second_div:after {
+    position: absolute;
+    content: 'II';
+    bottom: 0px;
+    left: 20px;
+    display: block;
+    font-size: 60px;
+    line-height: 45px;
+    color: #E7F8FF;
+}
+
+.col-span-5 {
+    grid-column: span 5 / span 5 !important;
+}
+
+.stats div {
+    font-size: 14px;
+    color: #A9A9A9;
+    font-weight: 300;
+}
+
+.stats div span {
+    color: #505050;
+    font-size: 24px;
+}
+
+.stats-2 div {
+    font-size: 14px;
+    color: #A9A9A9;
+    font-weight: 300;
+}
+
+.stats-2 span {
+    color: #505050;
+    font-size: 14px;
+}
+
+.view_report_card {
+    background: #28C397;
+    border-radius: 4px;
+    padding: 9px 10px;
+    color: white;
+    font-weight: 400;
+}
+
+// .filters mat-chip.mat-chip {
+//     color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+//     border: 1px solid #DCDCDC;
+//     border-radius: 36px;
+//     padding: 1px 15px;
+//     background: white !important;
+//     font-weight: 400 !important;
+// }
+
+// .filters mat-chip.active {
+//     color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+//     border: 1px solid rgba(var(--fuse-primary-rgb), var(--tw-text-opacity));
+//     border-radius: 36px;
+//     padding: 1px 15px;
+//     background: white !important;
+//     font-weight: 400 !important;
+// }
+
+.grandtest {
+    border: 1px solid rgba(var(--fuse-primary-rgb), .3);
+    border-radius: 4px;
+    background: white;
+    padding: 0;
+    box-shadow: 0px 0px 10px rgba(var(--fuse-primary-rgb), .3);
+    position: relative;
+    overflow: hidden;
+}
+.link-div{
+    padding: 12px 21px 40px 21px;
+}
+.leaderboard-div{
+    position: absolute;
+    bottom: 6px;
+    left: 23px;
+}
+
+::ng-deep .student-list .mat-form-field.mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+    border-color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+    box-shadow: 0px 0px 10px rgba(var(--fuse-primary-rgb), .3) !important;
+    border-radius: 8px;
+    height: 60px;
+}
+
+.new-badge:after {
+    position: absolute;
+    content: 'New';
+    top: 6px;
+    right: -13px;
+    transform: rotate(45deg);
+    background: #F9BC15;
+    color: white;
+    font-size: 9px;
+    width: 50px;
+    text-align: center;
+}
+
+::ng-deep .stop .mat-progress-bar-fill::after {
+    background: #d71e1e !important;
+}
+
+::ng-deep .mat-progress-bar-fill::after {
+    background: #28C397 !important;
+}
+
+::ng-deep .mat-progress-bar {
+    height: 2px !important;
+}
+
+.examid {
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.filters mat-chip.active {
+    color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+    border: 1px solid rgba(var(--fuse-primary-rgb), var(--tw-text-opacity));
+    border-radius: 36px;
+    padding: 1px 15px;
+    background: white !important;
+    font-weight: 400 !important;
+  }
+.score_percentage {
+    background: #FFE2E0;
+    color: #EA4435;
+    border-radius: 35px;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    align-items: center;
+    height: 22px;
+}
+button.leaderboard-btn {
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    background-color: rgba(var(--fuse-primary-rgb), 1) !important;
+    color: white !important;
+}
+.percentages_div {
+    background: #FFF7E2 0% 0% no-repeat padding-box;
+    box-shadow: 0px 0px 5px #F9BC1559;
+    border: 1px solid #F9BC1540;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+@media screen and (max-width: 1199px) {
+    .first_div {
+        display: flex !important;
+        flex-wrap: wrap;
+    }
+    .second_div {
+        display: flex !important;
+        flex-wrap: wrap;
+        word-wrap: break-word;
+        z-index: 1;
+    }
+    .students_details {
+        z-index: 1;
+    }
+}
+@media screen and (max-width: 767px) {
+    .grid-div {
+        display: flex !important;
+        flex-wrap: wrap;
+    }
+}
