@@ -196,5 +196,17 @@ export const appRoutes: Route[] = [
         children: [
             {path: 'exam-management', loadChildren: () => import('app/modules/admin/regular-course/test/test.routes')},
         ]
+    },
+    {
+        path: '',
+        canActivate: [AuthGuard, ChildAuthGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: initialDataResolver
+        },
+        children: [
+            {path: 'CustomQbank', loadChildren: () => import('app/modules/admin/regular-course/custom-qbank/custom-qbank.routes')},
+        ]
     }
 ];

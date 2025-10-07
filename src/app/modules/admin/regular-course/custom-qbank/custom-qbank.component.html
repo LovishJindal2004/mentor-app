@@ -1,0 +1,462 @@
+<!-- Header Starts from here -->
+<div class="flex items-center gap-2.5  h-20 bg-white pt-2.5 shadow">
+
+    <mat-icon class="ml-6 text-primary cursor-pointer" routerLink="/CustomQbank/list">keyboard_backspace</mat-icon>
+    <h2 class="text-[14px] text-[#6E6E6E] font-medium"><span class="text-primary cursor-pointer" routerLink="/CustomQbank/list">Question Bank</span>/ Create Customize MCQ'S</h2>
+    <!-- <h2 class="text-[14px] text-[#6E6E6E] font-medium ml-5"> Create Customize MCQ'S</h2> -->
+</div>
+<!-- Header Ends-->
+
+<mat-stepper [linear]="islinear" #stepper class="w-full h-full bg-[#F5F5F5] custmstapper" *ngIf="!isMcqCreated">
+    <!-- step first -->
+    <mat-step [stepControl]="customeMcqExamStep1FormGroup">
+
+        <form [formGroup]="customeMcqExamStep1FormGroup">
+            <div class="grid sm:grid-cols-1  lg:grid-cols-2 xl:grid-cols-2  gap-4 mt-4">
+                <!-- First Div -->
+                <div>
+
+                    <!-- input-->
+                    <!-- <div>
+                        <mat-label class="text-[14px]">Enter Customize MCQ'S Code</mat-label>
+                    </div>
+                    <div>
+                        <mat-form-field class="w-full max-w-[400px] h-[48px] mt-2">
+                            <input matInput formControlName="customizeMcq" placeholder="ADr2435647">
+                        </mat-form-field>
+                        <control-messages class="exam-error" [control]="customeMcqExamStep1FormGroup.controls.customizeMcq" fieldName="Customize MCQ's Code" [showSubmitError]="IscustomeMcqExamStep1FormGroupError"></control-messages>
+                    </div> -->
+                    <!-- Ends-->
+
+                    <!-- radio button -->
+                    <div class="mt-4">
+                        <mat-label class="text-[14px]">Competency Level <span class="font-normal">(Select any
+                                one)</span></mat-label>
+                        <div class="flex flex-wrap btn-group level_options">
+                            <div>
+                                <input mdbRadio type="radio" class="btn-check " formControlName="competencyLevel" value="0" id="All" />
+                                <label class="btn btn-secondary" for="All">All</label>
+                            </div>
+                            <div *ngFor="let level of levelofQuestions">
+                                <input mdbRadio type="radio" class="btn-check " formControlName="competencyLevel" [value]="level.levelID" [id]="level.levelID" />
+                                <label class="btn btn-secondary" [for]="level.levelID">{{level.title}}</label>   
+                            </div>                         
+                        </div>
+
+                        <control-messages class="exam-error" [control]="customeMcqExamStep1FormGroup.controls.competencyLevel" fieldName="Competency Level" [showSubmitError]="IscustomeMcqExamStep1FormGroupError"></control-messages>
+                    </div>
+                    <!-- radio button Ends-->
+
+                    <!-- Recommended Timings -->
+                    <div class="mt-4">
+                        <mat-label class="text-[14px]">Recommended Timings</mat-label>
+                        <div class="mt-1">
+                            <mat-radio-group class="timing_radio flex flex-col" color="primary" formControlName="recommendedTimings">
+                                <mat-radio-button value="1800" class="w-full">30 Min (25 Questions)</mat-radio-button>
+
+                                <mat-radio-button value="3600" (change)="timingSettingEvent($event)" class="w-full">60 Min (50 Questions)</mat-radio-button>
+
+                                <mat-radio-button value="5400" (change)="timingSettingEvent($event)" class="w-full">90 Min (60 Questions)</mat-radio-button>
+
+                                <mat-radio-button value="10800" (change)="timingSettingEvent($event)" class="w-full">180 Min (120 Questions)</mat-radio-button>
+
+                                <mat-radio-button value="0" (change)="timingSettingEvent($event)" class="w-full">No time line</mat-radio-button>
+
+                                <mat-radio-button value="Customize" (change)="timingSettingEvent($event)" class="w-full">Customize</mat-radio-button>
+                            </mat-radio-group>
+                            <control-messages class="exam-error" [control]="customeMcqExamStep1FormGroup.controls.recommendedTimings" fieldName="Recommended Timings" [showSubmitError]="IscustomeMcqExamStep1FormGroupError"></control-messages>
+                        </div>
+                        <!-- <div class="ml-6">
+                            <mat-form-field class="w-[240px] h-[48px] mt-2" color="primary">
+
+                                <input type="time" matInput min="00:00" max="23:59" placeholder="HH:MM" formControlName="customizeTimings" [readonly]="isCustomTimerEnable">
+                            </mat-form-field>
+                            <control-messages class="exam-error" [control]="customeMcqExamStep1FormGroup.controls.customizeTimings" fieldName="Customize Timings" [showSubmitError]="IscustomeMcqExamStep1FormGroupError"></control-messages>
+                        </div> -->
+                        <div class="ml-6">
+                            <form [formGroup]="timeForm">
+                              <div class="flex gap-2">
+                                <!-- Hours Select -->
+                                <mat-form-field class="w-[80px]">
+                                  <mat-label>Hours</mat-label>
+                                  <mat-select formControlName="hours" [disabled]="isCustomTimerEnable">
+                                    <mat-option *ngFor="let hour of hours" [value]="hour">
+                                      {{hour | number:'2.0-0'}}
+                                    </mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                      
+                                <!-- Minutes Select -->
+                                <mat-form-field class="w-[80px]">
+                                  <mat-label>Minutes</mat-label>
+                                  <mat-select formControlName="minutes" [disabled]="isCustomTimerEnable">
+                                    <mat-option *ngFor="let minute of minutes" [value]="minute">
+                                      {{minute | number:'2.0-0'}}
+                                    </mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+
+                              </div>
+                            </form>
+                            <control-messages 
+                              class="exam-error" 
+                              [control]="timeForm.get('hours')" 
+                              fieldName="Hours"
+                              [showSubmitError]="showError">
+                            </control-messages>
+                          </div>
+                    </div>
+                    <!-- Recommended Timings Ends-->
+
+
+                </div>
+                <!-- First Div Ends-->
+
+                <!-- Second Div -->
+                <div>
+                    <!-- Dropdown-->
+                    <div>
+                        <mat-label class="text-[14px]">Number Of Questions</mat-label>
+                    </div>
+
+                    <div>
+                        <mat-form-field class="w-full max-w-[400px] mt-2">
+                            <mat-select formControlName="numberOfQuestions">
+                                <mat-option disabled>Select any</mat-option>
+                                <mat-option [value]='40'>40 Questions</mat-option>
+                                <mat-option [value]='60'>60 Questions</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <control-messages class="exam-error" [control]="customeMcqExamStep1FormGroup.controls.numberOfQuestions" fieldName="Number Of Questions"></control-messages>
+                    </div>
+                    <!-- Dropdown Ends-->
+
+                    <!-- checkbox -->
+                    <div class="mt-4 mcq-category">
+                        <mat-label class="text-[14px]">MCQ'S Category <span class="font-normal">(MultiSelect)</span></mat-label>
+                        <mat-selection-list formControlName="mcqCategory">
+                            <mat-list-option *ngFor="let category of categories" [value]="category.Id" (click)="onSelectCategory(category)" required>{{category.Title}}
+
+                            </mat-list-option>
+                        </mat-selection-list>
+                        <control-messages class="exam-error" [control]="customeMcqExamStep1FormGroup.controls.mcqCategory" fieldName="MCQ's Category" [showSubmitError]="IscustomeMcqExamStep1FormGroupError"></control-messages>
+                    </div>
+
+                    <!-- checkbox Ends-->
+
+                    <!-- Answer -->
+                    <div class="mt-4 answer-div">
+                        <mat-label class="text-[14px]">Answer</mat-label>
+                        <div class="timing_radio">
+                            <mat-radio-group formControlName="ModeofExam" class=" flex flex-col">
+                                <mat-radio-button value="0" class="w-full" color="primary">Show the answer
+                                    <br>
+                                    <span class="span-two">Review answer only after competing the MCQ'S</span>
+                                </mat-radio-button>
+
+                                <mat-radio-button value="1" class="w-full" color="primary">After Complete the exam<br>
+                                    <span class="span-two">See answer and explanations after completing the each
+                                        MCQ'S</span>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <control-messages class="exam-error" [control]="customeMcqExamStep1FormGroup.controls.ModeofExam" fieldName="Answer" [showSubmitError]="IscustomeMcqExamStep1FormGroupError"></control-messages>
+                    </div>
+                    <!-- Answer Ends-->
+
+
+
+
+                </div>
+                <!-- Second Div Ends-->
+            </div>
+
+        </form>
+
+        <div class="flex justify-center">
+
+            <button mat-raised-button matStepperNext class="w-90 bg-primary text-[#fff] mx-auto h-16 flex items-center justify-center max-h-full min-h-full mt-4 text-xl rounded-lg cursor-pointer" (click)="goToCustomeMcqExamStep1FormGroup()">
+                Continue</button>
+        </div>
+
+
+    </mat-step>
+    <!-- step first Ends-->
+
+    <!---second Step Starts--->
+    <mat-step [stepControl]="customeMcqExamStep2FormGroup">
+        <form [formGroup]="customeMcqExamStep2FormGroup">
+            <div class="gap-4 mt-4">
+
+                <!-- first div -->
+                <div>
+                    <div>
+                        <mat-label class="text-[14px]">Select Chapters</mat-label>
+                    </div>
+                    <!-- accordian starts -->
+                    <section class="mt-4">
+                        <mat-accordion class="subject-accordian">
+                            <mat-expansion-panel *ngFor="let panel of panels" [disabled]="true" [expanded]="panel.opened"
+                                class="p-4 rounded-none expansion_border">
+                                <mat-expansion-panel-header class="p-0 border-bottom">
+                                    <mat-panel-title class="flex items-center text-[#505050] text-[14px] font-semibold">
+                                        <mat-checkbox *ngFor="let heading of chapterHeadings"
+                                            [checked]="getSelectedSubjectChapters(panel) === panel?.topics?.length"
+                                            (change)="onChaptersChecks($event, true, panel)"
+                                            color="primary">
+                    
+                                            {{ panel.subjectName }}
+                                        </mat-checkbox>
+                    
+                                    </mat-panel-title>
+                                    <button mat-icon-button (click)="panel.opened = !panel.opened">
+                                        <mat-icon>{{ panel.opened ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+                                        </mat-icon>
+                    
+                                    </button>
+                    
+                                </mat-expansion-panel-header>
+                                <span class="example-list-section">
+                                    <mat-selection-list class="chapters-checkboxes" formControlName="selectChapters" required>
+                                        <mat-list-option *ngFor="let data of panel.topics" (click)="onChaptersChecks(data,false,panel)"
+                                            [selected]="selectedChapters?.includes(data)"
+                                            color="primary" [value]="data">{{data.topicName}}
+                    
+                                        </mat-list-option>
+                    
+                                    </mat-selection-list>
+                    
+                                </span>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                        <control-messages class="exam-error" [control]="customeMcqExamStep2FormGroup.controls.selectChapters"
+                            fieldName="Select Chapters" [showSubmitError]="IscustomeMcqSelectChapterStep2FormGroupError"></control-messages>
+                    </section>
+
+
+
+
+                    <!-- accordian ends -->
+                </div>
+                <!-- first div Ends-->
+
+                <!-- second div -->
+                <div class="mt-4">
+                    <div class="mt-5"></div>
+
+                </div>
+                <!-- second div ends-->
+            </div>
+            <div class="flex justify-center gap-8">
+
+                <button mat-raised-button matStepperPrevious class="w-50 bg-primary text-[#fff]  h-16 flex items-center justify-center max-h-full min-h-full mt-4 text-xl rounded-lg">
+                    Previous</button>
+
+                <button mat-raised-button matStepperNext class="w-50 bg-[#DCDCDC] text-[#6E6E6E]  h-16 flex items-center justify-center max-h-full min-h-full mt-4 text-xl rounded-lg" (click)="goTocustomeMcqSelectChapterStep2FormGroup()">
+                    Next</button>
+            </div>
+        </form>
+    </mat-step>
+    <!-- second step Ends-->
+
+    <!-- third  starts here -->
+    <mat-step [stepControl]="customeMcqEnterMcqNameStep3FormGroup">
+        <form [formGroup]="customeMcqEnterMcqNameStep3FormGroup">
+            <div class="grid sm:grid-cols-1lg:grid-cols-2 xl:grid-cols-2  gap-4 mt-4">
+                <!-- first div -->
+                <div>
+                    <div>
+                        <mat-label class="text-[14px]">Your MCQ'S Name</mat-label>
+                    </div>
+                    <div>
+                        <mat-form-field class="w-full max-w-[400px] mt-2 text-primary">
+                            <input matInput formControlName="mcqName" placeholder="High Priority Question 2023">
+                        </mat-form-field>
+                        <control-messages class="exam-error" [control]="customeMcqEnterMcqNameStep3FormGroup.controls.mcqName" fieldName="Your MCQ's Name" [showSubmitError]="IscustomeMcqEnterMcqNameStep3FormGroupError"></control-messages>
+                    </div>
+                    <!-- <div class="planner_div">
+                        <div class="flex gap-2.5 items-center justify-start" color="primary">
+                            <mat-checkbox color="primary" value="setPlanner" (change)="datePickerChangeEvent($event)">Set Planner</mat-checkbox>
+
+                        </div>
+                        <p class="text-[#6E6E6E] font-light text-[12px] leading-5 sm:w-[83%] md:w-[85%]">The planner is overdue. However, you can reschedule the planner by setting a new due date</p>
+
+
+
+                        <div>
+                            <div class="p-0 mt-4 flex">
+
+                                <input readonly matInput class="w-90 mr-2 text-primary" [matDatepicker]="picker" [disabled]="!isCustomDatePickerEnable" formControlName="datePicker">
+                                <mat-datepicker-toggle matSuffix [for]="picker" class="relative right-12" [disabled]="!isCustomDatePickerEnable"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+
+                            </div>
+                            <control-messages class="exam-error" [control]="customeMcqEnterMcqNameStep3FormGroup.controls.datePicker" fieldName="Date Picker" [showSubmitError]="IscustomeMcqEnterMcqNameStep3FormGroupError"></control-messages>
+                        </div>
+                    </div> -->
+                </div>
+                <!-- first div Ends-->
+
+                <!-- Second Div  starts here-->
+                <div>
+                    <div>
+                        <mat-label class="text-[14px]">Select Tags</mat-label>
+                    </div>
+                    <div class="flex gap-2.5 items-center justify-start mt-3" color="primary">
+                        <!-- <input type="checkbox" color="primary"> -->
+                        <mat-checkbox color="primary" [checked]="selectedTags?.length === tags?.length" (change)="ontagSelection($event, true)" formControlName="multiTags">Select All</mat-checkbox>
+
+                    </div>
+
+                    <!-- multiple checkboxes -->
+                    <div class="mt-3 tags-box">
+                        <div class="flex flex-wrap">
+                            <!-- <mat-checkbox color="primary" *ngFor="let data of tags" (change)="tagsChangeEvent($event)" [checked]="check" class="custom-checkbox" formControlName="multiTags" required>{{data}}</mat-checkbox> -->
+                        </div>
+                        <mat-selection-list class="custom-checkbox" formControlName="multiTags" required>
+                            <mat-list-option *ngFor="let data of tags" (click)="ontagSelection(data,false)" [checked]="check" [selected]=" selectedTags.includes(data)">{{data.name}}
+
+                            </mat-list-option>
+
+                        </mat-selection-list>
+
+
+                        <control-messages class="exam-error" [control]="customeMcqEnterMcqNameStep3FormGroup.controls.multiTags" fieldName="Multi Select" [showSubmitError]="IscustomeMcqEnterMcqNameStep3FormGroupError"></control-messages>
+                    </div>
+                    <!-- multiple checkboxes Ends-->
+                </div>
+                <!-- Second Div  Ends here-->
+            </div>
+
+            <div class="flex justify-center mt-3 ">
+                <button mat-raised-button matStepperNext class="w-90 bg-primary text-[#fff] mx-auto h-16 flex items-center justify-center max-h-full min-h-full mt-4 text-xl rounded-lg" (click)="onSubmit() ">
+                    Create Customize MCQ'S</button>
+            </div>
+        </form>
+    </mat-step>
+    <!-- third step Ends-->
+
+
+</mat-stepper>
+<div *ngIf="isMcqCreated ">
+    <div class="ml-5 mr-5 mt-4 px-3 py-3 border border-primary/25 bg-white ">
+        <h2 class="text-[18px] font-medium text-[#505050] pt-1 ">{{examDetails?.name}}</h2>
+        <p class="font-light text-[14px] text-[#6E6E6E] pt-1 ">Created on {{examDetails?.createdOn | date: 'dd MMM, yyyy, hh:mma'}}</p>
+        <!-- multiple divs  -->
+        <div class="mt-4 bg-[#FFFFF7] ">
+            <div class="flex multiple-divs ">
+                <div class="flex items-center leading-[0px] gap-2.5 ">
+                    <mat-icon class="text-[25px] text-[#28C397] ">check_circle</mat-icon>
+                    <span class="text-[#505050] text-sm font-light ">{{examDetails?.noOfQuestions}} MCQ'S</span>
+                </div>
+
+            </div>
+            <div class="flex multiple-divs ">
+                <div class="flex items-center leading-[0px] gap-2.5 ">
+                    <mat-icon class="text-[25px] text-[#28C397] ">check_circle</mat-icon>
+                    <span class="text-[#505050] text-sm font-light ">Difficulty : {{examDetails?.levelName}}</span>
+                </div>
+
+            </div>
+            <div *ngIf="examDetails?.mcqCategoryName.length > 0" class="flex multiple-divs ">
+                <div class="flex items-center leading-[0px] gap-2.5 ">
+                    <mat-icon class="text-[25px] text-[#28C397] ">check_circle</mat-icon>
+                    <span class="text-[#505050] text-sm font-light " >Category: {{examDetails?.mcqCategoryName}}</span>
+
+                </div>
+
+            </div>
+            <div class="flex multiple-divs ">
+                <div class="flex items-center leading-[0px] gap-2.5 ">
+                    <mat-icon class="text-[25px] text-[#28C397] ">check_circle</mat-icon>
+                    <span class="text-[#505050] text-sm font-light " >Chapters : {{examDetails?.topics.length}}</span>
+                </div>
+
+            </div>
+            <div class="flex multiple-divs ">
+                <div class="flex items-center leading-[0px] gap-2.5 ">
+                    <mat-icon class="text-[25px] text-[#28C397] ">check_circle</mat-icon>
+                    <span class="text-[#505050] text-sm font-light ">{{examDetails?.tags.length}} Tags</span>
+                </div>
+
+            </div>
+            <div class="flex multiple-divs ">
+                <div class="flex items-center leading-[0px] gap-2.5 ">
+                    <mat-icon class="text-[25px] text-[#28C397] ">check_circle</mat-icon>
+                    <span class="text-[#505050] text-sm font-light " *ngIf="McqDetails?.examMode == 0">Show the answer</span>
+                    <span class="text-[#505050] text-sm font-light " *ngIf="McqDetails?.examMode == 1">Answer After Complete the exam</span>
+                </div>
+
+            </div>
+            <!-- <div class="multiple-divs ">
+                <div class="flex items-center leading-[0px] gap-2.5 ">
+                    <mat-icon class="text-[25px] text-[#EA4435] ">error</mat-icon>
+                    <h2 class="text-[#505050] text-sm font-light ">Planner {{McqDetails?.plannerDate | date}}</h2>
+
+                </div>
+                <p class="text-[#EA4435] text-sm font-light ml-8 ">05 days - Over Due</p>
+
+
+
+            </div> -->
+
+        </div>
+
+    </div>
+    <div class="flex flex-col md:flex-row justify-center mt-5 gap-4 p-3">
+        <button class="btn md:min-w-96 h-14 bg-primary rounded text-white text-[18px] font-medium" routerLink="/CustomQbank/game-view/{{examDetails?.guid}}">Start QBank</button>
+        <button class="btn md:min-w-96 h-14 flex justify-center items-center customize-btn rounded text-white text-[18px] font-medium " (click)="CreateMcq() "><mat-icon
+                class="text-white " >playlist_add</mat-icon> <span>Create Customize MCQ'S</span></button>
+    </div>
+    <h3 class="text-center text-primary text-[18px] font-medium underline mt-5 cursor-pointer" (click)="openDialogWithTemplateRef(myDialog) ">Delete the MCQ'S</h3>
+    <!-- mat dialogue box -->
+
+    <ng-template #myDialog class=" ">
+        <section class=" ">
+            <h2 class="text-center text-[18px] text-[#505050] font-medium ">Are you sure want to delete the Customize MCQ'S
+            </h2>
+            <h3 class="text-[#6E6E6E] text-center text-[12px] mt-2 font-light ">QBank ID : {{examDetails.mcqCode}}</h3>
+            <button class="w-72 h-16 bg-primary text-[#FFFFFF] text-[18px] py-2 mt-4 rounded-lg font-medium cursor-pointer" (click)="DeleteCQBank(examDetails.guid)">Yes,
+                Delete
+                it</button>
+            <br>
+            <button mat-dialog-close class="w-72 h-16 bg-primary/10 text-[18px] font-medium text-primary mt-8 py-2 rounded-lg" (click)="ClosePopup() ">May
+                be later</button>
+        </section>
+
+    </ng-template>
+
+
+
+    <!-- ends -->
+    <hr class="ml-5 mr-5 my-4 border-primary/25 ">
+
+    <h3 class="text-center text-[#505050] text-[18px] font-medium mt-5 ">Customize MCQ'S Code</h3>
+
+    <div class="flex justify-center items-center gap-3 mt-4 mb-5 flex-col md:flex-row">
+        <div class="justify-center items-center border border-primary/25 inline-flex rounded h-14 bg-white ">
+            <div class=" ">
+
+                <input matInput class="text-center text-primary mcq-input" [placeholder]="examDetails?.mcqCode" readonly>
+            </div>
+        </div>
+        <div class="flex gap-3">
+        <div class="px-4 py-4 border border-primary/25 " [cdkCopyToClipboard]="value">
+            <svg xmlns="http://www.w3.org/2000/svg " class="fill-primary " width="20.727 " height="24 " viewBox="0 0 20.727 24 ">
+                <path id="Icon_material-content-copy " data-name="Icon material-content-copy "
+                    d="M18.273,1.5H5.182A2.188,2.188,0,0,0,3,3.682V18.955H5.182V3.682H18.273Zm3.273,4.364h-12A2.188,2.188,0,0,0,7.364,8.045V23.318A2.188,2.188,0,0,0,9.545,25.5h12a2.188,2.188,0,0,0,2.182-2.182V8.045A2.188,2.188,0,0,0,21.545,5.864Zm0,17.455h-12V8.045h12Z "
+                    transform="translate(-3 -1.5) " />
+            </svg>
+
+        </div>
+        <div class="px-4 py-4 border border-primary/25 " [cdkCopyToClipboard]="value">
+            <svg xmlns="http://www.w3.org/2000/svg " class="fill-primary " width="24 " height="20 " viewBox="0 0 24 20 ">
+                <path id="Icon_ionic-md-share-alt " data-name="Icon ionic-md-share-alt "
+                    d="M28.5,16.25l-10-9.5v5.333c-9.333,1.333-12.667,8-14,14.667,3.333-4.667,7.333-6.8,14-6.8v5.467Z "
+                    transform="translate(-4.5 -6.75) " />
+            </svg>
+
+        </div>
+    </div>
+    </div>
+</div>

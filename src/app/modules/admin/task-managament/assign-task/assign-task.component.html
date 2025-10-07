@@ -49,17 +49,17 @@
 
                     <div class="flex gap-2 justify-end items-center">
                         <div class="px-2">
-                        <div class="flex flex-col items-center gap-2 mt-2 justify-center">
-                            <span *ngIf="assignTaskForm.get('students')?.invalid && assignTaskForm.get('students')?.touched"
-                                class="text-red-500 text-sm text-center">
-                                At least one student is required
-                            </span>
-                            <span *ngIf="assignTaskForm.get('students')?.value?.length > 0" class="text-green-600 text-sm text-center">
-                                {{ assignTaskForm.get('students')?.value.length }} student(s) selected
-                            </span>
+                            <div class="flex flex-col items-center gap-2 mt-2 justify-center">
+                                <span *ngIf="assignTaskForm.get('student')?.invalid && assignTaskForm.get('student')?.touched"
+                                    class="text-red-500 text-sm text-center">
+                                    Please select a student
+                                </span>
+                                <span *ngIf="assignTaskForm.get('student')?.value" class="text-green-600 text-sm text-center">
+                                    {{ assignTaskForm.get('student')?.value?.firstName }} {{ assignTaskForm.get('student')?.value?.lastName }} selected
+                                </span>
+                            </div>
+                            <button mat-raised-button type="button" (click)="assignStudent()">Select Student</button>
                         </div>
-                        <button mat-raised-button type="button" (click)="assignStudent()">Assign Students</button>
-                    </div>
                         <div><button mat-raised-button type="submit" (click)="assignTask()">Assign Task</button></div>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
         </div>
 
         <!-- VIDEO MODULE -->
-        <div *ngIf="assignTaskForm.get('module')?.value === 'Video'" class="grid grid-cols-6 h-[85vh]">
+        <div *ngIf="assignTaskForm.get('module')?.value === 'Video' && assignTaskForm.get('student')?.value" class="grid grid-cols-6 h-[85vh]">
             <div class="chapter-selection p-4 border-r-2 border-primary overflow-scroll">
                 <h2 class="text-xl font-semibold pb-2">Subject</h2>
 
@@ -125,15 +125,24 @@
                     <div *ngFor="let topic of videosByTopic">
                         <h2 class="p-2 font-semibold text-base mt-2">{{ topic.topic }}</h2>
                         <div class="grid grid-cols-3 gap-4">
-                            <div *ngFor="let video of topic?.videos" class="list-item"
+                            <div *ngFor="let video of topic?.videos" [ngClass]="video?.status == 3 ? 'border-green-500' : video?.status == 2 ? 'border-yellow-500' : 'border-pink-500'" class="list-item border border-1"
                                 [class.selected]="isVideoSelected(video)"
                                 [class.multi-selected]="isVideoSelected(video)"
                                 (click)="selectVideo(video)">
-                                <mat-icon *ngIf="isVideoSelected(video)"
-                                    class="selection-icon">check_circle</mat-icon>
-                                <mat-icon *ngIf="!isVideoSelected(video)"
-                                    class="selection-icon">radio_button_unchecked</mat-icon>
-                                {{ video.title }}<br><span class="text-sm">{{ video.duration || 'Duration not specified' }}</span>
+                                <div class="flex items-center justify-between">
+                                    <div>{{ video.title }}</div>
+                                    <ng-container *ngIf="video?.assignedAt" [ngSwitch]="video.status">
+                                        <mat-icon *ngSwitchCase="3" class="text-green-500">check_circle</mat-icon>
+                                        <mat-icon *ngSwitchCase="2" class="text-yellow-500">autorenew</mat-icon>
+                                        <mat-icon *ngSwitchDefault class="text-gray-500">hourglass_empty</mat-icon>
+                                    </ng-container>
+                                </div><span class="text-sm">{{ video.duration || 'Duration not specified' }}
+                                    </span>
+                                <hr class="my-2">
+                                <div class="flex items-center justify-between">
+                                    <div>{{video?.assignedAt? 'Assigned' : 'Not Assigned' }}</div>
+                                    <div *ngIf="video?.assignedAt">{{video?.assignedAt | date: 'MMM d, y'}}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -146,7 +155,7 @@
         </div>
 
         <!-- QBANK MODULE -->
-        <div *ngIf="assignTaskForm.get('module')?.value === 'QBank'" class="grid grid-cols-6 h-[85vh]">
+        <div *ngIf="assignTaskForm.get('module')?.value === 'QBank' && assignTaskForm.get('student')?.value" class="grid grid-cols-6 h-[85vh]">
             <div class="chapter-selection p-4 border-r-2 border-primary overflow-scroll">
                 <h2 class="text-xl font-semibold pb-2">Subject</h2>
 
@@ -203,16 +212,23 @@
                     <div *ngFor="let topic of qbankExams">
                         <h2 class="p-2 font-semibold text-base mt-2">{{ topic.topicName }}</h2>
                         <div class="grid grid-cols-3 gap-4">
-                            <div *ngFor="let qbankExam of topic?.exams" class="list-item"
-                                [class.selected]="isQbankExamSelected(qbankExam)"
-                                [class.multi-selected]="isQbankExamSelected(qbankExam)"
-                                (click)="selectqbankExam(qbankExam)">
-                                <mat-icon *ngIf="isQbankExamSelected(qbankExam)"
-                                    class="selection-icon">check_circle</mat-icon>
-                                <mat-icon *ngIf="!isQbankExamSelected(qbankExam)"
-                                    class="selection-icon">radio_button_unchecked</mat-icon>
-                                {{ qbankExam.examName }}<br><span class="text-sm">{{ qbankExam.numberOfQuestions }}
+                            <div *ngFor="let qbankExam of topic?.exams" [ngClass]="qbankExam.examStatus == 3 ? 'border-green-500' : qbankExam?.examStatus == 2 ? 'border-yellow-500' : 'border-pink-500'" class="list-item border border-1" [class.selected]="isQbankExamSelected(qbankExam)"
+                                [class.multi-selected]="isQbankExamSelected(qbankExam)" (click)="selectqbankExam(qbankExam)">
+                                <div class="flex items-center justify-between">
+                                    <div>{{ qbankExam.examName }}</div>
+                                    <ng-container *ngIf="qbankExam?.examStatus" [ngSwitch]="qbankExam.examStatus">
+                                        <mat-icon *ngSwitchCase="3" class="text-green-500">check_circle</mat-icon>
+                                        <mat-icon *ngSwitchCase="2" class="text-yellow-500">autorenew</mat-icon>
+                                        <!-- <mat-icon *ngSwitchCase="1" class="text-gray-500">hourglass_empty</mat-icon> -->
+                                        <!-- <mat-icon *ngSwitchDefault class="text-gray-500">hourglass_empty</mat-icon> -->
+                                    </ng-container>
+                                </div><span class="text-sm">{{ qbankExam.numberOfQuestions }}
                                     Questions</span>
+                                <hr class="my-2">
+                                <div class="flex items-center justify-between">
+                                    <div>{{qbankExam?.assignedAt? 'Assigned' : 'Not Assigned' }}</div>
+                                    <div *ngIf="qbankExam?.assignedAt">{{qbankExam?.assignedAt | date: 'MMM d, y'}}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -225,7 +241,7 @@
         </div>
 
         <!-- TEST MODULE -->
-        <div *ngIf="assignTaskForm.get('module')?.value === 'Test'" class="grid grid-cols-6 h-[85vh]">
+        <div *ngIf="assignTaskForm.get('module')?.value === 'Test' && assignTaskForm.get('student')?.value" class="grid grid-cols-6 h-[85vh]">
             <div class="chapter-selection p-4 border-r-2 border-primary overflow-scroll">
                 <h2 class="text-xl font-semibold pb-2">Exam Type</h2>
 
@@ -279,14 +295,23 @@
 
                 <div class="grid grid-cols-3 gap-4 pt-2">
                     <h2 *ngIf="testExamsByType?.length === 0">No Data Found</h2>
-                        <div *ngFor="let exam of testExamsByType" class="list-item"
-                          [class.selected]="isTestExamSelected(exam)"
-                          [class.multi-selected]="isTestExamSelected(exam)"
-                          (click)="selectTestExam(exam)">
-                          <mat-icon *ngIf="isTestExamSelected(exam)" class="selection-icon">check_circle</mat-icon>
-                          <mat-icon *ngIf="!isTestExamSelected(exam)" class="selection-icon">radio_button_unchecked</mat-icon>
-                          {{ exam.title }}
+                    <div *ngFor="let exam of testExamsByType" class="list-item border border-1" [class.selected]="isTestExamSelected(exam)"
+                        [class.multi-selected]="isTestExamSelected(exam)" (click)="selectTestExam(exam)" [ngClass]="exam?.status == 3 ? 'border-green-500' : exam?.status == 2 ? 'border-yellow-500' : 'border-pink-500'">
+                        <div class="flex items-center justify-between">
+                            <div>{{ exam.title }}</div>
+                            <ng-container [ngSwitch]="exam.status">
+                                <mat-icon *ngSwitchCase="3" class="text-green-500">check_circle</mat-icon>
+                                <mat-icon *ngSwitchCase="2" class="text-yellow-500">autorenew</mat-icon>
+                                <!-- <mat-icon *ngSwitchDefault class="text-gray-500">hourglass_empty</mat-icon> -->
+                            </ng-container>
+                        </div><span class="text-sm">{{ exam.noOfQuestions }}
+                            Questions</span>
+                        <hr class="my-2">
+                        <div class="flex items-center justify-between">
+                            <div>{{exam?.assignedAt? 'Assigned' : 'Not Assigned' }}</div>
+                            <div *ngIf="exam?.assignedAt">{{exam?.assignedAt | date: 'MMM d, y'}}</div>
                         </div>
+                    </div>
                 </div>
                 <div *ngIf="assignTaskForm.get('testExams')?.invalid && assignTaskForm.get('testExams')?.touched"
                     class="text-red-500 mt-2">
@@ -300,23 +325,22 @@
 <!-- Student Selection Popup -->
 <ng-template #studentPopup>
     <div class="flex gap-2 justify-between items-center">
-        <h2 class="text-xl font-semibold mb-4">Select Students</h2>
+        <h2 class="text-xl font-semibold mb-4">Select Student</h2>
         <button mat-button (click)="dialogRef.close()"><mat-icon>close</mat-icon></button>
     </div>
 
     <div class="max-h-[400px] overflow-y-auto">
         <table mat-table [dataSource]="studentList" class="w-full">
 
-            <!-- Checkbox Column -->
+            <!-- Radio Button Column -->
             <ng-container matColumnDef="select">
-                <th mat-header-cell *matHeaderCellDef>
-                    <mat-checkbox (change)="toggleAllStudents($event)" [checked]="isAllSelected()"
-                        [indeterminate]="isIndeterminate()">
-                    </mat-checkbox>
-                </th>
+                <th mat-header-cell *matHeaderCellDef>Select</th>
                 <td mat-cell *matCellDef="let student">
-                    <mat-checkbox (change)="toggleStudent(student, $event)" [checked]="isStudentSelected(student)">
-                    </mat-checkbox>
+                    <mat-radio-button 
+                        [value]="student" 
+                        [checked]="isStudentSelected(student)"
+                        (change)="selectStudent(student)">
+                    </mat-radio-button>
                 </td>
             </ng-container>
 
@@ -341,8 +365,8 @@
         [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)">
     </mat-paginator>
 
-    <div class="flex justify-end gap-2 mt-4">
-        <!-- <button mat-button (click)="dialogRef.close()">Cancel</button>
-      <button mat-raised-button color="primary" (click)="saveSelectedStudents()">Save</button> -->
-    </div>
+    <!-- <div class="flex justify-end gap-2 mt-4">
+        <button mat-button (click)="dialogRef.close()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="saveSelectedStudent()" [disabled]="!selectedStudent">Save</button>
+    </div> -->
 </ng-template>

@@ -1,0 +1,84 @@
+<div class="p-6">
+    <div class="py-3 flex justify-between items-center">
+      <div>
+        <h2 class="text-black font-semibold text-3xl">Assigned Courses</h2>
+        <h3 class="font-light text-gray-500">List of all courses assigned to this student</h3>
+      </div>
+      <div class="flex gap-2">
+        <button mat-raised-button color="primary" (click)="AddCourse()">
+          Add Course
+        </button>
+        <button mat-raised-button color="primary" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon> Back
+        </button>        
+      </div>
+    </div>
+  
+    <div class="mt-6">
+      <table mat-table [dataSource]="assignedCourses" class="mat-elevation-z1 w-full">
+  
+        <!-- Course Name -->
+        <ng-container matColumnDef="courseName">
+          <th mat-header-cell *matHeaderCellDef>Course Name</th>
+          <td mat-cell *matCellDef="let course">{{ course.courseName }}</td>
+        </ng-container>
+  
+        <!-- Start Date -->
+        <ng-container matColumnDef="startDate">
+          <th mat-header-cell *matHeaderCellDef>Start Date</th>
+          <td mat-cell *matCellDef="let course">
+            {{ course.startDate | date: 'dd/MM/yyyy' }}
+          </td>
+        </ng-container>
+  
+        <!-- End Date -->
+        <ng-container matColumnDef="endDate">
+          <th mat-header-cell *matHeaderCellDef>End Date</th>
+          <td mat-cell *matCellDef="let course">
+            {{ course.endDate | date: 'dd/MM/yyyy' }}
+          </td>
+        </ng-container>
+  
+        <!-- Active -->
+        <ng-container matColumnDef="isActive">
+          <th mat-header-cell *matHeaderCellDef>Active</th>
+          <td mat-cell *matCellDef="let course">
+            <span [ngClass]="course.isActive ? 'text-green-600 font-semibold' : 'text-red-500 font-semibold'">
+              {{ course.isActive ? 'Yes' : 'No' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Edit">
+          <th mat-header-cell *matHeaderCellDef>Edit Subsciption</th>
+          <td mat-cell *matCellDef="let course">
+            <mat-icon (click)="editSubscription(course)">edit</mat-icon>
+          </td>
+        </ng-container>
+  
+        <!-- Default -->
+        <ng-container matColumnDef="isDefault">
+          <th mat-header-cell *matHeaderCellDef>Default</th>
+          <td mat-cell *matCellDef="let course">
+            <span [ngClass]="course.isDefault ? 'text-green-600 font-semibold' : 'text-gray-500'">
+              {{ course.isDefault ? 'Yes' : 'No' }}
+            </span>
+          </td>
+        </ng-container>
+  
+        <!-- Table Header and Rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-100"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50"></tr>
+  
+        <!-- No Data -->
+        <tr class="mat-row" *matNoDataRow>
+          <td colspan="5" class="text-center py-6 text-gray-500">
+            <mat-icon class="text-4xl mb-2">school</mat-icon>
+            No assigned courses found.
+          </td>
+        </tr>
+  
+      </table>
+    </div>
+  </div>
+  

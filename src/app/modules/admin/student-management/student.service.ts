@@ -11,7 +11,10 @@ import { BehaviorSubject, catchError, tap } from "rxjs";
 export class StudentService {
 
   onStudentManagementChanged: BehaviorSubject<any>;
+  onCourseAssignmentChanged: BehaviorSubject<any>;
   onAssignBulkStudent: BehaviorSubject<any>;
+  OnCourseAssignedtoStudentChanged: BehaviorSubject<any>;
+  
   openSnackBar(message: string, action: string) {
     this._matSnockbar.open(message, action, {
       duration: 2000,
@@ -22,7 +25,9 @@ export class StudentService {
     private _matSnockbar: MatSnackBar
   ) {
     this.onStudentManagementChanged = new BehaviorSubject([]);
+    this.onCourseAssignmentChanged = new BehaviorSubject([]);
     this.onAssignBulkStudent = new BehaviorSubject([]);
+    this.OnCourseAssignedtoStudentChanged = new BehaviorSubject([]);
   }
 
   getStudentList(data) {
@@ -141,6 +146,26 @@ export class StudentService {
   assignedCourse(data) {
     return new Promise((resolve, reject) => {
       this._https.post(`${environment.apiURL}/mentee/assign-mentee-courses`, { ...data }).subscribe(
+        (response: any) => {
+          resolve(response);
+        },
+        reject
+      );
+    });
+  }
+  getassignedCourse(userId) {
+    return new Promise((resolve, reject) => {
+      this._https.get(`${environment.apiURL}/course/enrolled-courses/${userId}`, {  }).subscribe(
+        (response: any) => {
+          resolve(response);
+        },
+        reject
+      );
+    });
+  }
+  getUnassignedCourseList(userId) {
+    return new Promise((resolve, reject) => {
+      this._https.get(`${environment.apiURL}/course/unassigned-course-list/${userId}`, {  }).subscribe(
         (response: any) => {
           resolve(response);
         },

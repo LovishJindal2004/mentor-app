@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApexOptions } from 'apexcharts';
 import { Subscription } from 'rxjs';
 import { DataGuardService } from 'app/core/auth/guards/dataGuard';
@@ -27,6 +27,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { TestService } from '../test.service';
 
 @Component({
   selector: 'app-test-list',
@@ -52,7 +53,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     ReactiveFormsModule,
     MatListModule,
     MatTabsModule,
-    MatSnackBarModule,],
+    MatSnackBarModule,
+  RouterLink],
   templateUrl: './test-list.component.html',
   styleUrl: './test-list.component.scss'
 })
@@ -72,7 +74,7 @@ export class TestListComponent implements OnInit {
     private _route: ActivatedRoute,
     private _router: Router,
     private _datgurd: DataGuardService,
-    private _examservice: ExamService,
+    private _examservice: TestService,
     private _errorhandling: ApiErrorHandlerService) {
     this._route.params.subscribe(res => {
       this.examList = [];
@@ -150,7 +152,7 @@ export class TestListComponent implements OnInit {
     }
   }
   goToExam() {
-    this.router.navigate(['/exam-management/gameview']);
+    this.router.navigate(['/exam-management/game-view']);
   }
    ngOnDestroy(): void {
     // Unsubscribe from the route parameters observable to avoid memory leaks
@@ -166,7 +168,7 @@ export class TestListComponent implements OnInit {
     } else if (this.examtype === 6) {
       link = '/exam-management/cbtgameview/' + exam.guid;
     } else {
-      link = '/exam-management/gameview/' + exam.guid;
+      link = '/exam-management/game-view/' + exam.guid;
     }
     this.router.navigate([link]);
   }

@@ -409,7 +409,8 @@ export class QbankGameViewComponent implements OnInit {
       let request = {
         examId: self.ExamId,
         questionId: self.FilterQuestionData[0]?.questionDetailID,
-        taskGuid: self.taskGuid,
+        entityType: 2,
+        entityId: self.taskGuid,
         choices: self.choicesId,
         duration: self.durations,
         activityId: this.QuestionActivaty?.activityId,
@@ -467,7 +468,8 @@ export class QbankGameViewComponent implements OnInit {
     var self = this;
     let request = {
       examId: this.ExamId,
-      taskGuid: this.taskGuid,
+      entityType: 2,
+      entityId: this.taskGuid,
       // courseId: this.courseId,
       examStatus: examStatus,
       activityId: this.QuestionActivaty?.activityId

@@ -225,7 +225,7 @@ export class ExamGameReviewComponent implements OnInit {
     if (this.loadedQuestionDetails[questionDetailID]) {
       this.currentQuestionDetail = this.loadedQuestionDetails[questionDetailID];
     } else {
-      this.courseExamService.getQuestionbyID(questionDetailID).subscribe((response: any) => {
+      this.courseExamService.getQuestionbyID(questionDetailID,this.taskGuid).subscribe((response: any) => {
         this.currentQuestionDetail = response;
         this.loadedQuestionDetails[questionDetailID] = response;
       });
@@ -406,8 +406,9 @@ export class ExamGameReviewComponent implements OnInit {
 
     var request = {
       examId: this.examid,
-      taskId: this.taskGuid,
-      timeDuration: this.time
+      entityType: 2,
+      entityId: this.taskGuid,
+      timeDuration: this.time,
     }
     // debugger;
     this.courseExamService.predefineAnswerSheetProgress(request).then(res => {

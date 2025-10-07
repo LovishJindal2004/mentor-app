@@ -35,9 +35,10 @@ export class TaskService {
             }, reject);
         })
     };
-    getQBankExams(subject) {
+    getQBankExams(userId,subject) {
+        console.log(userId,"")
         return new Promise((resolve, reject) => {
-            this._https.get(`${environment.apiURL}/qbank/topics/${subject}`).subscribe((response: any) => {
+            this._https.get(`${environment.apiURL}/qbank/students/${userId?.id}/subjects/${subject}/topics`).subscribe((response: any) => {
                 resolve(response);
             }, reject);
         })
@@ -49,9 +50,9 @@ export class TaskService {
             }, reject);
         })
     };
-    getTestExams(testType, categoryName) {
+    getTestExams(userId,testType, categoryName) {
         return new Promise((resolve, reject) => {
-            this._https.get(`${environment.apiURL}/test/list?testType=${testType}&categoryName=${categoryName}`).subscribe((response: any) => {
+            this._https.get(`${environment.apiURL}/test/students/${userId?.id}/tests?testType=${testType}&categoryName=${categoryName}`).subscribe((response: any) => {
                 resolve(response);
             }, reject);
         })
@@ -70,9 +71,9 @@ export class TaskService {
     //         }, reject);
     //     })
     // };
-    getVideos(subjectId) {
+    getVideos(userId,subjectId) {
         return new Promise((resolve, reject) => {
-            this._https.get(`${environment.apiURL}/video/topics?subjectId=${subjectId}`).subscribe((response: any) => {
+            this._https.get(`${environment.apiURL}/video/students/${userId?.id}/video-subjects/${subjectId}/topics`).subscribe((response: any) => {
                 resolve(response);
             }, reject);
         })
@@ -201,7 +202,7 @@ export class TaskService {
     };
     getReport(taskId,mentorId) {
         return new Promise((resolve, reject) => {
-            this._https.get(`${environment.externalApiURL}/api/task/task/${taskId}/mentee/${mentorId}/activity`, {}).subscribe((response: any) => {
+            this._https.get(`${environment.externalApiURL}/api/task/activity/2/${taskId}/mentee/${mentorId}`, {}).subscribe((response: any) => {
                 resolve(response);
             }, reject);
         })

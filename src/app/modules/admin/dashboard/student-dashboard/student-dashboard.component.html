@@ -222,8 +222,8 @@
     </h4>
 
     <!-- Horizontal Scroll -->
-    <div class="grid grid-cols-5 gap-4 overflow-x-auto pb-2">
-      <div *ngFor="let subject of mcqReport" class="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded-xl shadow-md p-4 flex-shrink-0 hover:shadow-lg transition">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 overflow-x-auto pb-2">
+      <div *ngFor="let subject of mcqReport" class="flex flex-wrap items-center justify-between bg-gray-50 dark:bg-gray-700 rounded-xl shadow-md p-4 flex-shrink-0 hover:shadow-lg transition">
         <h5 class="font-semibold text-teal-600 dark:text-teal-400 text-center">{{ subject.subjectName }}</h5>
         <div class="flex items-center gap-2 justify-center">
           <mat-icon *ngIf="subject.momentum > 0" class="text-green-500">trending_up</mat-icon>

@@ -40,7 +40,8 @@ export class ExamService {
   }
   getsigleExam(taskId, Examid): Observable<any> {
     let params = new HttpParams();
-    params = params.append('taskId', taskId.toString());
+    params = params.append('entityId', taskId.toString());
+    params = params.append('entitytype', '2');
     params = params.append('testId', Examid.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/test/questions`, { params })
   }
@@ -105,13 +106,15 @@ export class ExamService {
   getpredefineExamResult(examid, taskId): Observable<any> {
     let params = new HttpParams();
     params = params.append('testId', examid.toString());
-    params = params.append('taskId', taskId.toString());
+    params = params.append('entitytype', 2);
+    params = params.append('entityId', taskId.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/test/result`, { params })
   }
   getpredefineExamResultv2(examid, taskId): Observable<any> {
     let params = new HttpParams();
     params = params.append('testId', examid.toString());
-    params = params.append('taskId', taskId.toString());
+    params = params.append('entitytype', 2);
+    params = params.append('entityId', taskId.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/test/result`, { params })
   }
   getExamTopScorers(examid, courseId,byState): Observable<any> {
@@ -130,7 +133,8 @@ export class ExamService {
   getpredefineExamAnswersheet(testId, taskId): Observable<any> {
     let params = new HttpParams();
     params = params.append('testId', testId.toString());
-    params = params.append('taskId', taskId.toString());
+    params = params.append('entitytype', 2);
+    params = params.append('entityId', taskId.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/test/answersheet`, { params })
   }
   BookmarkPredefineQuestion(request: any): Observable<any> {
@@ -151,8 +155,11 @@ export class ExamService {
         }, reject);
     });
   }
-  getQuestionbyID(questionDetailID: number): Observable<any> {
-    return this._httpClient.get<any>(`${environment.apiURL}/test/question/` + questionDetailID, {});
+  getQuestionbyID(questionDetailID: number,taskGuid): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('entitytype', 2);
+    params = params.append('entityId', taskGuid.toString());
+    return this._httpClient.get<any>(`${environment.apiURL}/test/question/` + questionDetailID, {params});
   }
   //get exam List
   getExamList(CourseId, examtype): Observable<any> {

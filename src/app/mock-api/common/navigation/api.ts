@@ -271,6 +271,7 @@
 import { Injectable } from '@angular/core';
 import { FuseNavigationItem } from '@fuse/components/navigation';
 import { FuseMockApiService } from '@fuse/lib/mock-api';
+import { DataGuardService } from 'app/core/auth/guards/dataGuard';
 import { helperService } from 'app/core/auth/helper';
 import {
     AdminNavigation,
@@ -278,6 +279,7 @@ import {
     defaultNavigation,
     futuristicNavigation,
     horizontalNavigation,
+    MenteeCourseNavigation,
     MenteeNavigation,
     MentorNavigation,
 } from 'app/mock-api/common/navigation/data';
@@ -298,6 +300,7 @@ export class NavigationMockApi {
     private readonly _AdminNavigation: FuseNavigationItem[] = AdminNavigation;
     private readonly _MentorNavigation: FuseNavigationItem[] = MentorNavigation;
     private readonly _MenteeNavigation: FuseNavigationItem[] = MenteeNavigation;
+    private readonly _MenteeCourseNavigation: FuseNavigationItem[] = MenteeCourseNavigation;
     userDetail: any;
     isnavigationalreadyexiest: boolean = false;
     latestNavigation: any = [];
@@ -308,6 +311,7 @@ export class NavigationMockApi {
     constructor(
         private _fuseMockApiService: FuseMockApiService,
         private _helpService: helperService,
+        private _dataGuard: DataGuardService,
         private _CommanService: CommanService
     ) {
         // Register Mock API handlers
@@ -333,7 +337,13 @@ export class NavigationMockApi {
                 } else if (this.userDetail?.Roles == "Mentor") {
                     navigation = cloneDeep(this._MentorNavigation);
                 } else if (this.userDetail?.Roles == "Mentee") {
-                    navigation = cloneDeep(this._MenteeNavigation);
+                    let courseId = this._dataGuard.getCourseId();
+                    console.log(courseId,"courseId")
+                    if(courseId=='3e8a091d-99c5-497e-9368-dd0323724cb9'){
+                        navigation = cloneDeep(this._MenteeNavigation);
+                    }else{                        
+                        navigation = cloneDeep(this._MenteeCourseNavigation);
+                    }
                 }
 
                 if (!navigation) {

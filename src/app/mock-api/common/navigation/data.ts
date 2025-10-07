@@ -51,6 +51,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
         roles : ['Mentor']
     },
     {
+        id   : 'assignedcourse',
+        title: 'assignedcourse',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/student/assigned-course/:userId',
+        roles : ['Admin']
+    },
+    {
         id   : 'viewprogress',
         title: 'View Progress',
         type : 'basic',
@@ -309,6 +317,34 @@ export const defaultNavigation: FuseNavigationItem[] = [
         roles : ['Mentee']
     },
     {
+        id: 'gameview',
+        title: 'Game View',
+        type: 'basic',
+        link: '/exam-management/game-view/:examId',
+        roles: ["Mentee"]
+    },
+    {
+        id: 'game-analytics',
+        title: 'game-analytics',
+        type: 'basic',
+        link: '/exam-management/game-analytics/:examId',
+        roles: ["Mentee"]
+    },
+    {
+        id: 'game-analytics',
+        title: 'game-analytics',
+        type: 'basic',
+        link: '/exam-management/game-reviews/:examId/:Questionid',
+        roles: ["Mentee"]
+    },
+    {
+        id: 'game-analytics',
+        title: 'game-analytics',
+        type: 'basic',
+        link: '/exam-management/game-review/:examId',
+        roles: ["Mentee"]
+    },
+    {
         id: 'exams management',
         title: 'Exams Management',
         type: 'collapsable',
@@ -338,49 +374,49 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 id: 'cbtgameview',
                 title: 'cbt Game View',
                 type: 'basic',
-                link: '/exam-management/cbtgameview/:examid',
+                link: '/exam-management/cbtgameview/:examId',
                 roles: ["Mentee"]
             },
             {
                 id: 'gameview',
                 title: 'Game View',
                 type: 'basic',
-                link: '/exam-management/gameview/:examid',
+                link: '/exam-management/game-view/:examId',
                 roles: ["Mentee"]
             },
             {
                 id: 'game-analytics',
                 title: 'game-analytics',
                 type: 'basic',
-                link: '/exam-management/game-analytics/:examid',
+                link: '/exam-management/game-analytics/:examId',
                 roles: ["Mentee"]
             },
             {
                 id: 'game-analytics',
                 title: 'game-analytics',
                 type: 'basic',
-                link: '/exam-management/game-full-analytics/:examid',
+                link: '/exam-management/game-full-analytics/:examId',
                 roles: ["Mentee"]
             },
             {
                 id: 'game-analytics',
                 title: 'game-analytics',
                 type: 'basic',
-                link: '/exam-management/game-reviews/:examid/:Questionid',
+                link: '/exam-management/game-reviews/:examId/:Questionid',
                 roles: ["Mentee"]
             },
             {
                 id: 'game-analytics',
                 title: 'game-analytics',
                 type: 'basic',
-                link: '/exam-management/game-reviews/:examid',
+                link: '/exam-management/game-review/:examId',
                 roles: ["Mentee"]
             },
             {
                 id: 'game-analytics',
                 title: 'game-analytics',
                 type: 'basic',
-                link: '/exam-management/exam-leaderboard/:examid',
+                link: '/exam-management/exam-leaderboard/:examId',
                 roles: ["Mentee"]
             },
             {
@@ -458,6 +494,106 @@ export const defaultNavigation: FuseNavigationItem[] = [
         ]
 
     },
+    {
+        id   : 'qbank-details',
+        title: 'qbank-details',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbanks/exam-details/:examId',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'qbank-details',
+        title: 'qbank-details',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbanks/game-view/:examId',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'qbank-details',
+        title: 'qbank-details',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbanks/game-review/:examId',
+        roles : ['Mentee']
+    },
+    {
+        id   : 'qbank-details',
+        title: 'qbank-details',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbanks/game-analytics/:examId',
+        roles : ['Mentee']
+    },
+    {
+        id: 'CustomQbank',
+        title: 'Custom Qbank',
+        type: 'basic',
+        link: '/CustomQbank',
+        roles: ["Mentee"]
+    },
+    {
+        id: 'CustomQbank',
+        title: 'Custom Qbank',
+        type: 'basic',
+        link: '/CustomQbank/Create',
+        roles: ["Mentee"]
+    },
+    {
+        id: 'CustomQbank',
+        title: 'Custom Qbank',
+        type: 'basic',
+
+        link: '/CustomQbank/list',
+        roles: ["Mentee"]
+
+    },
+    {
+        id: 'CustomQbank',
+        title: 'Custom Qbank',
+        type: 'basic',
+
+        link: '/CustomQbank/:examid',
+        roles: ["Mentee"]
+
+    },
+    {
+        id: 'customgameview',
+        title: 'custom-game-view',
+        type: 'basic',
+
+        link: '/CustomQbank/custom-game-view',
+        roles: ["Mentee"]
+
+    },
+    {
+        id: 'gameview',
+        title: 'game-view',
+        type: 'basic',
+
+        link: '/CustomQbank/game-view/:examid',
+        roles: ["Mentee"]
+
+    },
+    {
+        id: 'gamereview',
+        title: 'custom-game-review',
+        type: 'basic',
+
+        link: '/CustomQbank/game-review/:examid',
+        roles: ["Mentee"]
+
+    },
+    {
+        id: 'gameanalytics',
+        title: 'game-analytics',
+        type: 'basic',
+
+        link: '/CustomQbank/game-analytics/:examid',
+        roles: ["Mentee"]
+
+    },
    
 ];
 export const AdminNavigation: FuseNavigationItem[] = [
@@ -522,6 +658,30 @@ export const MentorNavigation: FuseNavigationItem[] = [
     },
 ];
 export const MenteeNavigation: FuseNavigationItem[] = [
+    {
+        id   : 'Dashboard',
+        title: 'Dashboard',
+        type : 'basic',
+        icon : 'heroicons_outline:cube',
+        link : '/dashboard'
+    },
+    {
+        id   : 'qbank-list',
+        title: 'QBank',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/qbanks/subjects',
+        roles : ['Mentee']
+    },
+    {
+        id: 'exams management',
+        title: 'Exams',
+        type: 'collapsable',
+        icon : 'heroicons_outline:clipboard-document-list',
+        children: []
+    },    
+];
+export const MenteeCourseNavigation: FuseNavigationItem[] = [
     // {
     //     id   : 'student',
     //     title: 'Student',
@@ -543,21 +703,6 @@ export const MenteeNavigation: FuseNavigationItem[] = [
         icon : 'heroicons_outline:chart-pie',
         link : '/task/list'
     },
-    {
-        id   : 'qbank-list',
-        title: 'QBank',
-        type : 'basic',
-        icon : 'heroicons_outline:chart-pie',
-        link : '/qbanks/subjects',
-        roles : ['Mentee']
-    },
-    {
-        id: 'exams management',
-        title: 'Exams',
-        type: 'collapsable',
-        icon : 'heroicons_outline:clipboard-document-list',
-        children: []
-    },    
 ];
 export const compactNavigation: FuseNavigationItem[] = [
     {

@@ -64,6 +64,7 @@
                         <button mat-menu-item *ngIf="!element.isDeleted" (click)="deleteUser(element.id)"><mat-icon>person_remove</mat-icon>Delete</button>
                         <button mat-menu-item *ngIf="element.isDeleted" (click)="UndeleteUser(element)"><mat-icon>restore_from_trash</mat-icon>Restore Deleted User</button>
                         <button mat-menu-item (click)="assignMentor(element)"><mat-icon>school</mat-icon>Assign Mentor</button>
+                        <button mat-menu-item (click)="assignedCourse(element)"><mat-icon>check_circle</mat-icon>Assigned Course</button>
 
                     </mat-menu>
                 </td>

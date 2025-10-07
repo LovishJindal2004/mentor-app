@@ -171,6 +171,12 @@ export class CommanService {
   getCourses(): Observable<any> {
     return this._httpClient.get(`${environment.apiURL}/course/list`);
   }
+  getCoursesByUserId(userID): Observable<any> {
+    return this._httpClient.get(`${environment.apiURL}/course/enrolled-courses/${userID}`);
+  }
+  getActiveCoursesByUserId(userID): Observable<any> {
+    return this._httpClient.get(`${environment.apiURL}/course/enrolled-active-courses/${userID}`);
+  }
 
   getUserManagementForGrid(_gridFilter: StudentFilter): Observable<any> {
     return this._httpClient.post(`${environment.apiURL}/course/students/`, { ..._gridFilter });
@@ -218,6 +224,9 @@ export class CommanService {
         this._courses.next(response);
       })
     );
+  }
+  getProfile() {
+    return this._httpClient.get(`${environment.externalApiURL}/api/personal/profile`);
   }
   getexamCategory(): Observable<any> {
     return this._httpClient.get<any>(`${environment.apiURL}/test/categories`).pipe(

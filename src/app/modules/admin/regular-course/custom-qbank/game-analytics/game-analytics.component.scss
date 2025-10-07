@@ -1,0 +1,100 @@
+::ng-deep .apexcharts-legend.apexcharts-align-center.apx-legend-position-right {
+    display: none;
+}
+.piecharttext{
+    left: 146px;
+    margin-top: 82px;
+
+}
+.start-exam{
+    background: transparent linear-gradient(172deg, #D388FF 0%, #712FBB 100%) 0% 0% no-repeat padding-box;
+}
+.section_1{
+    box-shadow: 0px 0px 10px rgba(var(--fuse-primary-rgb), 0.3);
+}
+
+//Graph
+
+:host{
+    display: block;
+}
+.progress-container {
+    position: relative;
+    width: 300px; /* Increase the width */
+    height: 150px; /* Increase the height */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .progress-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200%; /* Full circle's diameter */
+    border-radius: 50%;
+    background-color: #ecf0ed;
+  }
+  
+  .progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200%; /* Full circle's diameter */
+    border-radius: 50%;
+    background: conic-gradient(#9fffb8 0deg, #edefed calc(var(--percentage) * 1.8deg), #e6e6e6 calc(var(--percentage) * 1.8deg));
+    transform: rotate(-90deg);
+  }
+  
+  .progress-value {
+    position: relative;
+    font-size: 24px;
+    font-weight: bold;
+    color: #33a852
+  }
+  //
+  .bell-curve-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    // background-color: #f0f0f0;
+    position: relative;
+}
+svg {
+    width: 50%;
+    height: auto;
+}
+
+
+//Graph end
+@media only screen and (max-width: 1199px) {
+    .piecharttext{
+        left: 34%;
+        top: 31%;
+        margin: 0;
+    }
+}
+@media only screen and (max-width: 767px) {
+    svg {
+        width: 100%;
+    }
+.chart{
+    margin: 0 auto !important;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+::ng-deep .apexcharts-canvas {
+    margin: 0 auto;
+}
+.piecharttext{
+    left: 43%;
+        top: 32%;
+}
+}
+
+

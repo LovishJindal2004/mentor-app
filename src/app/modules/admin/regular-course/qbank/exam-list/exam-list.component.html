@@ -28,7 +28,7 @@
         <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3  gap-4">
           <div class="games cursor-pointer" *ngFor="let exam of qbnak.exams"
             [ngClass]="{'new-badge': exam.examStatus==1}"
-            [routerLink]="exam.examStatus === 3 ? subjectId == 0 ? ['/qbank/game-analytics/' + exam.examId, { type: 'allexam' }]: '/qbank/game-analytics/' + exam.examId: '/qbank/exam-details/' + exam.examId">
+            [routerLink]="exam.examStatus === 3 ? subjectId == 0 ? ['/qbanks/game-analytics/' + exam.examId, { type: 'allexam' }]: '/qbanks/game-analytics/' + exam.examId: '/qbanks/exam-details/' + exam.examId">
   
             <div class="flex justify-between">
               <h4 class="font-medium" [innerHTML]="exam.examName"></h4>

@@ -41,7 +41,7 @@
         <div class="grid sm:grid-cols-2 md:grid-cols-2  lg:grid-cols-3 gap-4">
             <div class="grandtest cursor-pointer" *ngFor="let exam of examList" [ngClass]="{'new-badge': exam.status==0}">
                 <div class="link-div"
-                    [routerLink]="exam.status === 3?['/exam-management/game-analytics/' + exam.guid]:examtype==6?['/exam-management/cbtgameview/' + exam.guid]:['/exam-management/gameview/' + exam.guid]">
+                    [routerLink]="exam.status === 3?['/exam-management/game-analytics/' + exam.guid]:['/exam-management/game-view/' + exam.guid]">
                         
                     <div class="flex justify-between">
                         <h4 class="font-medium">{{exam.title}}</h4>
@@ -75,10 +75,10 @@
                     
                     <p class="text-red-500 text-sm" *ngIf="!exam.hasAccess">You Don't have Access </p>
                 </div>
-                <div *ngIf="exam.status==3" class="leaderboard-div">
+                <!-- <div *ngIf="exam.status==3" class="leaderboard-div">
                     <button [routerLink]="['/exam-management/exam-leaderboard/' + exam.guid]" mat-raised-button
                         class="leaderboard-btn">Leaderboard</button>
-                </div>
+                </div> -->
             </div>
 
         </div>

@@ -6,7 +6,7 @@ import { environment } from 'environment/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class QBankService {
+export class QBanksService {
 
   private userCourse: BehaviorSubject<string> = new BehaviorSubject<string>('');
   public userCourse$: Observable<string> = this.userCourse.asObservable();
@@ -18,49 +18,51 @@ export class QBankService {
     this.userCourse.next(values);
   }
   getQbanksubjectsbyCourseId(courseId): Observable<any> {
-    // let params = new HttpParams();
-    // params = params.append('CourseId', courseId.toString());
+    // params = params.append('isPracticeMode', practiceMode);
     return this._httpClient.get<any>(`${environment.apiURL}/qbank/subjects`, {  })
   }
   getQbanksubjects(): Observable<any> {
     return this._httpClient.get<any>(`${environment.apiURL}/qbank/subjects`, {  })
   }
 
-  getQbnkTopicExamList(subjectId, CourseId,): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('courseId', CourseId);
-    return this._httpClient.get<any>(`${environment.apiURL}/qbank/topics/${subjectId}?${params}`)
+  getQbnkTopicExamList(subjectId, CourseId): Observable<any> {
+    return this._httpClient.get<any>(`${environment.apiURL}/qbank/topics/${subjectId}`)
   }
-  getQbankExamResult(examId, courseId) {
+  getQbankExamResult(examId, taskGuid) {
     let params = new HttpParams();
     params = params.append('examid', examId);
-    params = params.append('courseId', courseId);
+    params = params.append('entityType', 1);
+    params = params.append('entityId', taskGuid);
     return this._httpClient.get<any>(`${environment.apiURL}/qbank/result?${params}`)
   }
 
-  getQbankExamDetail(examId, courseId) {
+  getQbankExamDetail(examId, taskId) {
     let params = new HttpParams();
-    params = params.append('examid', examId);
-    params = params.append('courseId', courseId);
+    params = params.append('entityId', taskId);
+    params = params.append('entityType', 1);
     return this._httpClient.get<any>(`${environment.apiURL}/qbank/get-exam-details/${examId}?${params}`)
   }
-  getQbankExamQuestion(CourseId, Examid,isTimerEnabled): Observable<any> {
+  getQbankExamQuestion(TaskGuid, Examid,isTimerEnabled): Observable<any> {
     let params = new HttpParams();
-    params = params.append('CourseId', CourseId.toString());
+    params = params.append('entityId', TaskGuid.toString());
+    params = params.append('entityType', 1);
     params = params.append('Examid', Examid.toString());
-    params = params.append('isTimerEnabled', isTimerEnabled.toString());
+    params = params.append('isTimerEnabled', isTimerEnabled.toString())
     return this._httpClient.get<any>(`${environment.apiURL}/qbank/questions`, { params })
   }
-  getQbnkquestionDetailById(QuestionDetailId, Examid) {
-    return this._httpClient.get<any>(`${environment.apiURL}/qbank/question/${QuestionDetailId}/${Examid}`,)
+  getQbnkquestionDetailById(QuestionDetailId, Examid, taskGuid) {
+    return this._httpClient.get<any>(`${environment.apiURL}/qbank/question/${QuestionDetailId}/${Examid}/${taskGuid}/1`)
   }
-  getAnsweersheetQbnkquestionDetailById(QuestionDetailId) {
-    return this._httpClient.get<any>(`${environment.apiURL}/qbank/question/${QuestionDetailId}`,)
+  getAnsweersheetQbnkquestionDetailById(QuestionDetailId, isPracticeMode) {
+    let params = new HttpParams();
+    params = params.append('isPracticeMode', isPracticeMode);
+    return this._httpClient.get<any>(`${environment.apiURL}/qbank/v2-question/${QuestionDetailId}`,{params})
   }
-  getQbnkAnswersheet(CourseId, Examid) {
+  getQbnkAnswersheet(taskGuid, Examid) {
     let params = new HttpParams();
     params = params.append('examid', Examid.toString());
-    params = params.append('courseId', CourseId.toString());
+    params = params.append('entityType', 1);
+    params = params.append('entityId', taskGuid.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/qbank/answersheet`, { params })
   }
 

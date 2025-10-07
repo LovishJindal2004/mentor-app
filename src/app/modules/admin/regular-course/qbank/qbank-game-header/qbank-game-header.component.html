@@ -1,0 +1,12 @@
+<div class="flex flex-wrap w-full justify-between header qbank-header bg-white p-2 items-center">
+    <img [src]="'data:image/png;base64,'+LogoUrl" class="w-20 white-image" routerLink="/communication/home"
+        (click)="closedialog()">
+    <h4 class="text-white flex items-center text-xl font-normal" *ngIf="subjectName?.length>0">Exam: {{subjectName}}/{{topicName}}/{{examid}}</h4>
+    <div class="flex gap-2 mr-3 icons">
+        <!-- <mat-icon class="cursor-pointer text-[#505050] list" (click)="sendDataToExamView('AllQuestion')"
+            *ngIf="!hidetraker">list</mat-icon> -->
+        <mat-icon class="cursor-pointer text-white" (click)="sendDataToExamView('CloseQuestion')">close</mat-icon>
+        <mat-icon class="cursor-pointer text-white" (click)="sendDataToExamView('submitExam')"
+            *ngIf="!isfromMarksheet">done</mat-icon>
+    </div>
+</div>

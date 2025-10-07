@@ -1,0 +1,255 @@
+<div class="card-wrapper w-full bg-white">
+
+    <!-- mat expension starts-->
+    <div class="accordian-outer game-review">
+    
+        <app-custom-game-header [examid]="examDetails.title" [subjectName]="examDetails.subjectName" [topicName]="examDetails.topicName" [isfromMarksheet]="true" (dataEvent)="receiveDataFromHeader($event,true)"></app-custom-game-header>
+        <div class="flex items-center justify-center mt-30" *ngIf="!dataLoaded">
+            <img src="my-images/imgLoder.gif" class="w-15">
+        </div>
+        <div class="mt-18 game-review-header" *ngIf="dataLoaded">
+
+            <div class="flex items-center gap-2.5 h-13  bg-white pt-1 pb-1 pl-[99px] shadow" *ngIf="QuestionId>0">
+
+                <mat-icon class="ml-6 text-primary cursor-pointer" (click)="Goback()">keyboard_backspace</mat-icon>
+                <h2 class="text-[14px] text-[#6E6E6E] font-medium cursor-pointer"><span class="text-primary" (click)="Goback()">Back</span> / {{examDetails.title}}</h2>
+
+            </div>
+            <div class="px-4 md:px-32 py-4 mt-5">
+                <div class="live-question-review">
+                    <div class="question-status cursor-pointer" *ngFor="let question of questionDetails;let i=index" [ngClass]="getQuestionClasses(question.choices)" (click)="gotoQuestion(i)"></div>
+                  </div>
+                <div class="flex justify-between items-center">
+                    <h2 class="text-[#505050] text-base">Question :{{indexToFilter+1}}/{{questionDetails?.length}}</h2>
+                    <div class="flex gap-2">
+                        <mat-slide-toggle class="slide-toggle" color="primary" (click)="setExplanation()">{{IsDefaultExplanation==false?'Default Explanation':'choice Based Explanation'}}
+                        </mat-slide-toggle>
+                        <div class="flex justify-end bookmarks">
+                            <mat-icon *ngIf="!FilterQuestionData[0]?.isBoomarked"
+                            class="text-primary cursor-pointer"
+                            (click)="BookmarkQuestions(FilterQuestionData,false)">bookmark_border</mat-icon>
+                        <mat-icon *ngIf="FilterQuestionData[0]?.isBoomarked"
+                            class="text-primary cursor-pointer"
+                            (click)="BookmarkQuestions(FilterQuestionData,true)">bookmark</mat-icon>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4 border-primary/25">
+                <div class="bg-white">
+                    <div class="font-medium question" [innerHTML]="sanitizeExplanationContent(FilterQuestionData[0]?.questionTitle)">
+                    </div>
+                </div>
+                <div class="expension_div rounded ">
+                    <div *ngFor="let choice of  FilterQuestionData[0]?.choices ;let i = index;">
+                        <h6 class="mt-3.5 font-medium text-[#28C397]" *ngIf="choice.isCorrect">Correct Answer</h6>
+                        <div class="bg-white choices mt-3.5 flex p-2.5" [ngClass]="{' wrong-choice relative': choice.isChecked,' correct-choice': choice.isCorrect}">
+                            <span class="content-center mr-2.5 border border-[#DCDCDC] text-sm px-1 h-5 w-5 rounded"><B>{{i+1}}</B></span>
+                            <h2 class="font-medium">{{choice.choiceText}}</h2>
+                            <mat-icon class="bg-[#EA4435] rounded-full text-base text-white absolute right-4" *ngIf="choice.isChecked && !choice.isCorrect " matTooltip="you select this Wrong">close</mat-icon>
+                            <mat-icon class="rounded-full  text-green-600 absolute right-4 text-xl" *ngIf="choice.isChecked && choice.isCorrect" matTooltip="you select this right">done</mat-icon>
+                            <mat-icon class="  mulichoiesWrng" matTooltip="This Choies is correct but you don't select" *ngIf="FilterQuestionData[0]?.questionType==2 && !choice.isChecked && choice.isCorrect ">error</mat-icon>
+                        </div>
+                        <!-- <h5 class="text-sm font-medium mt-2" *ngIf="choice.isChecked && !choice.isCorrect && choice.pollCount !== null">
+                            {{ (choice.pollCount / getTotalUsers(this.FilterQuestionData[0])) * 100 | number:'1.0-2'
+                        }}% marked this Wrong</h5>
+                        <h5 class="text-sm font-medium mt-2" *ngIf="choice.isCorrect || (choice.isChecked && choice.isCorrect) && choice.pollCount !== null">
+                            {{ (choice.pollCount / getTotalUsers(this.FilterQuestionData[0])) * 100 | number:'1.0-2'
+                        }}%  got this correct</h5> -->
+                    </div>
+                    <div>
+                       
+                        <div>
+                            <h3 class="py-2 text-lg">Solutions</h3>
+                            <ng-container *ngIf="currentQuestionDetail.explanations?.length > 0">
+                                <!-- Display the explanation based on IsDefaultExplanation -->
+                                <h4 class="font-bold text-base mt-3.5"
+                                    *ngIf="IsDefaultExplanation && currentQuestionDetail.explanations[0]?.content">Choised Based
+                                    Explanation</h4>
+                                <p class="mt-3.5 font-medium explanation"
+                                    *ngIf="IsDefaultExplanation && currentQuestionDetail.explanations[0]?.content"
+                                    [innerHTML]="sanitizeExplanationContent(currentQuestionDetail.explanations[0]?.content)"></p>
+            
+                                <h4 class="font-bold text-base mt-3.5"
+                                    *ngIf="!IsDefaultExplanation && currentQuestionDetail.explanations[1]?.content">Correct Answer
+                                </h4>
+                                <p class="mt-3.5 font-medium explanation"
+                                    *ngIf="!IsDefaultExplanation && currentQuestionDetail.explanations[1]?.content"
+                                    [innerHTML]="sanitizeExplanationContent(currentQuestionDetail.explanations[1]?.content)"></p>
+                            </ng-container>
+            
+                        </div>
+                        <h4 class=" mt-3.5 text-primary font-normal text-lg" *ngIf="currentQuestionDetail?.notes?.length>0">High
+                            yield Points </h4>
+                        <p class="mt-3.5 font-medium explanation"
+                            [innerHTML]="sanitizeExplanationContent(currentQuestionDetail?.notes)"
+                            *ngIf="currentQuestionDetail?.notes?.length>0"></p>
+                        <div *ngIf="currentQuestionDetail?.books && currentQuestionDetail?.books?.length>0">
+                            <h3 class="py-2 text-lg">Reference</h3>
+                            <div class="bg-[#FFF7E2] p-2 text-[#6E6E6E] font-normal"
+                                *ngFor="let book of currentQuestionDetail.books">
+                                <h3>{{book.title}}, {{book.edition}} edition</h3>
+                                <h3>page no : {{book.pageNumber}}</h3>
+                            </div>
+                        </div>
+                     
+                        <div *ngIf="currentQuestionDetail.audio && currentQuestionDetail.audio.length>0">
+                            <h3 class="py-2 text-lg">Related Audio</h3>
+                            <div>
+                                <audio controls controlsList="nodownload">
+                                    <source [src]="currentQuestionDetail.audio" type="audio/mpeg">
+                                </audio>
+                            </div>
+                        </div>
+                        <div *ngIf="currentQuestionDetail.questionLevel">
+                            <h3 class="py-2 text-lg">Competency Level</h3>
+                            <div class="flex">
+                                <h4
+                                    class="w-fit-content rounded-full bg-[#FFF7E2] p-2 px-4 font-normal border border-[#F9BC15] text-[#F9BC15]">
+                                    {{currentQuestionDetail.questionLevel}}</h4>
+                            </div>
+                        </div>
+                        <div *ngIf="currentQuestionDetail.typeofquestion">
+                            <h3 class="py-2 text-lg">Type of Question</h3>
+                            <div class="flex">
+                                <h4 class="py-2 px-4 border rounded-full border-primary/30 text-primary font-normal w-auto">{{currentQuestionDetail.typeofquestion}}</h4>
+                            </div>
+                        </div>
+                        <div *ngIf="currentQuestionDetail.levelofknowledge">
+                            <h3 class="py-2 text-lg">Level of Knowledge</h3>
+                            <div class="flex">
+                                <h4 class="py-2 px-4 border rounded-full border-primary/30 text-primary font-normal w-auto">{{currentQuestionDetail.levelofknowledge}}</h4>
+                            </div>
+                        </div>
+                        <div *ngIf="currentQuestionDetail.subTopic">
+                            <h3 class="py-2 text-lg">SubTopic</h3>
+                            <div class="flex">
+                                <h4 class="py-2 px-4 border rounded-full border-primary/30 text-primary font-normal w-auto">{{currentQuestionDetail.subTopic}}</h4>
+                            </div>
+                        </div>
+                        <div *ngIf="currentQuestionDetail.tags?.length>0">
+                            <h3 class="py-2 text-lg">Tags</h3>
+                            <div class="flex gap-2">
+                                <div class="flex gap-2" *ngFor="let tag of currentQuestionDetail.tags">
+                                    <h4 class="py-2 px-4 border border-primary/30 text-primary font-normal w-auto">{{tag.name}}</h4>
+                                </div>
+                            </div>
+            
+                        </div>
+                        <ng-container *ngIf="currentQuestionDetail?.integrations?.length > 0">
+                            <!-- Get unique integration types -->
+                            <ng-container *ngFor="let type of getUniqueIntegrationTypes(currentQuestionDetail?.integrations)">
+                              <h3 class="py-2 text-lg">{{ type }} Integration</h3>
+                              
+                              <!-- Display the titles for this specific integration type -->
+                              <div class="flex gap-2">
+                                <ng-container class="flex gap-2" *ngFor="let integration of currentQuestionDetail?.integrations" >
+                                  <ng-container *ngIf="integration.integrationType === type">
+                                    <h4 class="py-2 px-4 border border-primary/30 text-primary font-normal w-auto">
+                                      {{ integration.title }}
+                                    </h4>
+                                  </ng-container>
+                                </ng-container>
+                              </div>
+                            </ng-container>
+                          </ng-container>
+                          <h2 class="mt-3">ADrQuestion No. {{currentQuestionDetail.questionDetailID}}</h2>
+                    </div>
+                
+                    <div  [ngClass]="questionDetails?.length>1 ? 'reviw-button-container' : ''">
+                        <div class="flex justify-center gap-4 pt-8" [ngClass]="questionDetails?.length > 1 ? 'submit-btns' : ''">
+                            <button mat-raised-button class="bg-[#0C529A] text-[#fff] text-lg w-40 py-6 rounded-lg"
+                                (click)="previousQuestion()" *ngIf="indexToFilter>=1">Previous</button>
+                            <button mat-raised-button class="bg-primary text-[#fff] text-lg w-40 py-6 rounded-lg"
+                                *ngIf="questionDetails?.length!=indexToFilter+1" (click)="NextQuestion()">Next</button>
+                                <button
+                                class="bg-primary  w-40  rounded-lg text-white  reportQuestion flex items-center justify-center"
+                                (click)="reportQuestion()"><mat-icon class="text-white">report</mat-icon> Report
+                                Question</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #myDialog class="w-94">
+    <section class="p-6">
+        <div>
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-bold text-[#505050]">Summary</h2>
+                <mat-icon class="text-[#BBBBBB] cursor-pointer" (click)="closedialog()">close</mat-icon>
+            </div>
+
+            <hr class="my-2">
+            <h3 class="text-lg font-medium text-[#505050] w-80" [innerHTML]="examDetails.description"></h3>
+            <h4 class="mt-4 font-light text-sm">{{noOfCorrectAnswerd+noOfInCorrectAnswerd}} / {{questionDetails?.length}} MCQ'S</h4>
+        </div>
+        <div class="mt-2 p-2 rounded border border-[#DCDCDC]">
+            <div class="grid grid-cols-4 mt-4 mb-2">
+                <div class="flex flex-col gap-1 items-center text-3xl text-[#28C397] font-bold leading-4 mx-auto">
+                    <h4>{{noOfCorrectAnswerd}}</h4>
+                    <h5 class="text-sm font-medium">Correct</h5>
+                </div>
+                <div class="flex flex-col gap-1 items-center text-3xl text-[#E1A606] font-bold leading-4 mx-auto">
+                    <h4>{{noOfmissedQuestion}}</h4>
+                    <h5 class="text-sm font-medium">Missed</h5>
+                </div>
+                <div class="flex flex-col gap-1 items-center text-3xl text-[#EA4435] font-bold leading-4 mx-auto">
+                    <h4>{{noOfInCorrectAnswerd}}</h4>
+                    <h5 class="text-sm font-medium">InCorrect</h5>
+                </div>
+                <div class="flex flex-col gap-1 items-center text-3xl text-[#505050] font-bold leading-4 mx-auto">
+                    <h4>{{noOfunAttmptQuestion}}</h4>
+                    <h5 class="text-sm font-medium">Un attempt</h5>
+                </div>
+            </div>
+        </div>
+        <div class="flex grid grid-cols-5 mt-4 gap-3">
+            <div class="border py-3 rounded text-center correct-ans" *ngFor="let question of questionDetails;let i=index" (click)="gotoQuestion(i)" [ngClass]="getQuestionClasses(question)">{{i+1}}</div>
+        </div>
+
+    </section>
+</ng-template>
+<ng-template #myDialog2 class="w-94">
+    <section class="pt-4 w-80 p-8 pb-0">
+        <h2 class="text-center text-[#505050] max-w-48 mx-auto text-xl font-medium">Are you sure want to exit the Q'Bank
+        </h2>
+        <h3 class="text-[#6E6E6E] text-center text-sm mt-2">QBank ID : ADrQBANK002</h3>
+        <button mat-raised-button class="w-full bg-[#0C529A] text-[#FFFFFF] text-xl py-2 mt-4 rounded-md">No, let me
+            continue</button><br>
+        <button mat-raised-button class="w-full bg-[#EB5B5B] text-[#FFFFFF] text-xl mt-2 session_expire h-24 rounded-md">Pause now<br>
+            <span class="text-sm">Session expired on 3 Min</span></button>
+    </section>
+    <div class="bg-[#DCDCDC] text-center mt-6">
+        <button class="text-lg text-[#505050] py-4 font-medium w-full" [mat-dialog-close]="true" (click)="closedialog()">Exit</button>
+    </div>
+</ng-template>
+
+<ng-template #ReportQuestion class="w-280">
+    <div class="flex justify-between px-4 py-4 border-b">
+        <h2 class="text-[#505050] text-lg">Report Question</h2>
+        <mat-icon class="cursor-pointer" (click)="closedialog()">close</mat-icon>
+    </div>
+    <div class="pt-4 px-4 py-4">
+        <form #form="ngForm" (ngSubmit)="SubmitReport(form)">
+          <h2 class="text-[#505050] text-base font-medium pb-1">Where do you feel we are wrong?</h2>
+          <mat-checkbox name="errorTypeQuestion" value="Question has error" ngModel class="example-margin w-full">Question has error</mat-checkbox>
+          <mat-checkbox name="errorTypeOption" value="Option has error" ngModel class="example-margin w-full">Option has error</mat-checkbox>
+          <mat-checkbox name="errorTypeExplanation" value="Explanation has error" ngModel class="example-margin w-full">Explanation has error</mat-checkbox>
+          
+          <h5 class="text-[#6E6E6E] text-base font-medium text-center pt-2 mt-2">
+            Please fill in the reason why we are wrong (we would like to hear your feedback so we can correct if we are wrong)
+          </h5>
+      
+          <mat-form-field class="w-full">
+            <textarea matInput name="feedback" ngModel class="border border-primary/10 text-left"
+                      placeholder="Do tell Us Why you feel it's Wrong (min 20 chars)" required></textarea>
+          </mat-form-field>
+      
+          <button mat-raised-button type="submit" class="write-review-btn text-lg mt-2 h-12 font-normal text-white" [disabled]="form.invalid">
+            Submit
+          </button>
+        </form>
+      </div>
+</ng-template>

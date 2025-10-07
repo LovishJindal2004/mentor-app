@@ -17,6 +17,8 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatMenuModule } from '@angular/material/menu';
+import { AssignedCourseComponent } from '../assigned-course/assigned-course.component';
+import { Route, Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-student-list',
@@ -27,7 +29,7 @@ import { MatMenuModule } from '@angular/material/menu';
 export class StudentListComponent implements OnInit, OnDestroy {
   studentList: any[] = [];
   // FIXED: Added missing columns that exist in your HTML template
-  displayedColumns: string[] = ['UserName', 'Email', 'PhoneNumber','Course', 'StartEnd', 'EndDate', 'SubsciptionStatus', 'Action','AssignCourse'];
+  displayedColumns: string[] = ['UserName', 'Email', 'PhoneNumber', 'Action'];
   dataSource = new MatTableDataSource<any>([]);
   private _unsubscribeAll = new Subject<void>();
   confirmDialogRef: MatDialogRef<FuseConfirmationDialogComponent>;
@@ -44,6 +46,7 @@ export class StudentListComponent implements OnInit, OnDestroy {
   constructor(
     private _studentService: StudentService,
     private _matDialog: MatDialog,
+    private _router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -154,6 +157,9 @@ export class StudentListComponent implements OnInit, OnDestroy {
     //   if (!response) return;
     //   // Handle response
     // });
+  }
+  assignedCourse(element){
+   this._router.navigate([`/student/assigned-course/${element.id}`])
   }
 
   addStudent(): void {

@@ -1,0 +1,257 @@
+<div class="py-5 px-5 mt-5">
+    <div class="flex justify-between items-center">
+        <h2 class="text-[14px]  font-medium">Customize MCQ'S</h2>
+        <button *ngIf="exams?.length>0" class="flex justify-center items-center btn text-[18px] p-4  w-72  text-white customize-btn rounded-lg gap-2.5 font-medium" routerLink="/CustomQbank/Create"><mat-icon
+                class="text-white" >playlist_add</mat-icon> <span>Create Customize MCQ'S</span></button>
+    </div>
+
+    <!-- <h3 class="text-[14px]  pt-5">Yesterday</h3> -->
+    <div class="grid sm:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3   gap-4 pt-3" *ngIf="exams?.length>0">
+        <!-- first div -->
+        <div *ngFor="let exam of exams" class="relative">
+            <div class="absolute more-btn">
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"
+                    class="more_vert_btn">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="DeleteCQBank(exam.guid)">
+        
+                        <span>Delete</span>
+                    </button>
+        
+                </mat-menu>
+            </div>
+        
+            <div [routerLink]="exam.status === 3 ? ['/CustomQbank/game-analytics/' + exam.guid] : ['/CustomQbank/game-view/' + exam.guid]"
+                class="border border-primary/25 rounded p-3 bg-white">
+        
+                <div class="flex justify-between items-center">
+                    <h4 class="font-medium text-[14px]">{{exam.title}}</h4>
+                    <div class="pr-2">
+                        <mat-icon class="bg-[#28C397] text-white text-xl rounded-full font-medium"
+                            *ngIf="exam.status==3">done</mat-icon>
+                        <mat-icon class=" text-[#db1627] text-3xl rounded-full font-medium"
+                            *ngIf="exam.status==2">pause_circle_filled</mat-icon>
+        
+                    </div>
+        
+                </div>
+        
+                <h6 class="text-[#6E6E6E] text-[12px] font-light">{{exam.noOfQuestionsAttempted}}/{{exam.noOfQuestions}} MCQ'S
+                </h6>
+        
+                <mat-progress-bar class="my-2" [ngClass]="{'stop': exam.status==2}" [value]="((exam.noOfQuestionsAttempted / exam.noOfQuestions) * 100 )"
+                    mode="determinate"></mat-progress-bar>
+                <div class="flex justify-between">
+                    <div class="font-light text-sm">QBank ID : {{exam.guid}}</div>
+                    <!-- <div class="font-light text-sm text-right"  *ngIf="exam.status == 3">Performance</div> -->
+                </div>
+                <div class="flex justify-between pt-2 pb-2">
+                    <div class="font-light text-sm" *ngIf="exam.status == 3">Completed : {{(exam.completedOn | date: 'dd MMM,
+                        yyyy')}}</div>
+                    <div class="font-light text-sm" *ngIf="exam.status != 3">Created : {{(exam.createdOn | date: 'dd MMM,
+                        yyyy')}}</div>
+                    <!-- <div class="text-[10px] font-light text-[#EA4435] w-[79px] h-[18px] rounded-[35px] bg-[#FFE2E0] flex items-center justify-center">
+                            32% Average</div> -->
+                </div>
+            </div>
+        </div>
+        <!-- ends -->
+
+    </div>
+    <!-- <h3 class="text-[14px]  pt-5">Past Week</h3>
+    <div class="grid sm:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3   gap-4 pt-3">
+        <div class="border border-primary/25 rounded p-3 bg-white">
+
+            <div class="flex justify-between items-center">
+                <h4 class="font-medium text-[14px]">Pre-Embryonic phase of develops</h4>
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" class="more_vert_btn">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item>
+
+                        <span>Edit</span>
+                    </button>
+                    <button mat-menu-item>
+
+                        <span>Delete</span>
+                    </button>
+
+                </mat-menu>
+            </div>
+
+            <h6 class="text-[#6E6E6E] text-[12px] font-light">75 MCQ'S</h6>
+
+            <mat-progress-bar class="my-2" mode="determinate"></mat-progress-bar>
+            <div class="flex justify-between">
+                <div class="font-light text-sm">QBank ID : ADrQBANK001</div>
+                <div class="font-light text-sm text-right">Planner</div>
+            </div>
+            <div class="flex justify-between pt-2 pb-2">
+                <div class="font-light text-sm">Completed : 12 Nov, 2022</div>
+                <div class="text-[10px] font-light  w-[79px] h-[18px] rounded-[35px] bg-[#29CA54] flex items-center justify-center text-white">
+                    02 Dec,2022</div>
+            </div>
+        </div>
+
+        <div class="border border-primary/25 rounded p-3 bg-white">
+
+            <div class="flex justify-between items-center">
+                <h4 class="font-medium text-[14px]">Pre-Embryonic phase of develops</h4>
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" class="more_vert_btn">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item>
+
+                        <span>Edit</span>
+                    </button>
+                    <button mat-menu-item>
+
+                        <span>Delete</span>
+                    </button>
+
+                </mat-menu>
+            </div>
+
+            <h6 class="text-[#6E6E6E] text-[12px] font-light">75 MCQ'S</h6>
+
+            <mat-progress-bar class="my-2" mode="determinate"></mat-progress-bar>
+            <div class="flex justify-between">
+                <div class="font-light text-sm">QBank ID : ADrQBANK001</div>
+                <div class="font-light text-sm text-right">Planner</div>
+            </div>
+            <div class="flex justify-between pt-2 pb-2">
+                <div class="font-light text-sm">Completed : 12 Nov, 2022</div>
+                <div class="text-[10px] font-light  w-[79px] h-[18px] rounded-[35px] bg-[#29CA54] flex items-center justify-center text-white">
+                    02 Dec,2022</div>
+            </div>
+        </div>
+
+        <div class="border border-primary/25 rounded p-3 bg-white">
+
+            <div class="flex justify-between items-center">
+                <h4 class="font-medium text-[14px]">Pre-Embryonic phase of develops</h4>
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" class="more_vert_btn">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item>
+
+                        <span>Edit</span>
+                    </button>
+                    <button mat-menu-item>
+
+                        <span>Delete</span>
+                    </button>
+
+                </mat-menu>
+            </div>
+
+            <h6 class="text-[#6E6E6E] text-[12px] font-light">75 MCQ'S</h6>
+
+            <mat-progress-bar class="my-2" mode="determinate"></mat-progress-bar>
+            <div class="flex justify-between">
+                <div class="font-light text-sm">QBank ID : ADrQBANK001</div>
+                <div class="font-light text-sm text-right">Planner</div>
+            </div>
+            <div class="flex justify-between pt-2 pb-2">
+                <div class="font-light text-sm">Completed : 12 Nov, 2022</div>
+                <div class="text-[10px] font-light  w-[79px] h-[18px] rounded-[35px] bg-[#29CA54] flex items-center justify-center text-white">
+                    02 Dec,2022</div>
+            </div>
+        </div>
+    </div>
+    <h3 class="text-[14px]  pt-5">Last Month</h3>
+    <div class="grid sm:grid-cols-2  lg:grid-cols-2 xl:grid-cols-3   gap-4 pt-3">
+        <div class="border border-primary/25 rounded p-3 bg-white">
+
+            <div class="flex justify-between items-center">
+                <h4 class="font-medium text-[14px]">Pre-Embryonic phase of develops</h4>
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" class="more_vert_btn">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item>
+
+                        <span>Edit</span>
+                    </button>
+                    <button mat-menu-item>
+
+                        <span>Delete</span>
+                    </button>
+
+                </mat-menu>
+            </div>
+
+            <h6 class="text-[#6E6E6E] text-[12px] font-light">75 MCQ'S</h6>
+
+            <mat-progress-bar class="my-2" mode="determinate"></mat-progress-bar>
+            <div class="flex justify-between">
+                <div class="font-light text-sm">QBank ID : ADrQBANK001</div>
+                <div class="font-light text-sm text-right">Planner</div>
+            </div>
+            <div class="flex justify-between pt-2 pb-2">
+                <div class="font-light text-sm">Completed : 12 Nov, 2022</div>
+                <div class="text-[10px] font-light  w-[100px] h-[18px] rounded-[35px] bg-[#EA4435] flex items-center justify-center text-white">
+                    05 Days, Over Due</div>
+            </div>
+        </div>
+        
+        <div class="border border-primary/25 rounded p-3 bg-white">
+
+            <div class="flex justify-between items-center">
+                <h4 class="font-medium text-[14px]">Pre-Embryonic phase of develops</h4>
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" class="more_vert_btn">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item>
+
+                        <span>Edit</span>
+                    </button>
+                    <button mat-menu-item>
+
+                        <span>Delete</span>
+                    </button>
+
+                </mat-menu>
+            </div>
+
+            <h6 class="text-[#6E6E6E] text-[12px] font-light">75 MCQ'S</h6>
+
+            <mat-progress-bar class="my-2" mode="determinate"></mat-progress-bar>
+            <div class="flex justify-between">
+                <div class="font-light text-sm">QBank ID : ADrQBANK001</div>
+                <div class="font-light text-sm text-right">Planner</div>
+            </div>
+            <div class="flex justify-between pt-2 pb-2">
+                <div class="font-light text-sm">Completed : 12 Nov, 2022</div>
+                <div class="text-[10px] font-light text-[#EA4435] w-[79px] h-[18px] rounded-[35px] bg-[#FFE2E0] flex items-center justify-center">
+                    32% Average</div>
+            </div>
+        </div>
+        
+
+    </div> -->
+
+</div>
+
+
+<div class="px-5 py-5 pt-5" *ngIf="exams?.length<=0">
+    <div class="flex justify-center">
+        <img src="my-images/Image_14-removebg-preview.png" class="w-72 h-44" alt="">
+
+    </div>
+    <div class="flex justify-center">
+        <h2 class="text-[14px]  font-semibold w-1/4 text-[#505050] pl-5 text-center">Currently don't have any customize MCQ'S in your page</h2>
+    </div>
+    <div class="flex justify-center mt-5">
+        <button class="flex justify-center items-center btn text-[18px] p-4  w-72  text-white customize-btn rounded-lg gap-2.5 font-medium" routerLink="/CustomQbank/Create"><mat-icon class="text-white">playlist_add</mat-icon> <span>Create Customize MCQ'S</span></button>
+    </div>
+
+
+
+</div>

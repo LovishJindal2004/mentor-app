@@ -754,27 +754,33 @@ export class AuthSignInComponent implements OnInit {
             this._signalRService.connect();
         }
         this._router.navigate(['/dashboard']);
-        // this.courseService.getsubjects().subscribe((res: any) => {
-        //     if (res) {
-        //         this.CourseDetails = res;
-        //         var courseid = this.CourseDetails[0]?.guid;
-        //         if (courseid) {
-        //             this.storecourselocal(courseid)
-        //         }
-        //         else {
-        //             this._router.navigate(['/all-course']);
-        //         }
-        //         // console.log(this.CourseDetails)
-        //     }
-        // }, (error) => {
-        //     this.errorhandling.SignUphandleError(error);
-        // }
-        // );
+        let userDetails = this._helperservice.getUserDetail();
+        this._CommanService.getCoursesByUserId(userDetails?.Id).subscribe((res: any) => {
+            if (res) {
+                this.CourseDetails = res;
+                var courseid = this.CourseDetails[0]?.courseId;
+                if (courseid) {
+                    this.storecourselocal(courseid)
+                }
+                else {
+                    this._router.navigate(['/all-course']);
+                }
+                // console.log(this.CourseDetails)
+            }
+        }, (error) => {
+            this.errorhandling.SignUphandleError(error);
+        }
+        );
     }
 
     storecourselocal(id) {
-        this._dataGuardService.setCourseId('Courseid', id);
-        this.NavigationByRole();
+        var localCourse = this._dataGuardService.getCourseId();
+        if (localCourse) {
+            this.NavigationByRole();
+        } else {
+            this._dataGuardService.setCourseId('Courseid', id);
+            this.NavigationByRole();
+        }
     }
     //vanigation by roles 
     NavigationByRole() {

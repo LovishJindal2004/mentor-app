@@ -40,19 +40,20 @@ export class AssignCourseFormComponent implements OnInit{
       endDate: [''],
       IsActive: [false],
     });
-    
+
     this.userModel = new User();
-    this.userModel.Id = this._data.action.id;
-    this.userModel.courseIds = this._data.action.courseId;
-    this.userModel.startDate = this._data.action.startDate;
-    this.userModel.endDate = this._data.action.endDate;
-    this.userModel.endDate = this._data.action.endDate;
-    this.userModel.isActive = this._data.action.subscriptionStatus ? this._data.action.subscriptionStatus : false;
+    this.userModel.Id = this._data.id;
+    this.userModel.courseName = this._data.courseName;
+    this.userModel.courseIds = this._data.courseId;
+    this.userModel.startDate = this._data.startDate;
+    this.userModel.endDate = this._data.endDate;
+    this.userModel.endDate = this._data.endDate;
+    this.userModel.isActive = this._data.subscriptionStatus ? this._data.subscriptionStatus : false;
   }
   ngOnInit(): void {
-    this._commonService.getCourses().subscribe((data)=> {
-      this.courses = data;
-    });
+    // this._commonService.getCourses().subscribe((data)=> {
+    //   this.courses = data;
+    // });
   }
   assignCourse(user:any){
     let self = this;
@@ -66,6 +67,7 @@ export class AssignCourseFormComponent implements OnInit{
     this._studentService.assignedCourse(payload).then((data:any) => {
       self._studentService.openSnackBar('Course Assigned', 'Close');
       self._studentService.onStudentManagementChanged.next('');
+      self._studentService.OnCourseAssignedtoStudentChanged.next('');
       this.matDialogRef.close();
 
     }).catch(err => {

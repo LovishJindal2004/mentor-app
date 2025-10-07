@@ -6,13 +6,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio'; // Add this import
 import { AssignStudentComponent } from '../assign-student/assign-student.component';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { StudentService } from '../../student-management/student.service';
 import { helperService } from 'app/core/auth/helper';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+// Remove MatCheckboxModule import
 import { CommanService } from 'app/modules/common/services/common.service';
 import { TaskService } from '../task.service';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,7 +27,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     MatDatepickerModule, 
     MatIconModule, 
     MatTableModule, 
-    MatCheckboxModule, 
+    MatRadioModule, // Add this instead of MatCheckboxModule
     MatPaginatorModule, 
     MatInputModule, 
     MatFormFieldModule, 
@@ -44,7 +45,6 @@ export class AssignTaskComponent implements OnInit {
   examTypes: any;
   topics: any;
   qbankExams: any;
-  // testExams = ['GRAND TEST 2022', 'GRAND TEST 2023', 'GRAND TEST 2024'];
   testExamsByType:any;
   minDate: Date = new Date();
   dialogRef: any;
@@ -54,9 +54,9 @@ export class AssignTaskComponent implements OnInit {
   pageSize = 10;
   pageNumber = 1;
   videoSubjects: any;
-  videosByTopic: any; // Changed from 'videos' to 'videosByTopic' to match QBank pattern
+  videosByTopic: any;
   subjects: any;
-  selectedStudents: any[] = [];
+  selectedStudent: any = null; // Changed from selectedStudents array to single student
   isSubmitting = false;
 
   @ViewChild('studentPopup') studentPopup!: TemplateRef<any>;
@@ -80,7 +80,6 @@ export class AssignTaskComponent implements OnInit {
     if(this.taskGuid){
       this._taskService.getTask(this.taskGuid).then(res=>{
         this.taskDetails = res;
-        // Patch only base fields; dependent multi-selects will be mapped after data loads
         this.assignTaskForm.patchValue({
           title: this.taskDetails?.title,
           description: this.taskDetails?.description,
@@ -90,23 +89,27 @@ export class AssignTaskComponent implements OnInit {
           videos: this.taskDetails?.videos,
           qbankSubjects: this.taskDetails?.qbankSubjects,
           qbankExams: this.taskDetails?.qbankExams,
-          // examTypes: this.taskDetails?.examTypes,
           testExams: this.taskDetails?.testExams,
-          students: this.taskDetails?.students,
+          student: this.taskDetails?.students.toString(), // Changed from students array to single student
         });
-        this.selectedStudents = this.taskDetails?.students?.map(student => ({ id: student }));
+        // Set the selected student for edit mode
+        if (this.taskDetails?.students) {
+          console.log(this.studentList,"studentList")
+          this.selectedStudent = this.studentList.find(s => s.id === this.taskDetails.students) || { id: this.taskDetails.students };
+        }
       })
     }
   }
 
   ngOnInit(): void {
     this.initializeForm();
+    this.setupStudentChangeListener();
     this.loadStudents().then(() => {
       this.loadInitialData().then(() => {
         if (this.taskGuid) {
           this._taskService.getTask(this.taskGuid).then(res => {
             this.taskDetails = res;
-            this.patchEditFormValues(); // new function below
+            this.patchEditFormValues();
           });
         }
       });
@@ -118,11 +121,73 @@ export class AssignTaskComponent implements OnInit {
       }
       this.assignTaskForm.patchValue({ testExams: [] });
     });
+    this.assignTaskForm.get('examTypes')?.valueChanges.subscribe(types => {
+      this.testExamsByType = [];
+      if (types && types.length > 0) {
+        types.forEach((type: any) => this.loadTestExamsForType(type.examType, type.name));
+      }
+      this.assignTaskForm.patchValue({ testExams: [] });
+    });
   }
+  private setupStudentChangeListener(): void {
+    this.assignTaskForm.get('student')?.valueChanges.subscribe(student => {
+      if (student && student.id) {
+        this.refreshStudentSpecificData();
+      }
+    });
+  }
+  
+  private refreshStudentSpecificData(): void {
+    const currentModule = this.assignTaskForm.get('module')?.value;
+    
+    // Clear existing data
+    this.videosByTopic = [];
+    this.qbankExams = [];
+    this.testExamsByType = [];
+    
+    // Clear form selections for student-specific data
+    this.assignTaskForm.patchValue({
+      videos: [],
+      qbankExams: [],
+      testExams: []
+    });
+  
+    // Reload data based on current selections
+    if (currentModule === 'Video') {
+      this.refreshVideoData();
+    } else if (currentModule === 'QBank') {
+      this.refreshQBankData();
+    } else if (currentModule === 'Test') {
+      this.refreshTestData();
+    }
+  }
+  
+  private refreshVideoData(): void {
+    const selectedVideoSubjects = this.assignTaskForm.get('videoSubjects')?.value || [];
+    selectedVideoSubjects.forEach((subject: any) => {
+      this.loadVideosForSubject(subject.id);
+    });
+  }
+  
+  private refreshQBankData(): void {
+    const selectedQbankSubjects = this.assignTaskForm.get('qbankSubjects')?.value || [];
+    selectedQbankSubjects.forEach((subject: any) => {
+      this.loadQBankExamsForSubject(subject.subjectId);
+    });
+  }
+  
+  private refreshTestData(): void {
+    const selectedExamTypes = this.assignTaskForm.get('examTypes')?.value || [];
+    selectedExamTypes.forEach((examType: any) => {
+      this.loadTestExamsForType(examType.examType || examType.id, examType.name);
+    });
+  }
+
   private mapIdsToObjects(ids: number[], source: any[], idKey: string = 'id'): any[] {
     if (!ids?.length || !source?.length) return [];
     return source.filter(item => ids.includes(item[idKey]));
   }
+
   private findExamsByIds(ids: number[], groups: any[], examKey: string = 'id'): any[] {
     const result: any[] = [];
     if (!ids?.length || !groups?.length) return [];
@@ -136,57 +201,52 @@ export class AssignTaskComponent implements OnInit {
     return result;
   }
   
-private async patchEditFormValues(): Promise<void> {
-  const td = this.taskDetails;
+  private async patchEditFormValues(): Promise<void> {
+    const td = this.taskDetails;
 
-  // Map objects needed for patching
-  const mappedStudents = this.mapIdsToObjects(td?.students, this.studentList, 'id');
-  const mappedQbankSubjects = this.mapIdsToObjects(td?.qbankSubjects, this.subjects, 'subjectId');
-  const mappedVideoSubjects = this.mapIdsToObjects(td?.videoSubjects, this.videoSubjects, 'id');
-  
-  // Map exam types from IDs - this is the key fix
-  const mappedExamTypes = this.mapIdsToObjects(td?.examTypes, this.examTypes, 'id');
+    // Map single student object instead of array
+    const mappedStudent = this.studentList.find(s => s.id == td?.students[0]) || null;
+    const mappedQbankSubjects = this.mapIdsToObjects(td?.qbankSubjects, this.subjects, 'subjectId');
+    const mappedVideoSubjects = this.mapIdsToObjects(td?.videoSubjects, this.videoSubjects, 'id');
+    const mappedExamTypes = this.mapIdsToObjects(td?.examTypes, this.examTypes, 'id');
 
-  // Patch base values first
-  this.assignTaskForm.patchValue({
-    title: td?.title,
-    description: td?.description,
-    date: td?.date,
-    module: td?.modules,
-    students: mappedStudents,
-    qbankSubjects: mappedQbankSubjects,
-    videoSubjects: mappedVideoSubjects,
-    examTypes: mappedExamTypes,
-    // Defer these until data sources are loaded below
-    qbankExams: [],
-    testExams: [],
-    videos: []
-  });
+    this.assignTaskForm.patchValue({
+      title: td?.title,
+      description: td?.description,
+      date: td?.date,
+      module: td?.modules,
+      student: mappedStudent, // Changed from students array to single student
+      qbankSubjects: mappedQbankSubjects,
+      videoSubjects: mappedVideoSubjects,
+      examTypes: mappedExamTypes,
+      qbankExams: [],
+      testExams: [],
+      videos: []
+    });
 
-  // Load dependent data in parallel based on selections
-  const videoLoads = (mappedVideoSubjects || []).map((s: any) => this.loadVideosForSubject(s.id));
-  const qbankExamLoads = (mappedQbankSubjects || []).map((s: any) => this.loadQBankExamsForSubject(s.subjectId));
-  
-  // Load test exams for each mapped exam type - use examType and name properties
-  const testExamLoads = (mappedExamTypes || []).map((examType: any) => 
-    this.loadTestExamsForType(examType.examType || examType.id, examType.name)
-  );
+    // Set selectedStudent for UI
+    this.selectedStudent = mappedStudent;
 
-  await Promise.all([...videoLoads, ...qbankExamLoads, ...testExamLoads]);
+    // Load dependent data
+    const videoLoads = (mappedVideoSubjects || []).map((s: any) => this.loadVideosForSubject(s.id));
+    const qbankExamLoads = (mappedQbankSubjects || []).map((s: any) => this.loadQBankExamsForSubject(s.subjectId));
+    const testExamLoads = (mappedExamTypes || []).map((examType: any) => 
+      this.loadTestExamsForType(examType.examType || examType.id, examType.name)
+    );
 
-  // After data loads, patch selected collections by IDs
-  const selectedVideos = this.findItemsByIds(td?.videos, this.videosByTopic, 'id', 'videos');
-  const selectedQbankExams = this.findItemsByIds(td?.qbankExams, this.qbankExams, 'id', 'exams');
-  
-  // Map test exam IDs to actual exam objects from the loaded testExamsByType
-  const selectedTestExams = this.mapIdsToObjects(td?.testExams, this.testExamsByType, 'id');
+    await Promise.all([...videoLoads, ...qbankExamLoads, ...testExamLoads]);
 
-  this.assignTaskForm.patchValue({
-    videos: selectedVideos,
-    qbankExams: selectedQbankExams,
-    testExams: selectedTestExams
-  });
-}
+    const selectedVideos = this.findItemsByIds(td?.videos, this.videosByTopic, 'id', 'videos');
+    const selectedQbankExams = this.findItemsByIds(td?.qbankExams, this.qbankExams, 'id', 'exams');
+    const selectedTestExams = this.mapIdsToObjects(td?.testExams, this.testExamsByType, 'id');
+
+    this.assignTaskForm.patchValue({
+      videos: selectedVideos,
+      qbankExams: selectedQbankExams,
+      testExams: selectedTestExams
+    });
+  }
+
   private findItemsByIds(ids: number[], groups: any[], itemKey: string = 'id', groupKey: string = 'exams'): any[] {
     if (!ids?.length || !groups?.length) return [];
     const items: any[] = [];
@@ -208,28 +268,23 @@ private async patchEditFormValues(): Promise<void> {
       date: [null, Validators.required],
       module: ['Video', Validators.required],
       
-      // For Video module - Updated to match QBank pattern
       videoSubjects: [[]],
       videos: [[]],
       
-      // For QBank module
       qbankSubjects: [[]],
       qbankExams: [[]],
       
-      // For Test module
       examTypes: [[]],
       testExams: [[]],
       
-      // Common
-      students: [[], Validators.required]
+      // Changed from students array to single student
+      student: [null, Validators.required]
     });
 
-    // Subscribe to module changes
     this.assignTaskForm.get('module')?.valueChanges.subscribe(module => {
       this.updateModuleValidators(module);
     });
 
-    // Initial validator setup
     this.updateModuleValidators(this.assignTaskForm.get('module')?.value);
   }
 
@@ -249,13 +304,11 @@ private async patchEditFormValues(): Promise<void> {
   }
 
   updateModuleValidators(module: string): void {
-    // Get all conditional form controls
     const videoControls = ['videoSubjects', 'videos'];
     const qbankControls = ['qbankSubjects', 'qbankExams'];
     const testControls = ['examTypes', 'testExams'];
     const allConditionalControls = [...videoControls, ...qbankControls, ...testControls];
 
-    // Clear all validators first
     allConditionalControls.forEach(controlName => {
       const control = this.assignTaskForm.get(controlName);
       if (control) {
@@ -266,7 +319,6 @@ private async patchEditFormValues(): Promise<void> {
       }
     });
 
-    // Set validators based on selected module
     if (module === 'Video') {
       this.assignTaskForm.get('videoSubjects')?.setValidators([Validators.required, this.arrayNotEmptyValidator]);
       this.assignTaskForm.get('videos')?.setValidators([Validators.required, this.arrayNotEmptyValidator]);
@@ -282,13 +334,11 @@ private async patchEditFormValues(): Promise<void> {
       this.assignTaskForm.get('testExams')?.setValidators([Validators.required, this.arrayNotEmptyValidator]);
     }
 
-    // Update validation status for all controls
     allConditionalControls.forEach(controlName => {
       this.assignTaskForm.get(controlName)?.updateValueAndValidity({ emitEvent: false });
     });
   }
 
-  // Custom validator for array fields
   arrayNotEmptyValidator(control: AbstractControl): ValidationErrors | null {
     if (control.value && Array.isArray(control.value) && control.value.length > 0) {
       return null;
@@ -333,44 +383,14 @@ private async patchEditFormValues(): Promise<void> {
     this.loadStudents();
   }
 
-  // === STUDENT SELECTION METHODS ===
+  // === UPDATED STUDENT SELECTION METHODS FOR SINGLE SELECTION ===
   isStudentSelected(student: any): boolean {
-    return this.selectedStudents.some(s => s.id === student.id);
+    return this.selectedStudent && this.selectedStudent.id === student.id;
   }
 
-  toggleStudent(student: any, event: any): void {
-    if (event.checked) {
-      if (!this.isStudentSelected(student)) {
-        this.selectedStudents.push(student);
-      }
-    } else {
-      this.selectedStudents = this.selectedStudents.filter(s => s.id !== student.id);
-    }
-    this.assignTaskForm.patchValue({ students: this.selectedStudents });
-  }
-
-  isAllSelected(): boolean {
-    return this.studentList.length > 0 &&
-      this.studentList.every(s => this.isStudentSelected(s));
-  }
-
-  isIndeterminate(): boolean {
-    return this.selectedStudents.length > 0 && !this.isAllSelected();
-  }
-
-  toggleAllStudents(event: any): void {
-    if (event.checked) {
-      this.studentList.forEach(s => {
-        if (!this.isStudentSelected(s)) {
-          this.selectedStudents.push(s);
-        }
-      });
-    } else {
-      this.selectedStudents = this.selectedStudents.filter(
-        s => !this.studentList.some(sl => sl.id === s.id)
-      );
-    }
-    this.assignTaskForm.patchValue({ students: this.selectedStudents });
+  selectStudent(student: any): void {
+    this.selectedStudent = student;
+    this.assignTaskForm.patchValue({ student: student });
   }
 
   assignStudent(): void {
@@ -380,7 +400,15 @@ private async patchEditFormValues(): Promise<void> {
     });
   }
 
-  // === VIDEO MODULE METHODS - Updated to match QBank pattern ===
+  saveSelectedStudent(): void {
+    if (this.selectedStudent) {
+      this.assignTaskForm.patchValue({ student: this.selectedStudent });
+      this.dialogRef.close();
+    }
+  }
+  
+
+  // === EXISTING VIDEO MODULE METHODS (unchanged) ===
   selectVideoSubject(subject: any): void {
     const currentSubjects = this.assignTaskForm.get('videoSubjects')?.value || [];
     const subjectExists = currentSubjects.find((s: any) => s.id === subject.id);
@@ -389,7 +417,6 @@ private async patchEditFormValues(): Promise<void> {
       const updatedSubjects = currentSubjects.filter((s: any) => s.id !== subject.id);
       this.assignTaskForm.patchValue({ videoSubjects: updatedSubjects });
       
-      // Remove related videos when subject is removed
       const currentVideos = this.assignTaskForm.get('videos')?.value || [];
       const updatedVideos = currentVideos.filter((video: any) => 
         updatedSubjects.some((s: any) => s.id === video.subjectId)
@@ -413,7 +440,6 @@ private async patchEditFormValues(): Promise<void> {
     const updatedSubjects = currentSubjects.filter((s: any) => s.id !== subject.id);
     this.assignTaskForm.patchValue({ videoSubjects: updatedSubjects });
     
-    // Remove related videos when subject is removed
     const currentVideos = this.assignTaskForm.get('videos')?.value || [];
     const updatedVideos = currentVideos.filter((video: any) => 
       updatedSubjects.some((s: any) => s.id === video.subjectId)
@@ -427,11 +453,10 @@ private async patchEditFormValues(): Promise<void> {
 
   async loadVideosForSubject(subjectId: string): Promise<void> {
     try {
-      const res = await this._taskService.getVideos(subjectId);
+      const res = await this._taskService.getVideos(this.assignTaskForm.get('student')?.value,subjectId);
       const existingVideos = this.videosByTopic || [];
       const newVideos: any = res || [];
       
-      // Create a Map to avoid duplicates based on topicName
       const videoMap = new Map();
       
       existingVideos.forEach((topic: any) => {
@@ -439,7 +464,6 @@ private async patchEditFormValues(): Promise<void> {
       });
       
       newVideos.forEach((topic: any) => {
-        // Add subjectId to each topic for filtering
         const topicWithSubject = { ...topic, subjectId };
         videoMap.set(`${topic.topicName}_${subjectId}`, topicWithSubject);
       });
@@ -479,7 +503,7 @@ private async patchEditFormValues(): Promise<void> {
     return this.assignTaskForm.get('videos')?.value || [];
   }
 
-  // === QBANK MODULE METHODS ===
+  // === QBANK MODULE METHODS (unchanged) ===
   selectqbankSubject(subject: any): void {
     const currentSubjects = this.assignTaskForm.get('qbankSubjects')?.value || [];
     const subjectExists = currentSubjects.find((s: any) => s.subjectId === subject.subjectId);
@@ -488,7 +512,6 @@ private async patchEditFormValues(): Promise<void> {
       const updatedSubjects = currentSubjects.filter((s: any) => s.subjectId !== subject.subjectId);
       this.assignTaskForm.patchValue({ qbankSubjects: updatedSubjects });
       
-      // Remove related exams when subject is removed
       const currentExams = this.assignTaskForm.get('qbankExams')?.value || [];
       const updatedExams = currentExams.filter((exam: any) => 
         updatedSubjects.some((s: any) => s.subjectId === exam.subjectId)
@@ -507,40 +530,78 @@ private async patchEditFormValues(): Promise<void> {
     return currentSubjects.some((s: any) => s.subjectId === subject.subjectId);
   }
 
+  // removeQbankSubject(subject: any): void {
+  //   const currentSubjects = this.assignTaskForm.get('qbankSubjects')?.value || [];
+  //   const updatedSubjects = currentSubjects.filter((s: any) => s.subjectId !== subject.subjectId);
+  //   this.assignTaskForm.patchValue({ qbankSubjects: updatedSubjects });
+    
+  //   const currentExams = this.assignTaskForm.get('qbankExams')?.value || [];
+  //   const updatedExams = currentExams.filter((exam: any) => 
+  //     updatedSubjects.some((s: any) => s.subjectId === exam.subjectId)
+  //   );
+  //   this.assignTaskForm.patchValue({ qbankExams: updatedExams });
+  // }
   removeQbankSubject(subject: any): void {
     const currentSubjects = this.assignTaskForm.get('qbankSubjects')?.value || [];
     const updatedSubjects = currentSubjects.filter((s: any) => s.subjectId !== subject.subjectId);
     this.assignTaskForm.patchValue({ qbankSubjects: updatedSubjects });
     
-    // Remove related exams when subject is removed
     const currentExams = this.assignTaskForm.get('qbankExams')?.value || [];
     const updatedExams = currentExams.filter((exam: any) => 
       updatedSubjects.some((s: any) => s.subjectId === exam.subjectId)
     );
     this.assignTaskForm.patchValue({ qbankExams: updatedExams });
+    
+    // ADD THIS LINE - it removes the topics from the displayed list
+    this.qbankExams = (this.qbankExams || []).filter((topic: any) => topic.subjectId !== subject.subjectId);
   }
 
   getSelectedQbankSubjects(): any[] {
     return this.assignTaskForm.get('qbankSubjects')?.value || [];
   }
 
+  // async loadQBankExamsForSubject(subjectId: string): Promise<void> {
+  //   try {
+  //     const res = await this._taskService.getQBankExams(this.assignTaskForm.get('student')?.value,subjectId);
+  //     const existingExams = this.qbankExams || [];
+  //     const newExams: any = res || [];
+      
+  //     const examMap = new Map();
+      
+  //     existingExams.forEach((topic: any) => {
+  //       examMap.set(`${topic.topicName}_${topic.subjectId || subjectId}`, topic);
+  //     });
+      
+  //     newExams.forEach((topic: any) => {
+  //       const topicWithSubject = { ...topic, subjectId };
+  //       examMap.set(`${topic.topicName}_${subjectId}`, topicWithSubject);
+  //     });
+      
+  //     this.qbankExams = Array.from(examMap.values());
+  //   } catch (error) {
+  //     console.error('Error loading QBank exams:', error);
+  //   }
+  // }
   async loadQBankExamsForSubject(subjectId: string): Promise<void> {
     try {
-      const res = await this._taskService.getQBankExams(subjectId);
+      const res = await this._taskService.getQBankExams(this.assignTaskForm.get('student')?.value,subjectId);
       const existingExams = this.qbankExams || [];
       const newExams: any = res || [];
       
-      // Create a Map to avoid duplicates based on topicName
       const examMap = new Map();
       
-      existingExams.forEach((topic: any) => {
-        examMap.set(`${topic.topicName}_${topic.subjectId || subjectId}`, topic);
-      });
-      
+      // Add new exams first (so they appear at the top)
       newExams.forEach((topic: any) => {
-        // Add subjectId to each topic for filtering
         const topicWithSubject = { ...topic, subjectId };
         examMap.set(`${topic.topicName}_${subjectId}`, topicWithSubject);
+      });
+      
+      // Then add existing exams (they'll be skipped if already added above)
+      existingExams.forEach((topic: any) => {
+        const key = `${topic.topicName}_${topic.subjectId || subjectId}`;
+        if (!examMap.has(key)) {
+          examMap.set(key, topic);
+        }
       });
       
       this.qbankExams = Array.from(examMap.values());
@@ -581,7 +642,7 @@ private async patchEditFormValues(): Promise<void> {
     return this.assignTaskForm.get('qbankExams')?.value || [];
   }
 
-  // === TEST MODULE METHODS ===
+  // === TEST MODULE METHODS (unchanged) ===
   selectexamType(examType: any): void {
     const currentExamTypes = this.assignTaskForm.get('examTypes')?.value || [];
     const examTypeExists = currentExamTypes.some((et: any) => et.id === examType.id);
@@ -611,25 +672,6 @@ private async patchEditFormValues(): Promise<void> {
     return this.assignTaskForm.get('examTypes')?.value || [];
   }
 
-  selecttestExam(testExam: string): void {
-    const currentTestExams = this.assignTaskForm.get('testExams')?.value || [];
-    const testExamExists = currentTestExams.includes(testExam);
-    
-    if (testExamExists) {
-      const updatedTestExams = currentTestExams.filter((te: string) => te !== testExam);
-      this.assignTaskForm.patchValue({ testExams: updatedTestExams });
-    } else {
-      this.assignTaskForm.patchValue({ 
-        testExams: [...currentTestExams, testExam] 
-      });
-    }
-  }
-
-  // isTestExamSelected(testExam: string): boolean {
-  //   const currentTestExams = this.assignTaskForm.get('testExams')?.value || [];
-  //   return currentTestExams.includes(testExam);
-  // }
-
   removeTestExam(testExam: string): void {
     const currentTestExams = this.assignTaskForm.get('testExams')?.value || [];
     const updatedTestExams = currentTestExams.filter((te: string) => te !== testExam);
@@ -639,24 +681,16 @@ private async patchEditFormValues(): Promise<void> {
   getSelectedTestExams(): string[] {
     return this.assignTaskForm.get('testExams')?.value || [];
   }
-  async loadTestExamsForType(examTypeId,examType): Promise<void> {
+
+  async loadTestExamsForType(examTypeId, examType): Promise<void> {
     try {
-      const res = await this._taskService.getTestExams(examTypeId,examType); // implement this method in your service
-      this.testExamsByType = res
-      // const existing = this.testExamsByType.find(e => e.examTypeId === examTypeId);
-      // const newEntry = { examTypeId, exams: res || [] };
-  
-      // if (!existing) {
-      //   this.testExamsByType = [...this.testExamsByType, newEntry];
-      // } else {
-      //   this.testExamsByType = this.testExamsByType.map(e =>
-      //     e.examTypeId === examTypeId ? newEntry : e
-      //   );
-      // }
+      const res = await this._taskService.getTestExams(this.assignTaskForm.get('student')?.value,examTypeId, examType);
+      this.testExamsByType = res;
     } catch (error) {
       console.error('Error loading test exams:', error);
     }
   }
+
   selectTestExam(exam: any): void {
     const current = this.assignTaskForm.get('testExams')?.value || [];
     const exists = current.some((e: any) => e.id === exam.id);
@@ -673,9 +707,6 @@ private async patchEditFormValues(): Promise<void> {
     const selected = this.assignTaskForm.get('testExams')?.value || [];
     return selected.some((e: any) => e.id === exam.id);
   }
-
-  
-  
 
   async assignTask(): Promise<void> {
     if (this.assignTaskForm.valid) {
@@ -715,13 +746,8 @@ private async patchEditFormValues(): Promise<void> {
         title: formValue?.title,
         description: formValue?.description,
         date: formValue?.date,
-        students: formValue?.students.map(u => u.id),
+        students: [formValue?.student?.id], 
         modules: formValue?.module,
-        // status: 0,
-        // taskType: 0,
-        // taskSubType: 0,
-        // chapters: [],
-        // topics: [],
         videoSubjects: formValue?.videoSubjects.map(u => u.id),
         videos: formValue?.videos.map(u => u.id),
         qbankSubjects: formValue?.qbankSubjects.map(u => u.subjectId),

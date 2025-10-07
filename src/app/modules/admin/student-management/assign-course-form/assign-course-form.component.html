@@ -1,4 +1,4 @@
-<div class="dialog-content-wrapper user-form min-w-[640px] max-w-[800px] ">
+<div class="dialog-content-wrapper user-form max-w-[800px] ">
     <!-- Dialog Title -->
     <mat-toolbar matDialogTitle class="m-0 p-0 px-4">
       <mat-toolbar-row class="flex justify-between items-center">
@@ -16,13 +16,14 @@
           <!-- Course Selection -->
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Course</mat-label>
-            <mat-select formControlName="course" [(ngModel)]="userModel.courseIds" placeholder="Select a course" required>
-              <mat-option *ngFor="let c of courses" [value]="c.guid">{{c.title}}</mat-option>
+            <mat-select formControlName="course" placeholder="Select a course" required>
+              <mat-option [value]="_data.courseId">{{ _data.courseName }}</mat-option>
             </mat-select>
             <mat-error *ngIf="registerForm.get('course')?.hasError('required')">
               Course selection is required.
             </mat-error>
           </mat-form-field>
+          
   
           <!-- Subscription Start Date -->
           <mat-form-field appearance="outline" class="w-full">

@@ -1,4 +1,4 @@
-<button mat-icon-button [matMenuTriggerFor]="userActions">
+<button mat-icon-button  (click)="Profile.toggle()">
     <span class="relative">
     </span>
 </button>
@@ -81,3 +81,140 @@
         <span>Invisible</span>
     </button>
 </mat-menu> -->
+<fuse-drawer class="w-screen min-w-screen sm:w-200 sm:min-w-100 z-999" fixed [mode]="'over'" [name]="'Profile'" [position]="'right'" #Profile>
+
+    <section class="relative w-full inline-table">
+        <div class="text-end pr-2 pt-2"><button class="ml-auto hover:bg-primary/10" mat-icon-button (click)="Profile.close()"><mat-icon class="text-current"
+                    >close</mat-icon></button></div>
+        <div class="flex justify-center w-[110px] h-[110px] rounded-[50%] relative m-auto">
+            <img [src]="url" class="w-full h-full rounded-[50%]" alt="">
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="25" class="absolute bottom-0 right-3 cursor-pointer" height="25" viewBox="0 0 25 25" >
+                <g id="Group_19151" data-name="Group 19151" transform="translate(-321 -253)">
+                    <circle id="Ellipse_618" data-name="Ellipse 618" cx="12.5" cy="12.5" r="12.5"
+                        transform="translate(321 253)" class="fill-primary" />
+                    <path id="Icon_material-edit" data-name="Icon material-edit"
+                        d="M4.5,13.928v2.481H6.981L14.3,9.09,11.819,6.609ZM16.219,7.171a.659.659,0,0,0,0-.933L14.671,4.69a.659.659,0,0,0-.933,0L12.527,5.9l2.481,2.481,1.211-1.211Z"
+                        transform="translate(323.498 255.501)" fill="#fff" />
+                </g>
+            </svg> -->
+            <!-- <input #fileInput type="file" (change)="onFileSelected($event)" style="display: none;"> -->
+        </div>
+        <div >
+            <h2 class="text-xl font-semibold text-center mt-9 cursor-pointer">{{UserName}}</h2>
+            <h3 class="text-sm text-[#6E6E6E] font-semibold text-center mt-2">{{UsercurrentInfo?.courseType}}</h3>
+            <hr class="my-4 border-primary/25">
+            <h4 class="text-center text-sm text-[#6E6E6E]  font-medium" *ngIf="UsercurrentInfo?.email?.length>0">
+                {{UsercurrentInfo?.email}}</h4>
+            <h5 class="text-sm text-[#6E6E6E] font-medium text-center mt-1" *ngIf="UsercurrentInfo?.phoneNumber?.length>1">+91 {{UsercurrentInfo?.phoneNumber}}
+            </h5>
+        </div>
+        <!-- <div class="bg-[#F5F5F5] px-5 py-5 mt-4 border border-primary/10">
+            <h2 class="text-sm font-bold">Settings</h2>
+        </div> -->
+        <div>
+            <!-- <div class="flex justify-between  px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">Alert Notifications</h3>
+                <mat-slide-toggle>
+                    <span class="mat-slide-toggle-label">On</span>
+                </mat-slide-toggle>
+
+            </div> -->
+            <!-- <div class="flex justify-between  px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">Language</h3>
+                <div class="flex items-center gap-3">
+                    <h4 class="text-[12px] text-primary ">English</h4>
+                    <mat-icon class="text-primary text-[15px]">arrow_forward_ios</mat-icon>
+                </div>
+            </div>
+            <div class="flex justify-between  px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">Theme</h3>
+                <div class="flex items-center gap-3">
+                    <h4 class="text-[12px] text-primary ">Light</h4>
+                    <mat-icon class="text-primary text-[15px]">arrow_forward_ios</mat-icon>
+                </div>
+            </div> -->
+            <!-- <div class="flex justify-between  px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">Question of the day</h3>
+                <mat-slide-toggle>
+                    <span class="mat-slide-toggle-label">On</span>
+                </mat-slide-toggle>
+
+            </div>
+            <div class="flex justify-between  px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">Play video Automatically</h3>
+                <mat-slide-toggle>
+                    <span class="mat-slide-toggle-label">On</span>
+                </mat-slide-toggle>
+
+            </div>
+            <div class="flex justify-between  px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">Study Planner - Calendar</h3>
+                <mat-slide-toggle>
+                    <span class="mat-slide-toggle-label">On</span>
+                </mat-slide-toggle>
+
+            </div> -->
+            <div class="bg-[#F5F5F5] px-5 py-5 mt-4 border border-primary/10">
+                <h2 class="text-sm font-bold">Manage Account</h2>
+            </div>
+            <!-- <div class="flex justify-between px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold cursor-pointer" (click)="openDialogWithTemplateRef(editProfile,'Profile-Info')">Personal Information</h3>
+                
+            </div> -->
+            <mat-accordion class="example-headers-align" multi>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title class="text-sm text-[#6E6E6E] font-semibold">
+                            Your Course
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            {{ selectedCourse }}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <h2 class="cursor-pointer courses" [class.selected]="selectedCourse === course.courseName" *ngFor="let course of courses" [value]="course.courseId" (click)="SetCourseId(course.courseId)">{{course.courseName}}</h2>
+                </mat-expansion-panel>
+
+            </mat-accordion>
+            <!-- <div class="px-5 py-5 border border-primary/10">
+                <mat-form-field class="w-full your-courses">
+                    <mat-select [value]="Courseid">
+                        <mat-option value="course 1" *ngFor="let course of courses" [value]="course.guid" (click)="SetCourseId(course.guid)">
+                            {{course.title}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div> -->
+
+            <!-- <div class="px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">Change Password</h3>
+            </div>
+            <div class="px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">Delete Account</h3>
+            </div>
+            <div class="flex justify-between  px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">ID verification</h3>
+                <mat-icon class="text-[#EA4435]">error</mat-icon>
+            </div>
+            <div class="px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">Your ADr ID : ADR123456789</h3>
+            </div>
+            <div class="px-5 py-5 border border-primary/10">
+                <h3 class="text-sm text-[#6E6E6E] font-semibold">Payments</h3>
+            </div> -->
+        </div>
+        <div class="bg-[#F5F5F5] px-5 py-5 mt-4 border border-primary/10 flex w-full  absolute bottom-0">
+            <button class="bg-primary border m-auto w-[370px] h-16 text-[#FFFFFF] font-medium rounded-lg" (click)="signOut()">Logout</button>
+        </div>
+    </section>
+
+</fuse-drawer>
+<style>
+    .courses {
+        padding: 10px 10px;
+        border-bottom: 1px solid;
+    }
+    .courses.selected {
+        background: rgba(var(--fuse-primary-rgb), .5) !important;
+        color: white;
+    }
+</style>

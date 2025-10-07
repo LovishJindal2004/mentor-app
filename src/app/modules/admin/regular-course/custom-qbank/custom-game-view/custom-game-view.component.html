@@ -1,0 +1,166 @@
+<div class="w-full bg-white border-l">
+    <app-custom-game-header [examid]="examDetails?.code" (dataEvent)="receiveDataFromHeader($event,true)"></app-custom-game-header>
+    <!-- Timmer div -->
+
+    <div class="sm:w-full md:w-3/6 relative top-[15%] bg-white m-auto  shadow rounded" *ngIf="startExamTime">
+        <section class="p-8">
+            <div class="flex justify-center items-center">
+
+                <img src="my-images/image_processing20220515-31554-1t0kv64.gif" class="w-[100px]" alt="">
+            </div>
+            <div class="flex justify-center mt-5">
+                <h2 class="text-xl text-[#505050] font-medium ">{{startExamButton? isexammanullyStart?'Please Click button to start Exam':'Exam Already Has Been Started':'Exam Starts within'}}</h2>
+            </div>
+            <div class="mt-5" *ngIf="startExamButton">
+                <div class="flex justify-center">
+                    <button (click)="btnToStartExm()" class="border bg-primary rounded-[35px] py-5 px-12 text-xl text-white">Start Exam</button>
+                </div>
+
+
+            </div>
+            <div class=" flex justify-center mt-5">
+                <h3 class="text-[#FF0000] text-[60px] font-[timerFont] tracking-wide" *ngIf="!isexammanullyStart">{{digitalClockDisplay}} {{startExamButton?'Mins Left':digitalClockDisplay.length>0?'Mins':''}}</h3>
+            </div>
+
+            <!-- <div *ngIf="lateMinutes > 0" class="flex justify-center mt-3">
+                <p class="text-[#FF0000] font-medium">You are {{ lateMinutes }} minutes late.</p>
+            </div> -->
+
+        </section>
+    </div>
+
+    <!-- Timmer Divs Ends -->
+
+    <!-- EXAM START DIV -->
+    <div class="px-32 py-4 mt-82" *ngIf="isExamStart">
+        <div class="flex  items-center justify-between">
+            <h2 class="text-[#505050]">Question :{{indexToFilter+1}}/{{questionDetails?.length}}</h2>
+            <h3 class="text-xl flex">
+                <mat-icon class="mr-3">watch_later</mat-icon>{{digitalClockDisplay}}</h3>
+        </div>
+
+        <hr class="border-primary/25 m-0 my-3">
+        <!-- <div class="flex items-center justify-center mt-30" *ngIf="!dataLoaded">
+            <img src="../../../../../assets/images/logo/imgLoder.gif" class="w-15">
+        </div> -->
+        <div>
+            <h3 class="text-lg font-medium text-[#505050] question" [innerHTML]="CurrentQuestionData[0]?.questionTitle">
+            </h3>
+
+            <h4 class="pt-4 text-[#6E6E6E] font-light" *ngIf="dataLoaded">Select option any one</h4>
+            <div>
+                <mat-radio-group class="example-radio-group radio_list">
+                    <mat-radio-button class="example-radio-button block">
+                        <span class="serial_no">A</span>Option 1
+                    </mat-radio-button>
+                    <mat-radio-button class="example-radio-button block">
+                        <span class="serial_no">B</span>Option 2
+                    </mat-radio-button>
+                    <mat-radio-button class="example-radio-button block">
+                        <span class="serial_no">C</span>Option 3
+                    </mat-radio-button>
+                    <mat-radio-button class="example-radio-button block">
+                        <span class="serial_no">D</span>Option 4
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+        <!-- <div *ngIf="CurrentQuestionData[0]?.questionType==2">
+            <mat-selection-list #answers required (selectionChange)="onSelection($event)">
+                <mat-list-option *ngFor="let choice of  CurrentQuestionData[0]?.choices ;let i = index;" checkboxPosition="before" [value]="i" [selected]="choice.isChecked">
+                    {{choice.choiceText}}
+                </mat-list-option>
+            </mat-selection-list>
+        </div> -->
+        <div class="button-container">
+            <div class="flex justify-center gap-4 pt-8">
+                <button mat-raised-button class="bg-[#0C529A] text-[#fff] text-lg w-40 py-6 rounded-lg" (click)="previousQuestion()">Previous</button>
+                <button mat-raised-button class="bg-primary text-[#fff] text-lg w-40 py-6 rounded-lg" *ngIf="questionDetails?.length!=indexToFilter+1" (click)="NextQuestion()">Next</button>
+                <button mat-raised-button class="bg-primary text-[#fff] w-40 py-6 rounded-lg" [disabled]="timerDisabled" *ngIf=" questionDetails?.length==indexToFilter+1 " (click)="receiveDataFromHeader(false) ">Finish</button>
+            </div>
+        </div>
+    </div>
+    <!-- ENDS -->
+</div>
+
+<ng-template #questionOverview class="w-94 ">
+    <section class="serial_listing p-8 ">
+        <div>
+            <h2 class="text-lg text-[#505050] font-medium ">All Questions</h2>
+        </div>
+        <div class="mt-2 p-2 rounded border border-[#DCDCDC] ">
+            <div class="grid grid-cols-2 mt-4 mb-2 ">
+                <div class="text-3xl text-[#28C397] leading-4 mx-auto text-center ">{{this.noOfAnswerdQuestion}}<br><span class="text-sm ">Answer</span></div>
+                <div class="text-3xl text-[#505050] leading-4 mx-auto text-center ">{{this.noOfNotAnswerdQuestion}}<br><span class="text-sm ">Not Answer</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex grid grid-cols-5 mt-4 gap-3 ">
+            <div class=" py-4 rounded text-center text-[#505050] border border-[#DCDCDC] bg-[#FFFFFF] " *ngFor="let question of questionDetails;let i=index " (click)="gotoQuestion(i) ">{{i+1}}
+            </div>
+        </div>
+    </section>
+</ng-template>
+<ng-template #examExit class="w-94 ">
+    <section class="pt-4 w-80 p-8 pb-0 ">
+        <h2 class="text-center text-[#505050] max-w-48 mx-auto text-xl font-medium ">Are you sure want to exit the Q'Bank
+        </h2>
+        <h3 class="text-[#6E6E6E] text-center text-sm mt-2 ">QBank ID : {{ExamId}}</h3>
+        <button mat-raised-button class="w-full bg-[#0C529A] text-[#FFFFFF] text-xl py-8 mt-4 rounded-md " (click)="closedialog() ">No, let me
+            continue</button><br>
+        <button mat-raised-button class="w-full bg-[#EB5B5B] text-[#FFFFFF] text-xl mt-2 session_expire h-24 rounded-md " (click)="finsishExam(2,false) ">Pause now<br>
+            <span class="text-sm ">Session expired on 3 Min</span></button>
+    </section>
+    <div class="bg-[#DCDCDC] text-center mt-6 ">
+        <button class="text-lg text-[#505050] py-4 font-medium w-full " [mat-dialog-close]="true " (click)="finsishExam(2,false) ">Exit</button>
+    </div>
+</ng-template>
+<ng-template #QuestionNotAnswred class="w-94 ">
+    <section class="w-120 p-4 pb-10 ">
+        <div class="grid grid-cols-2 justify-between ">
+            <h2 class="text-[#0C529A] text-lg font-semibold ">Exam Alert</h2>
+            <mat-icon class="ml-auto " (click)="closedialog() ">close</mat-icon>
+        </div>
+        <div class="flex justify-center items-center py-10 my-3 ">
+            <mat-icon class="text-[#f9bc15] ">error_outline</mat-icon><span class="ml-2 text-xl text-[#6E6E6E] font-medium ">{{this.noOfNotAnswerdQuestion}} Questions are not
+                answerd</span>
+        </div>
+        <div class="flex justify-center gap-4 pb-3 ">
+            <button mat-raised-button class="bg-[#0C529A] text-[#FFFFFF] rounded w-48 py-6 text-lg font-medium " (click)="closedialog() ">Continue
+                to
+                Exam</button>
+            <button mat-raised-button class="bg-[#00AEEF] text-[#FFFFFF] rounded w-48 py-6 text-lg font-medium " (click)="finsishExam(3,true) ">Finish</button>
+        </div>
+    </section>
+</ng-template>
+<ng-template #QuestionAnswred class="w-94 ">
+    <section class="w-120 p-4 pb-4 ">
+        <div class="grid grid-cols-2 justify-between ">
+            <h2 class="text-[#0C529A] text-lg font-medium ">Exam Alert</h2>
+            <mat-icon class="ml-auto " (click)="closedialog() ">close</mat-icon>
+        </div>
+        <div class="py-10 text-center ">
+            <h3 class="text-[#28C397] text-xl font-medium pb-2 ">{{this.noOfAnswerdQuestion}} questions answered</h3>
+            <h4 class="ml-2 text-base text-[#6E6E6E] font-medium ">Congratulations! You have completed the exam.If you want to review your answers, click the "Back to review " button below.</h4>
+        </div>
+        <div class="flex justify-center gap-4 pb-3 ">
+            <button mat-raised-button class="bg-[#0C529A] text-[#FFFFFF] rounded w-48 py-6 text-lg font-normal " (click)="closedialog() ">Back to
+                review</button>
+            <button mat-raised-button class="bg-[#00AEEF] text-[#FFFFFF] rounded w-48 py-6 text-lg font-normal " (click)="finsishExam(3,true) ">Finish</button>
+        </div>
+    </section>
+</ng-template>
+<ng-template #viewResult class="w-94 ">
+    <section class="w-120 px-4 pt-8 pb-4 ">
+
+        <div class="pb-6 text-center ">
+            <img class="w-12 mx-auto py-4 " src="/my-images/Icon feather-check-circle.svg ">
+            <h3 class="text-[#28C397] text-xl font-medium pb-2 ">Successfully Completed the exams</h3>
+            <h4 class="text-base text-[#6E6E6E] font-medium w-90 mx-auto ">Congratulations! You have successfully
+                submitted your exam. Thank you for your hard work and dedication.</h4>
+        </div>
+        <div class="flex justify-center gap-4 pb-3 ">
+            <button mat-raised-button class="bg-[#0C529A] text-[#FFFFFF] rounded w-48 py-6 text-lg font-normal min-h-12 " (click)="viewresult() ">View Results</button>
+        </div>
+    </section>
+</ng-template>

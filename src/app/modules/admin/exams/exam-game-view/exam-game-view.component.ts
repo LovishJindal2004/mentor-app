@@ -420,7 +420,8 @@ export class ExamGameViewComponent implements OnInit {
       var ischoiesIchekd = self.CurrentQuestionData.some(question => question.isChecked);
       let request = {
         testId: self.ExamId,
-        taskId: self.taskGuid,
+        entityType: 2,
+        entityId: self.taskGuid,
         questionId: self.CurrentQuestionData[0]?.questionDetailID,
         // courseId: self.courseId,
         choices: self.choicesId,
@@ -484,7 +485,8 @@ export class ExamGameViewComponent implements OnInit {
     this.durations = (self.QuestionActivaty?.testDuration || 0) * 60 - (this.time);
     let request = {
       testId: this.ExamId,
-      taskId: this.taskGuid,
+      entityId: this.taskGuid,
+      entityType: 2,
       // courseId: this.courseId,
       duration: this.durations,
       status: examStatus,      
@@ -767,7 +769,8 @@ export class ExamGameViewComponent implements OnInit {
       this.durations = (self.QuestionActivaty?.testDuration || 0) * 60 - (this.time);
       let request = {
         testId: this.ExamId,
-        taskId: this.taskGuid,
+        entityId: this.taskGuid,
+        entityType: 2,
         // courseId: this.courseId,
         duration: this.durations,
         status: examstatus,        

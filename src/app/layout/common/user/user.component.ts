@@ -1,5 +1,5 @@
 import { BooleanInput } from '@angular/cdk/coercion';
-import { NgClass } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -11,12 +11,17 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDrawer } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
+import { FuseDrawerComponent } from '@fuse/components/drawer';
+import { DataGuardService } from 'app/core/auth/guards/dataGuard';
 import { helperService } from 'app/core/auth/helper';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
+import { CommanService } from 'app/modules/common/services/common.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -31,6 +36,11 @@ import { Subject, takeUntil } from 'rxjs';
         MatIconModule,
         // NgClass,
         MatDividerModule,
+        
+        MatExpansionModule,
+        // MatDrawer,
+        FuseDrawerComponent,
+        CommonModule
     ],
 })
 export class UserComponent implements OnInit, OnDestroy {
@@ -42,8 +52,13 @@ export class UserComponent implements OnInit, OnDestroy {
     user: User;
     UserName: any;
     _userAccount: any;
+    courses: any;
+    Courseid: any;
+    selectedCourse: any = [];
+    url = 'my-images/Businessman-Transparent.png';
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    UsercurrentInfo: any;
 
     /**
      * Constructor
@@ -52,8 +67,14 @@ export class UserComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
         private _helperService: helperService,
+        private _commonService: CommanService,
+        private _datagurd: DataGuardService,
         private _userService: UserService
-    ) {}
+    ) {
+        this._commonService.getProfile().subscribe(res=>{
+            this.UsercurrentInfo = res;
+        });
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -73,6 +94,7 @@ export class UserComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
             this._userAccount = this._helperService.getUserDetail();
+            this.getCourses();
             this.UserName = localStorage.getItem('studentName');
     }
 
@@ -83,6 +105,16 @@ export class UserComponent implements OnInit, OnDestroy {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
+    }
+    getCourses() {
+
+        this.Courseid = this._datagurd.getCourseId();
+        this._commonService.getActiveCoursesByUserId(this._userAccount?.Id).subscribe(res => {
+            if (res)
+                this.courses = res;
+            this.selectedCourse = this.courses.filter(course => course.courseId == this.Courseid)[0].courseName;
+            // console.log(this.selectedCourse);
+        })
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -107,6 +139,15 @@ export class UserComponent implements OnInit, OnDestroy {
                 // status,
             })
             .subscribe();
+    }
+    SetCourseId(id) {
+        this.selectedCourse = this.courses.filter(course => course.courseId == id)[0].courseName;
+        this._datagurd.setCourseId('Courseid', id);
+        this._commonService.setCourseId(id);
+        this._router.navigate(['/dashboard']);
+        setTimeout(() => {
+            window.location.reload();            
+        }, 500);
     }
 
     /**

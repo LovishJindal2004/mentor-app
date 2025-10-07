@@ -3,7 +3,6 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DataGuardService } from 'app/core/auth/guards/dataGuard';
 import { ApiErrorHandlerService } from 'app/modules/common/services/api-error-handling.service';
 import { QbankSubject } from '../qbanks.model';
-import { QBankService } from '../qbanks.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,6 +24,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { QBanksService } from '../qbanks.service';
 
 @Component({
   selector: 'app-exam-list',
@@ -67,7 +67,7 @@ export class ExamListComponent implements OnInit {
   courseId: string = '';
 
   constructor(
-    private _qbankservice: QBankService,
+    private _qbankservice: QBanksService,
     private activeRoute: ActivatedRoute,
     private _datagurd: DataGuardService,
     private _errorHandling: ApiErrorHandlerService

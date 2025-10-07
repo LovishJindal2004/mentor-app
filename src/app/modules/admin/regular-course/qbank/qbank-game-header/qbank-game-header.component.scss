@@ -1,0 +1,22 @@
+.header{
+    box-shadow: 0px 0px 15px #D8D8D8;
+    // background: transparent linear-gradient(273deg, #63247C 0%, #3C006D 100%) 0% 0% no-repeat padding-box;
+    background: transparent linear-gradient(273deg, rgba(var(--fuse-primary-rgb), 0.5) 0%, rgba(var(--fuse-primary-rgb), 1) 100%) 0% 0% no-repeat padding-box;
+}
+::ng-deep .white-image {
+    filter: brightness(0) invert(1);
+  }
+@media only screen and (max-width: 767px) {
+    .qbank-header h4{
+        order: 3;
+        text-align: center;
+        margin: 0 auto;
+        width: 100%;
+        justify-content: center;
+    }
+    .qbank-header .icons{
+        order: 2;
+        width: 50%;
+        justify-content: end;
+    }
+}

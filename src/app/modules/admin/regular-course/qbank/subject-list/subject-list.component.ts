@@ -14,7 +14,7 @@ import {
 import { ApiErrorHandlerService } from 'app/modules/common/services/api-error-handling.service';
 import { QbankSubject } from '../qbanks.model';
 import { DataGuardService } from 'app/core/auth/guards/dataGuard';
-import { QBankService } from '../qbanks.service';
+import { QBanksService } from '../qbanks.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -89,7 +89,7 @@ export class SubjectListComponent implements OnInit {
   @ViewChild('openDatePickerTemplate') openDatePickerTemplate!: TemplateRef<any>;
   constructor(
     private _datagurd: DataGuardService,
-    private _qbankservice: QBankService,
+    private _qbankservice: QBanksService,
     public dialog: MatDialog,
     private _errorHandling: ApiErrorHandlerService,
   ) {

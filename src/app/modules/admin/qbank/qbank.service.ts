@@ -35,24 +35,27 @@ export class QBankService {
   getQbankExamResult(examId, taskGuid) {
     let params = new HttpParams();
     params = params.append('examid', examId);
-    params = params.append('taskGuid', taskGuid);
+    params = params.append('entityType', 2);
+    params = params.append('entityId', taskGuid);
     return this._httpClient.get<any>(`${environment.apiURL}/qbank/result?${params}`)
   }
 
   getQbankExamDetail(examId, taskId) {
-    return this._httpClient.get<any>(`${environment.apiURL}/qbank/get-exam-details/${examId}?taskGuid=${taskId}`)
+    let params = new HttpParams();
+    params = params.append('entityId', taskId);
+    params = params.append('entityType', 2);
+    return this._httpClient.get<any>(`${environment.apiURL}/qbank/get-exam-details/${examId}?${params}`)
   }
   getQbankExamQuestion(TaskGuid, Examid,isTimerEnabled): Observable<any> {
     let params = new HttpParams();
-    params = params.append('TaskGuid', TaskGuid.toString());
+    params = params.append('entityId', TaskGuid.toString());
+    params = params.append('entityType', 2);
     params = params.append('Examid', Examid.toString());
     params = params.append('isTimerEnabled', isTimerEnabled.toString())
     return this._httpClient.get<any>(`${environment.apiURL}/qbank/questions`, { params })
   }
   getQbnkquestionDetailById(QuestionDetailId, Examid, taskGuid) {
-    let params = new HttpParams();
-    params = params.append('taskGuid', taskGuid);
-    return this._httpClient.get<any>(`${environment.apiURL}/qbank/question/${QuestionDetailId}/${Examid}`,{params})
+    return this._httpClient.get<any>(`${environment.apiURL}/qbank/question/${QuestionDetailId}/${Examid}/${taskGuid}/2`)
   }
   getAnsweersheetQbnkquestionDetailById(QuestionDetailId, isPracticeMode) {
     let params = new HttpParams();
@@ -62,7 +65,8 @@ export class QBankService {
   getQbnkAnswersheet(taskGuid, Examid) {
     let params = new HttpParams();
     params = params.append('examid', Examid.toString());
-    params = params.append('taskGuid', taskGuid.toString());
+    params = params.append('entityType', 2);
+    params = params.append('entityId', taskGuid.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/qbank/answersheet`, { params })
   }
 

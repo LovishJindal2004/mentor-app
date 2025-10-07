@@ -33,24 +33,22 @@
                         </div>
                     </div>
 
-                    <div>
+                    <!-- <div>
                         <div class="text-sm text-gray-400">Assignees</div>
                         <div class="mt-2 flex items-center gap-2 flex-wrap badges-group">
-                            <!-- Show first 3 persons -->
                             <div *ngFor="let person of taskDetails?.assignedTo | slice:0:3" class="flex items-center gap-2 badges">
                               <div class="w-7 h-7 rounded-full bg-green-600 text-white text-sm font-medium flex items-center justify-center">
                                 {{ person.name[0] | uppercase }}
                               </div>
                             </div>
                           
-                            <!-- Show + count if more -->
                             <div *ngIf="taskDetails?.assignedTo?.length > 3"
                                  class="w-7 h-7 rounded-full bg-gray-500 ml-[-15px] text-white text-sm font-medium flex items-center justify-center">
                               +{{ taskDetails?.assignedTo?.length - 3 }}
                             </div>
                           </div>
                           
-                    </div>
+                    </div> -->
                 </div>
 
                 <div class="border-t border-gray-800 my-6"></div>

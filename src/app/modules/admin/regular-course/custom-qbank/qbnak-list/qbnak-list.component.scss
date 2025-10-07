@@ -1,0 +1,16 @@
+:host{
+    display: block;
+}
+.customize-btn {
+    background: transparent linear-gradient(172deg, #28C397 0%, #139FA3 100%) 0% 0% no-repeat padding-box;
+}
+.more-btn {
+    top: 13px;
+    right: 0px;
+}
+::ng-deep .stop .mat-progress-bar-fill::after{
+    background: #d71e1e !important;
+}
+::ng-deep .mat-progress-bar-fill::after {
+    background: #28C397 !important;
+}

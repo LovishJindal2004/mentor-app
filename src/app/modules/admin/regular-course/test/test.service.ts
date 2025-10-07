@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ExamService {
+export class TestService {
 
 
   constructor(private _httpClient: HttpClient) { }
@@ -38,9 +38,10 @@ export class ExamService {
     params = params.append('subjectName', subjectName.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/test/pyq/test-type/subject/years`, { params })
   }
-  getsigleExam(CourseId, Examid): Observable<any> {
+  getsigleExam(taskId, Examid): Observable<any> {
     let params = new HttpParams();
-    params = params.append('CourseId', CourseId.toString());
+    params = params.append('entityId', taskId.toString());
+    params = params.append('entitytype', 1);
     params = params.append('testId', Examid.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/test/questions`, { params })
   }
@@ -57,6 +58,15 @@ export class ExamService {
     var self = this;
     return new Promise((resolve, reject) => {
       this._httpClient.post(`${environment.apiURL}/test/v2-submit-question/`, { ...request })
+        .subscribe((response: any) => {
+          resolve(response);
+        }, reject);
+    });
+  }
+  finishCBTExam(request: any): Promise<any> {
+    var self = this;
+    return new Promise((resolve, reject) => {
+      this._httpClient.post(`${environment.apiURL}/test/submit-test/`, { ...request })
         .subscribe((response: any) => {
           resolve(response);
         }, reject);
@@ -93,17 +103,19 @@ export class ExamService {
     params = params.append('courseId', courseId.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/test/test-report`, { params })
   }
-  getpredefineExamResult(examid, courseId): Observable<any> {
+  getpredefineExamResult(examid, taskId): Observable<any> {
     let params = new HttpParams();
     params = params.append('testId', examid.toString());
-    params = params.append('courseId', courseId.toString());
+    params = params.append('entitytype', 1);
+    params = params.append('entityId', taskId.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/test/result`, { params })
   }
-  getpredefineExamResultv2(examid, courseId): Observable<any> {
+  getpredefineExamResultv2(examid, taskId): Observable<any> {
     let params = new HttpParams();
     params = params.append('testId', examid.toString());
-    params = params.append('courseId', courseId.toString());
-    return this._httpClient.get<any>(`${environment.apiURL}/test/v2-result`, { params })
+    params = params.append('entitytype', 1);
+    params = params.append('entityId', taskId.toString());
+    return this._httpClient.get<any>(`${environment.apiURL}/test/result`, { params })
   }
   getExamTopScorers(examid, courseId,byState): Observable<any> {
     let params = new HttpParams();
@@ -112,10 +124,17 @@ export class ExamService {
     params = params.append('byState', byState);
     return this._httpClient.get<any>(`${environment.apiURL}/test/top-scorers`, { params })
   }
-  getpredefineExamAnswersheet(examid, courseId): Observable<any> {
+  getpredefineExamCBTAnswersheet(examid, courseId): Observable<any> {
     let params = new HttpParams();
     params = params.append('testId', examid.toString());
     params = params.append('courseId', courseId.toString());
+    return this._httpClient.get<any>(`${environment.apiURL}/test/answersheet`, { params })
+  }
+  getpredefineExamAnswersheet(testId, taskId): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('testId', testId.toString());
+    params = params.append('entitytype', 1);
+    params = params.append('entityId', taskId.toString());
     return this._httpClient.get<any>(`${environment.apiURL}/test/answersheet`, { params })
   }
   BookmarkPredefineQuestion(request: any): Observable<any> {
@@ -130,14 +149,17 @@ export class ExamService {
   predefineAnswerSheetProgress(request: any): Promise<any> {
     var self = this;
     return new Promise((resolve, reject) => {
-      this._httpClient.post(`${environment.apiURL}/test/answer-sheet-progress/`, { ...request })
+      this._httpClient.post(`${environment.apiURL}/test/answersheet-progress/`, { ...request })
         .subscribe((response: any) => {
           resolve(response);
         }, reject);
     });
   }
-  getQuestionbyID(questionDetailID: number): Observable<any> {
-    return this._httpClient.get<any>(`${environment.apiURL}/test/question/` + questionDetailID, {});
+  getQuestionbyID(questionDetailID: number,taskGuid): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('entitytype', 1);
+    params = params.append('entityId', taskGuid.toString());
+    return this._httpClient.get<any>(`${environment.apiURL}/test/question/` + questionDetailID, {params});
   }
   //get exam List
   getExamList(CourseId, examtype): Observable<any> {
@@ -145,29 +167,31 @@ export class ExamService {
     params = params.append('courseId', CourseId);
     return this._httpClient.get<any>(`${environment.apiURL}/test/list?${params}&testType=${examtype}`)
   }
-  getcategoryExamList(CourseId, examtype,categoryName): Observable<any> {
+  getcategoryExamList(examtype,categoryName): Observable<any> {
     let params = new HttpParams();
     const encodedCategoryName = encodeURIComponent(categoryName);
-    params = params.append('courseId', CourseId);
-    return this._httpClient.get<any>(`${environment.apiURL}/test/v2-list?${params}&testType=${examtype}&categoryName=${encodedCategoryName}`)
+    // params = params.append('courseId', CourseId);
+    return this._httpClient.get<any>(`${environment.apiURL}/test/list?testType=${examtype}&categoryName=${encodedCategoryName}`)
   }
-  getpyqExamList(courseId, pyqExamType,year): Observable<any> {
+  getpyqExamList(courseId, pyqExamType,year, isPracticeMode): Observable<any> {
     let params = new HttpParams();
     if(year){        
     params = params.append('year', year);
     }
     params = params.append('courseId', courseId.toString());
     params = params.append('testType', 3);
-    params = params.append('pyqExamType', pyqExamType);  
-    return this._httpClient.get<any>(`${environment.apiURL}/test/pyq/tests`,{params})
+    params = params.append('pyqExamType', pyqExamType);     
+    params = params.append('isPracticeMode', isPracticeMode); 
+    return this._httpClient.get<any>(`${environment.apiURL}/test/pyq/v2-tests`,{params})
   }
-  getpyqExamListSubjectwise(courseId, pyqExamType,subjectName): Observable<any> {
+  getpyqExamListSubjectwise(courseId, pyqExamType,subjectName, isPracticeMode): Observable<any> {
     let params = new HttpParams();
     params = params.append('courseId', courseId.toString());
     params = params.append('testType', 3);
     params = params.append('pyqExamType', pyqExamType);        
-    params = params.append('subjectName', subjectName);
-    return this._httpClient.get<any>(`${environment.apiURL}/test/pyq/subject/tests`,{params})
+    params = params.append('subjectName', subjectName);       
+    params = params.append('isPracticeMode', isPracticeMode);
+    return this._httpClient.get<any>(`${environment.apiURL}/test/pyq/subject/v2-tests`,{params})
   }
   reportQuestion(request: any): Promise<any> {
     var self = this;
@@ -195,103 +219,5 @@ export class ExamService {
     params = params.append('courseid', courseid.toString());
     params = params.append('subjectid', subjectid);
     return this._httpClient.get<any>(`${environment.apiURL}/test/subjectwise-overall-examanalytics`, { params })
-  }
-
-  getLeaderBoardQuestion(CourseId, Examid, isPracticeMode): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('CourseId', CourseId.toString());
-    params = params.append('testId', Examid.toString());
-    params = params.append('isPracticeMode', isPracticeMode);
-    return this._httpClient.get<any>(`${environment.apiURL}/leaderboard/v2-getquestions`, { params })
-  }
-  submitLeaderBoardQuestion(request: any): Promise<any> {
-    var self = this;
-    return new Promise((resolve, reject) => {
-      this._httpClient.post(`${environment.apiURL}/leaderboard/v2-submit-question/`, { ...request })
-        .subscribe((response: any) => {
-          resolve(response);
-        }, reject);
-    });
-  }
-  finishLeaderBoardExam(request: any): Promise<any> {
-    var self = this;
-    return new Promise((resolve, reject) => {
-      this._httpClient.post(`${environment.apiURL}/leaderboard/v2-submit-test/`, { ...request })
-        .subscribe((response: any) => {
-          resolve(response);
-        }, reject);
-    });
-  }
-  getLeaderBoardExamAnswersheet(examid, courseId,isPracticeMode): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('testId', examid.toString());
-    params = params.append('courseId', courseId.toString());
-    params = params.append('isPracticeMode', isPracticeMode);
-    return this._httpClient.get<any>(`${environment.apiURL}/leaderboard/v2-answersheet`, { params })
-  }
-  getLeaderBoardExamResult(examid, courseId,isPracticeMode): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('testId', examid.toString());
-    params = params.append('courseId', courseId.toString());
-    params = params.append('isPracticeMode', isPracticeMode);
-    return this._httpClient.get<any>(`${environment.apiURL}/leaderboard/v2-result`, { params })
-  }
-  getLeaderBoardSubjects(CourseId, testType, categoryName): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('courseId', CourseId.toString());
-    params = params.append('testType', testType.toString());
-    params = params.append('categoryName', categoryName.toString());
-    return this._httpClient.get<any>(`${environment.apiURL}/leaderboard/subject`, { params })
-  }
-  getLeaderBoardClasses(CourseId, testType, categoryName, isPracticeMode): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('courseId', CourseId.toString());
-    params = params.append('testType', testType.toString());
-    params = params.append('categoryName', categoryName.toString());
-    params = params.append('isPracticeMode', isPracticeMode);
-    return this._httpClient.get<any>(`${environment.apiURL}/leaderboard/v2-class`, { params })
-  }
-  getLeaderBoardSessions(CourseId, testType, className, isPracticeMode): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('courseId', CourseId.toString());
-    params = params.append('testType', testType.toString());
-    params = params.append('className', className.toString());
-    params = params.append('isPracticeMode', isPracticeMode);
-    return this._httpClient.get<any>(`${environment.apiURL}/leaderboard/v2-examlist`, { params })
-  }
-  getLeaderBoardExamList(CourseId, examtype, className, isPracticeMode): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('courseId', CourseId.toString());
-    params = params.append('testType', examtype.toString());
-    params = params.append('className', className.toString());
-    params = params.append('isPracticeMode', isPracticeMode);
-    return this._httpClient.get<any>(`${environment.apiURL}/leaderboard/v2-examlist`, { params })
-  }
-  getInClassLeaderBoardExamList(CourseId, examtype, categoryName, subjectname, className, isPracticeMode): Observable<any> {
-    let params = new HttpParams();
-    const encodedCategoryName = encodeURIComponent(categoryName);
-    params = params.append('courseId', CourseId.toString());
-    params = params.append('testType', examtype.toString());
-    params = params.append('categoryName', categoryName.toString());
-    params = params.append('subjectname', subjectname.toString());
-    params = params.append('className', className.toString());
-    params = params.append('isPracticeMode', isPracticeMode);
-    return this._httpClient.get<any>(`${environment.apiURL}/leaderboard/v2-examlist`, { params })
-  }
-  getLeaderBoardType(CourseId, className, isPracticeMode): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('courseId', CourseId.toString());
-    params = params.append('clasName', className.toString());
-    params = params.append('isPracticeMode', isPracticeMode);
-    return this._httpClient.get<any>(`${environment.apiURL}/leaderboard/v2-leaderboard-type`, { params })
-  }
-  predefineLeaderBoardAnswerSheetProgress(request: any): Promise<any> {
-    var self = this;
-    return new Promise((resolve, reject) => {
-      this._httpClient.post(`${environment.apiURL}/leaderboard/answer-sheet-progress/`, { ...request })
-        .subscribe((response: any) => {
-          resolve(response);
-        }, reject);
-    });
   }
 }
