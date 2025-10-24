@@ -97,7 +97,6 @@ export class QBanksService {
   BookmarkQbnkQuestion(request: any): Observable<any> {
     const params = new HttpParams()
       .set('examid', request.examid.toString())
-      .set('courseId', request.courseId.toString())
       .set('questionId', request.questionId.toString())
       .set('IsBookMark', request.IsBookMark)
     return this._httpClient.post<any>(`${environment.apiURL}/qbank/bookmark`, null, { params })

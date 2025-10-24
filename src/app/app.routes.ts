@@ -3,6 +3,7 @@ import { initialDataResolver } from 'app/app.resolvers';
 import { AuthGuard, ChildAuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
+import { CourseGuard } from './core/auth/guards/course.guard';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -127,8 +128,8 @@ export const appRoutes: Route[] = [
     },
     {
         path: '',
-        canActivate: [AuthGuard, ChildAuthGuard],
-        canActivateChild: [AuthGuard, ChildAuthGuard],
+        canActivate: [AuthGuard, ChildAuthGuard,CourseGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard,CourseGuard],
         component: LayoutComponent,
         resolve: {
             initialData: initialDataResolver
@@ -139,8 +140,8 @@ export const appRoutes: Route[] = [
     },
     {
         path: '',
-        canActivate: [AuthGuard, ChildAuthGuard],
-        canActivateChild: [AuthGuard, ChildAuthGuard],
+        canActivate: [AuthGuard, ChildAuthGuard,CourseGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard,CourseGuard],
         component: LayoutComponent,
         resolve: {
             initialData: initialDataResolver
@@ -151,8 +152,8 @@ export const appRoutes: Route[] = [
     },
     {
         path: '',
-        canActivate: [AuthGuard, ChildAuthGuard],
-        canActivateChild: [AuthGuard, ChildAuthGuard],
+        canActivate: [AuthGuard, ChildAuthGuard,CourseGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard,CourseGuard],
         component: LayoutComponent,
         resolve: {
             initialData: initialDataResolver
@@ -175,8 +176,8 @@ export const appRoutes: Route[] = [
     },
     {
         path: '',
-        canActivate: [AuthGuard, ChildAuthGuard],
-        canActivateChild: [AuthGuard, ChildAuthGuard],
+        canActivate: [AuthGuard, ChildAuthGuard,CourseGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard,CourseGuard],
         component: LayoutComponent,
         resolve: {
             initialData: initialDataResolver
@@ -187,14 +188,26 @@ export const appRoutes: Route[] = [
     },
     {
         path: '',
-        canActivate: [AuthGuard, ChildAuthGuard],
-        canActivateChild: [AuthGuard, ChildAuthGuard],
+        canActivate: [AuthGuard, ChildAuthGuard,CourseGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard,CourseGuard],
         component: LayoutComponent,
         resolve: {
             initialData: initialDataResolver
         },
         children: [
             {path: 'exam-management', loadChildren: () => import('app/modules/admin/regular-course/test/test.routes')},
+        ]
+    },
+    {
+        path: '',
+        canActivate: [AuthGuard, ChildAuthGuard,CourseGuard],
+        canActivateChild: [AuthGuard, ChildAuthGuard,CourseGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: initialDataResolver
+        },
+        children: [
+            {path: 'CustomQbank', loadChildren: () => import('app/modules/admin/regular-course/custom-qbank/custom-qbank.routes')},
         ]
     },
     {
@@ -206,7 +219,7 @@ export const appRoutes: Route[] = [
             initialData: initialDataResolver
         },
         children: [
-            {path: 'CustomQbank', loadChildren: () => import('app/modules/admin/regular-course/custom-qbank/custom-qbank.routes')},
+            {path: 'all-course', loadChildren: () => import('app/modules/admin/all-course/all-course.routes')},
         ]
     }
 ];

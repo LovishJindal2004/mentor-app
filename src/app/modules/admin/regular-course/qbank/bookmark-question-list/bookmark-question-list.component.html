@@ -1,0 +1,41 @@
+<div class="w-full">
+    <div class="flex text-primary items-center p-2">
+        <mat-icon class="text-primary cursor-pointer" (click)="Goback()">arrow_back</mat-icon>
+        <h2 class="text-lg font-normal  " (click)="Goback()"><span class="cursor-pointer"
+               >Back</span></h2>
+    </div>
+    <div class="px-4 md:px-10 py-4">
+        
+        <h2 class="text-[14px] font-semibold text-[#505050]">Questions <span class="text-[12px] text-[#505050] font-light">( {{totalQuestions}} MCQ'S)</span></h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-5 mx-4 md:mx-10 mb-5">
+       <div class="relative" *ngFor="let question of QuestionList; let i = index">
+        <div class="flex justify-end bookmarks">
+            <mat-icon class="text-primary cursor-pointer"
+                (click)="BookmarkQuestions(question,true)">bookmark</mat-icon>
+        </div>
+        <div class="border-div rounded bg-white px-4 py-4 relative all_Question"    (click)="navigateToDetails(subjectId, question.questionDetailID, pageNumber, pageSize)">
+            <div class="cursor-pointer">
+                <div class="">
+                    <div class="flex justify-between items-start gap-2.5 cursor-pointer">
+                        <h3 class="pr-4 text-[14px] text-[#505050] font-medium ellipsis" [innerHTML]="sanitizeExplanationContent(question.questionTitle)"></h3>
+                        
+                    </div>
+                </div>
+                <span layout="row">
+                    <hr flex class="line-hr" />
+                </span>
+                <div class="flex justify-between">
+                    <h3 class="text-[12px] text-[#6E6E6E] font-light">Question : {{i + 1}}</h3>
+                    <h4 class="text-[12px] text-[#6E6E6E] font-light">ADrQUESTION No: {{question.questionDetailID}}</h4>
+                </div>
+            </div>
+        </div>
+        
+        
+       </div>
+        
+    </div>
+    <mat-paginator class="flex justify-end" [length]="totalQuestions" [pageSize]="pageSize" (page)="getNext($event)" [pageSizeOptions]="[12,24, 48,96,120,240,480]"></mat-paginator>
+</div>

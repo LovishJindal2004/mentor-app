@@ -755,7 +755,7 @@ export class AuthSignInComponent implements OnInit {
         }
         this._router.navigate(['/dashboard']);
         let userDetails = this._helperservice.getUserDetail();
-        this._CommanService.getCoursesByUserId(userDetails?.Id).subscribe((res: any) => {
+        this._CommanService.getActiveCoursesByUserId(userDetails?.Id).subscribe((res: any) => {
             if (res) {
                 this.CourseDetails = res;
                 var courseid = this.CourseDetails[0]?.courseId;
@@ -763,7 +763,9 @@ export class AuthSignInComponent implements OnInit {
                     this.storecourselocal(courseid)
                 }
                 else {
+                    if(userDetails.Roles == 'Mentee'){
                     this._router.navigate(['/all-course']);
+                    }
                 }
                 // console.log(this.CourseDetails)
             }

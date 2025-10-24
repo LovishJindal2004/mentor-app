@@ -51,6 +51,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
     user: User;
     UserName: any;
     _userAccount: any;
+    ishidenavigation: boolean = false;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -86,6 +87,11 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
+        if (this._router.url.includes('/all-course')) {
+            this.ishidenavigation = true;
+        } else {
+            this.ishidenavigation = false;
+        }
         this._userAccount = this._helperService.getUserDetail();
         this.UserName = localStorage.getItem('studentName');
         // Subscribe to navigation data

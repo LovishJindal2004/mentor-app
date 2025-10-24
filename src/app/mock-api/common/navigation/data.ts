@@ -11,6 +11,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
         roles : ['Admin','Mentor','Mentee']
     },
     {
+        id   : 'course',
+        title: 'course',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        link : '/all-course',
+        roles : ['Admin','Mentor','Mentee']
+    },
+    {
         id   : 'dashboard',
         title: 'dashboard',
         type : 'basic',
@@ -525,6 +533,30 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon : 'heroicons_outline:chart-pie',
         link : '/qbanks/game-analytics/:examId',
         roles : ['Mentee']
+    },
+    {
+        id: 'qbank',
+        title: 'Qbank',
+        type: 'basic',
+        link: '/qbanks/bookmarks',
+        roles: ["Mentee", 'Admin']
+
+    },
+    {
+        id: 'qbank',
+        title: 'Qbank',
+        type: 'basic',
+        link: '/qbanks/bookmarks/questions/:subjectId',
+        roles: ["Mentee", 'Admin']
+
+    },
+    {
+        id: 'qbank',
+        title: 'Qbank',
+        type: 'basic',
+        link: '/qbanks/bookmarks/questionsDetails/:subjectId/:Questionid',
+        roles: ["Mentee", 'Admin']
+
     },
     {
         id: 'CustomQbank',

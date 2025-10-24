@@ -1,0 +1,174 @@
+<div class="card-wrapper w-full bg-white">
+
+    <!-- mat expension starts-->
+    <div class="accordian-outer bookmark-game-review">
+        <app-qbank-game-header [examid]="" [subjectName]="" [topicName]="" [isfromMarksheet]="true" (dataEvent)="receiveDataFromHeader($event,true)"></app-qbank-game-header>
+        <div class="mt-22 bookmark-game-review-header">
+            <div class="flex items-center gap-2.5 h-13  bg-white pt-1 pb-1 pl-0 md:pl-[99px] shadow" *ngIf="questionid>0">
+
+                <mat-icon class="ml-6 text-primary cursor-pointer" (click)="Goback()">keyboard_backspace</mat-icon>
+                <h2 class="text-[14px] text-[#6E6E6E] font-medium cursor-pointer"><span class="text-primary" (click)="Goback()">Back</span></h2>
+
+            </div>
+            <div class="px-4 md:px-32 py-4 mt-5" *ngIf="totalQuestions>0">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-[#505050] text-base">Question :{{globalIndex + 1}}/{{totalQuestions}}</h2>
+                    <div class="flex gap-2">
+                        <mat-slide-toggle class="slide-toggle" color="primary" (click)="setExplanation()">{{IsDefaultExplanation==false?'Default Explanation':'choice Based Explanation'}}
+                        </mat-slide-toggle>
+                        <div class="flex justify-end bookmarks">
+                            <mat-icon class="text-primary cursor-pointer"
+                            (click)="BookmarkQuestions(FilterQuestionData[0],true)">bookmark</mat-icon>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4 border-primary/25">
+                <div class="bg-white">
+                    <div class="font-medium question" [innerHTML]="sanitizeExplanationContent(FilterQuestionData[0]?.questionTitle)">
+                    </div>
+                </div>
+                <div class="expension_div rounded" *ngIf="FilterQuestionData[0]">
+                    <div *ngFor="let choice of  FilterQuestionData[0]?.choices ;let i = index;">
+                        <h6 class="mt-3.5 font-medium text-[#28C397]" *ngIf="choice.isCorrect">Correct Answer</h6>
+                        <div class="bg-white choices mt-3.5 flex p-2.5" [ngClass]="{' wrong-choice relative': choice.isChecked,' correct-choice': choice.isCorrect}">
+                            <span class="content-center mr-2.5 border border-[#DCDCDC] text-sm px-1 h-5 w-5 rounded"><B>{{i+1}}</B></span>
+                            <h2 class="font-medium">{{choice.choiceText}}</h2>
+                            <mat-icon class="bg-[#EA4435] rounded-full text-base text-white absolute right-4" *ngIf="choice.isChecked && !choice.isCorrect " matTooltip="you select this Wrong">close</mat-icon>
+                            <mat-icon class="rounded-full  text-green-600 absolute right-4 text-xl" *ngIf="choice.isChecked && choice.isCorrect" matTooltip="you select this right">done</mat-icon>
+                            <mat-icon class="  mulichoiesWrng" matTooltip="This Choies is correct but you don't select" *ngIf="FilterQuestionData[0]?.questionType==2 && !choice.isChecked && choice.isCorrect ">error</mat-icon>
+                        </div>
+                        <h5 class="text-sm font-medium mt-2 text-[#EA4435]" *ngIf="choice.isChecked && !choice.isCorrect && choice.pollCount > 0">
+                            {{ (choice.pollCount / getTotalUsers(this.FilterQuestionData[0])) * 100 | number:'1.0-2' }}% marked this Wrong
+                        </h5>
+                        <h5 class="text-sm font-medium mt-2 text-[#28C397]" *ngIf="(choice.isCorrect || (choice.isChecked && choice.isCorrect)) && choice.pollCount > 0">
+                            {{ (choice.pollCount / getTotalUsers(this.FilterQuestionData[0])) * 100 | number:'1.0-2' }}% got this correct
+                        </h5>
+                        
+                    </div>
+                    <div>
+                       
+                        <div>
+                            <h3 class="py-2 text-lg">Solutions</h3>
+                            <ng-container *ngIf="FilterQuestionData[0]?.explanations?.length > 0">
+                                <!-- Display the explanation based on IsDefaultExplanation -->
+                                <h4 class="font-bold text-base mt-3.5"
+                                    *ngIf="IsDefaultExplanation && FilterQuestionData[0]?.explanations[0]?.content">Choised Based
+                                    Explanation</h4>
+                                <p class="mt-3.5 font-medium explanation"
+                                    *ngIf="IsDefaultExplanation && FilterQuestionData[0]?.explanations[0]?.content"
+                                    [innerHTML]="sanitizeExplanationContent(FilterQuestionData[0].explanations[0]?.content)"></p>
+            
+                                <h4 class="font-bold text-base mt-3.5"
+                                    *ngIf="!IsDefaultExplanation && FilterQuestionData[0]?.explanations[1]?.content">Correct Answer
+                                </h4>
+                                <p class="mt-3.5 font-medium explanation"
+                                    *ngIf="!IsDefaultExplanation && FilterQuestionData[0]?.explanations[1]?.content"
+                                    [innerHTML]="sanitizeExplanationContent(FilterQuestionData[0].explanations[1]?.content)"></p>
+                            </ng-container>
+            
+                        </div>
+                        <h4 class=" mt-3.5 text-primary font-normal text-lg" *ngIf="FilterQuestionData[0]?.notes?.length>0">High
+                            yield Points </h4>
+                        <p class="mt-3.5 font-medium explanation"
+                            [innerHTML]="sanitizeExplanationContent(FilterQuestionData[0]?.notes)"
+                            *ngIf="FilterQuestionData[0]?.notes?.length>0"></p>
+                        <div *ngIf="FilterQuestionData[0]?.books && FilterQuestionData[0]?.books?.length>0">
+                            <h3 class="py-2 text-lg">Reference</h3>
+                            <div class="bg-[#FFF7E2] p-2 text-[#6E6E6E] font-normal"
+                                *ngFor="let book of FilterQuestionData[0].books">
+                                <h3>{{book.title}}, {{book.edition}} edition</h3>
+                                <h3>page no : {{book.pageNumber}}</h3>
+                            </div>
+                        </div>
+                        <h2>ADrQuestion No. {{FilterQuestionData[0]?.questionDetailID}}</h2>
+                        <div *ngIf="FilterQuestionData[0]?.audio && FilterQuestionData[0]?.audio.length>0">
+                            <h3 class="py-2 text-lg">Related Audio</h3>
+                            <div>
+                                <audio controls controlsList="nodownload">
+                                    <source [src]="FilterQuestionData[0]?.audio" type="audio/mpeg">
+                                </audio>
+                            </div>
+                        </div>
+                        <div *ngIf="FilterQuestionData[0]?.questionLevel">
+                            <h3 class="py-2 text-lg">Competency Level</h3>
+                            <div class="flex">
+                                <h4
+                                    class="w-fit-content rounded-full bg-[#FFF7E2] p-2 px-4 font-normal border border-[#F9BC15] text-[#F9BC15]">
+                                    {{FilterQuestionData[0]?.questionLevel}}</h4>
+                            </div>
+                        </div>
+                        <div *ngIf="FilterQuestionData[0]?.typeofquestion">
+                            <h3 class="py-2 text-lg">Type of Question</h3>
+                            <div class="flex">
+                                <h4 class="py-2 px-4 border rounded-full border-primary/30 text-primary font-normal w-auto">{{FilterQuestionData[0]?.typeofquestion}}</h4>
+                            </div>
+                        </div>
+                        <div *ngIf="FilterQuestionData[0]?.levelofknowledge">
+                            <h3 class="py-2 text-lg">Level of Knowledge</h3>
+                            <div class="flex">
+                                <h4 class="py-2 px-4 border rounded-full border-primary/30 text-primary font-normal w-auto">{{FilterQuestionData[0]?.levelofknowledge}}</h4>
+                            </div>
+                        </div>
+                        <div *ngIf="FilterQuestionData[0].subTopic">
+                            <h3 class="py-2 text-lg">SubTopic</h3>
+                            <div class="flex">
+                                <h4 class="py-2 px-4 border rounded-full border-primary/30 text-primary font-normal w-auto">{{FilterQuestionData[0].subTopic}}</h4>
+                            </div>
+                        </div>
+                        <div *ngIf="FilterQuestionData[0].tags?.length>0">
+                            <h3 class="py-2 text-lg">Tags</h3>
+                            <div class="flex gap-2">
+                                <div class="flex gap-2" *ngFor="let tag of FilterQuestionData[0]?.tags">
+                                    <h4 class="py-2 px-4 border border-primary/30 text-primary font-normal w-auto">{{tag.name}}</h4>
+                                </div>
+                            </div>
+            
+                        </div>
+                        <ng-container *ngIf="FilterQuestionData[0]?.integrations?.length > 0">
+                            <!-- Get unique integration types -->
+                            <ng-container *ngFor="let type of getUniqueIntegrationTypes(FilterQuestionData[0]?.integrations)">
+                              <h3 class="py-2 text-lg">{{ type }} Integration</h3>
+                              
+                              <!-- Display the titles for this specific integration type -->
+                              <div class="flex gap-2">
+                                <ng-container class="flex gap-2" *ngFor="let integration of FilterQuestionData[0]?.integrations" >
+                                  <ng-container *ngIf="integration.integrationType === type">
+                                    <h4 class="py-2 px-4 border border-primary/30 text-primary font-normal w-auto">
+                                      {{ integration.title }}
+                                    </h4>
+                                  </ng-container>
+                                </ng-container>
+                              </div>
+                            </ng-container>
+                          </ng-container>
+                          <h2 class="mt-3">ADrQuestion No. {{FilterQuestionData[0]?.questionDetailID}}</h2>
+                    </div>
+                
+                    <div  [ngClass]="questionDetails?.length>1 ? 'reviw-button-container' : ''">
+                        <div class="flex justify-center gap-4 pt-8" [ngClass]="questionDetails?.length > 1 ? 'submit-btns' : ''">
+                            <button mat-raised-button class="bg-[#0C529A] text-[#fff] text-lg w-40 py-6 rounded-lg"
+                                (click)="previousQuestion()" *ngIf="(globalIndex + 1)!=1" >Previous</button>
+                            <button mat-raised-button class="bg-primary text-[#fff] text-lg w-40 py-6 rounded-lg"
+                                (click)="NextQuestion()" *ngIf="(globalIndex + 1)!=totalQuestions">Next</button>
+                         
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <h1 class="text-center p-5" *ngIf="totalQuestions<=0">All Bookmark Removed</h1>
+    <mat-paginator
+    class="flex justify-end"
+    [length]="totalQuestions"
+    [pageSize]="pageSize"
+    [pageIndex]="pageNumber - 1"
+    (page)="getNext($event)"
+    [pageSizeOptions]="[12,24, 48,96,120,240,480]">
+</mat-paginator>
+
+</div>
+
+

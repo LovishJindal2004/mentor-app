@@ -24,12 +24,12 @@
                     [checked]="IsDefaultExplanation" (change)="setExplanation($event.checked)">
                     {{IsDefaultExplanation ? 'Choice Based Explanation' : 'Default Explanation'}}
                 </mat-slide-toggle>
-                <!-- <div class="flex justify-end bookmarks" *ngIf="!practiceMode">
+                <div class="flex justify-end bookmarks">
                     <mat-icon *ngIf="!FilterQuestionData[0]?.isBoomarked" class="text-primary cursor-pointer"
                         (click)="BookmarkQuestions(FilterQuestionData,false)">bookmark_border</mat-icon>
                     <mat-icon *ngIf="FilterQuestionData[0]?.isBoomarked" class="text-primary cursor-pointer"
                         (click)="BookmarkQuestions(FilterQuestionData,true)">bookmark</mat-icon>
-                </div> -->
+                </div>
                 
             </div>
           

@@ -1,0 +1,125 @@
+:host{
+    width: 100%;
+    display: block;
+}
+.logo-custom {
+    position: absolute;
+    top: -70px;
+    z-index: 99;
+}
+::ng-deep .courses-list .mat-tab-group .mat-tab-header .mat-tab-label-container .mat-tab-list .mat-tab-labels .mat-tab-label {
+    background: none !important;
+    border-radius: 0px !important;
+    margin: 0 17px !important;
+    height: 100% !important;
+    padding: 0 20px !important;
+}
+::ng-deep .mat-tab-group .mat-tab-header .mat-tab-label-container .mat-tab-list .mat-tab-labels .mat-tab-label.mat-tab-label-active {
+    border-bottom: 3px solid rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+    background: none !important;
+}
+::ng-deep .mat-ripple.mat-tab-label.mat-focus-indicator.mat-tab-label-active.ng-star-inserted .mat-tab-label-content {
+    color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+}
+::ng-deep .allCouses .mat-tab-header .mat-tab-label-container{
+    background: white;
+    height: 54px;    
+    margin-left: 0px !important;
+}
+::ng-deep .mat-tab-labels {
+    display: flex;
+    align-items: center;
+    height: 100%;    
+}
+// ::ng-deep .course-list .mat-form-field-flex{
+//     border: 0 !important;
+//     border-radius: 0 !important;
+// }
+// ::ng-deep .course-list .mat-form-field.mat-form-field-appearance-fill .mat-form-field-wrapper{
+//     margin-bottom: 0px;
+// }
+// ::ng-deep mat-form-field.mat-form-field.course-list{
+//     position: absolute;
+//     z-index: 2;
+//     top: 0;
+//     background: none;    
+//     width: 160px;
+
+// }
+// ::ng-deep .course-list .mat-form-field-flex.ng-tns-c37-4 {
+//     height: 53px;
+// }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div {
+    font-family: 'Lexend Deca', sans-serif;
+    font-weight: 500;
+}
+
+:host ::ng-deep form .filters .mat-form-field.mat-form-field {
+    min-width: auto;
+    max-width: initial;
+    padding-top: 0px;
+}
+
+:host ::ng-deep form .filters .mat-form-field.mat-form-field .mat-form-field-wrapper {
+    margin-bottom: 0px;
+}
+
+::ng-deep .filters .mat-form-field .mat-form-field-wrapper {
+    margin-bottom: 0;
+}
+
+.all-courses {
+    border: 1px solid rgba(var(--fuse-primary-rgb), .5);
+    border-radius: 4px;
+    background: white;
+    padding: 12px 12px;
+    box-shadow: 0px 0px 10px rgba(var(--fuse-primary-rgb), .2);
+    position: relative;
+    overflow: hidden;
+}
+
+.ellipsis {
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.lock-premium-bg {
+    background: rgba(var(--fuse-primary-rgb), .1);
+    margin-right: 25px !important;
+}
+
+.svg-color-lock {
+    fill: rgba(var(--fuse-primary-rgb), 1.0);
+}
+
+::ng-deep .courses-list .mat-form-field.mat-form-field-appearance-fill .mat-form-field-wrapper .mat-form-field-flex {
+    border-color: rgba(var(--fuse-primary-rgb), var(--tw-text-opacity)) !important;
+    box-shadow: 0px 0px 10px rgba(var(--fuse-primary-rgb), .3) !important;
+    border-radius: 8px;
+    height: 60px;
+}
+
+//mat-progress
+::ng-deep .stop .mat-progress-bar-fill::after {
+    background: #d71e1e !important;
+}
+
+::ng-deep .mat-progress-bar-fill::after {
+    background: #28C397 !important;
+}
+
+::ng-deep .mat-progress-bar {
+    height: 2px !important;
+}

@@ -112,7 +112,7 @@ export class UserComponent implements OnInit, OnDestroy {
         this._commonService.getActiveCoursesByUserId(this._userAccount?.Id).subscribe(res => {
             if (res)
                 this.courses = res;
-            this.selectedCourse = this.courses.filter(course => course.courseId == this.Courseid)[0].courseName;
+            this.selectedCourse = this.courses.filter(course => course.courseId == this.Courseid)[0]?.courseName;
             // console.log(this.selectedCourse);
         })
     }

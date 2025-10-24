@@ -1,0 +1,31 @@
+<!-- <div>
+    <div
+        class="navigation_bar relative flex flex-0 items-center w-full h-16 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card print:hidden">
+
+        <button class="lg:hidden" mat-icon-button (click)="toggleNavigation('mainNavigation')">
+            <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+        </button>
+        <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
+            <div class="mr-5"><mat-icon class="cursor-pointer mr-2 text-white"
+                    (click)="Bookmark.toggle();getBookmarkList()" *ngIf="userRole=='Student'">bookmark_border</mat-icon>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="my-8 mx-10">
+
+    <h2 class="text-xl ml-2 mr-2">All Courses</h2>
+    <div class="mb-4 mt-10 grid sm:grid-cols-2 md:grid-cols-3 gap-4 ml-2 mr-2">
+        <div class="all-courses cursor-pointer mx-2" *ngFor="let course of CourseDetails"
+            (click)="storecourselocal(course.courseId)">
+            <div class="flex justify-between">
+                <h4 class="font-semibold text-lg">{{course.courseName}}</h4>
+            </div>
+            <p class="font-normal text-base" [innerHTML]="course.description"></p>
+        </div>
+        <div *ngIf="CourseDetails?.length<=0">
+            <h2>No Course Found. Contact Support</h2>
+        </div>
+    </div>
+</div>
