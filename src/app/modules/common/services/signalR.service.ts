@@ -7,7 +7,7 @@ import { BehaviorSubject } from "rxjs";
 // signalr.service.ts
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
-  private _hubConnection!: HubConnection;
+  private _hubConnection!: any;
   private _connection = new BehaviorSubject<HubConnection | null>(null);
   public connection$ = this._connection.asObservable();
 
@@ -16,9 +16,9 @@ export class SignalRService {
   public connect(): Promise<boolean> {
     this.requestNotificationPermission();
     const existingConnection = this._connection.getValue();
-
-    if (existingConnection && existingConnection.state === 'Connected') {
+    if (existingConnection && existingConnection.state === 'Connected' && this._hubConnection?.connection?.transport._accessToken) {
       console.log('SignalR already connected');
+      // console.log(this._hubConnection?.connection?.transport._accessToken,'SignalR already connected');
       return Promise.resolve(true);
     }
 
